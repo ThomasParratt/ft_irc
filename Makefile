@@ -4,7 +4,7 @@ SRC			=	src/main.cpp
 
 OBJ			=	$(SRC:.c=.o)
 
-CC			=	cc
+CC			=	c++
 
 RM			=	rm -f
 
