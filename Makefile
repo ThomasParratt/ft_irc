@@ -1,6 +1,6 @@
 NAME		=	ircserv
 
-SRC			=	main.cpp
+SRC			=	src/main.cpp
 
 OBJ			=	$(SRC:.c=.o)
 
@@ -8,7 +8,7 @@ CC			=	cc
 
 RM			=	rm -f
 
-CFLAGS		=	-Wextra -Wall -Werror -g -fsanitize=address
+CFLAGS		=	-Wextra -Wall -Werror
 
 $(NAME):	$(OBJ)
 			$(CC) $(CFLAGS) -g -o $(NAME) $(OBJ)
