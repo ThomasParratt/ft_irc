@@ -2,7 +2,7 @@ NAME		=	ircserv
 
 SRC			=	src/main.cpp
 
-OBJ			=	$(SRC:.c=.o)
+OBJ			=	$(SRC:.cpp=.o)
 
 CC			=	c++
 
