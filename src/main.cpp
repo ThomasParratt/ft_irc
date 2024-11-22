@@ -45,17 +45,17 @@ int main(int argc, char **argv)
         {
             // Poll for events
             int pollCount = poll(pollfds.data(), pollfds.size(), -1);
-
+            int client = pollfds.size();
             // Check the server socket for new incoming connections
             if (pollfds[0].revents & POLLIN)
             {
-                // Accept a client connection
+                // Accept a client 
                 int clientSocket = accept(serverSocket, nullptr, nullptr);
 
                 // Add the new client socket to the poll set
                 pollfds.push_back({clientSocket, POLLIN, 0});
                 clientSockets.push_back(clientSocket);
-                std::cout << "New client connected" << std::endl;
+                std::cout << "Client " << client << " connected" << std::endl;
             }
 
             // Iterate through the client sockets and check for incoming data
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
                     else if (bytesRead == 0)
                     {
                         // Client closed connection
-                        std::cout << "Client disconnected" << std::endl;
+                        std::cout << "Client " << client << " disconnected" << std::endl;
                         close(pollfds[i].fd);
                         pollfds.erase(pollfds.begin() + i);
                         clientSockets.erase(clientSockets.begin() + i);
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
                     }
 
                     // Process the message from the client
-                    std::cout << "Message from client: " << buffer;
+                    std::cout << "Message from client " << client << ": " << buffer;
                 }
             }
         }
