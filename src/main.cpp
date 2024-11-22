@@ -3,10 +3,11 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
+#include <vector>
+#include <poll.h>
 
 // write in a more c++ way
 // add classes
-// add poll
 // add error management
 
 int main(int argc, char **argv)
@@ -35,23 +36,67 @@ int main(int argc, char **argv)
         // Listen (wait) for connections with 5 incoming connections allowed in queue
         listen(serverSocket, 5);
 
-        // Accept a client connection
-        int clientSocket = accept(serverSocket, nullptr, nullptr);
+        // Set up poll structures
+        std::vector<struct pollfd> pollfds;
+        std::vector<int> clientSockets;
+        pollfds.push_back({serverSocket, POLLIN, 0}); // Add server socket to poll
 
         while (true)
         {
-            // Receive data from the client
-            char buffer[1024] = {0};
-            send(clientSocket, "Enter message: \n", 15, 0);
-            recv(clientSocket, buffer, sizeof(buffer), 0);
-            std::cout << "Message received: " << buffer;
-            if (strncmp(buffer, "EXIT", 4) == 0)
-                break ;
+            // Poll for events
+            int pollCount = poll(pollfds.data(), pollfds.size(), -1);
+
+            // Check the server socket for new incoming connections
+            if (pollfds[0].revents & POLLIN)
+            {
+                // Accept a client connection
+                int clientSocket = accept(serverSocket, nullptr, nullptr);
+
+                // Add the new client socket to the poll set
+                pollfds.push_back({clientSocket, POLLIN, 0});
+                clientSockets.push_back(clientSocket);
+                std::cout << "New client connected" << std::endl;
+            }
+
+            // Iterate through the client sockets and check for incoming data
+            for (size_t i = 1; i < pollfds.size(); i++)
+            {
+                if (pollfds[i].revents & POLLIN)
+                {
+                    char buffer[1024] = {0};
+                    ssize_t bytesRead = recv(pollfds[i].fd, buffer, sizeof(buffer), 0);
+
+                    if (bytesRead == -1)
+                    {
+                        std::cerr << "Error reading from socket" << std::endl;
+                        close(pollfds[i].fd);
+                        pollfds.erase(pollfds.begin() + i);
+                        clientSockets.erase(clientSockets.begin() + i);
+                        --i;
+                        continue;
+                    }
+                    else if (bytesRead == 0)
+                    {
+                        // Client closed connection
+                        std::cout << "Client disconnected" << std::endl;
+                        close(pollfds[i].fd);
+                        pollfds.erase(pollfds.begin() + i);
+                        clientSockets.erase(clientSockets.begin() + i);
+                        --i;
+                        continue;
+                    }
+
+                    // Process the message from the client
+                    std::cout << "Message from client: " << buffer;
+                }
+            }
         }
-        
-        // Close the server socket
-        close(clientSocket);
         close(serverSocket);
+        for (size_t i = 1; i < pollfds.size(); i++)
+        {
+            close(pollfds[i].fd);
+            close(clientSockets[i]);
+        }
         std::cout << "Exiting server..." << std::endl;
     }
     else
