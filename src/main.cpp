@@ -9,6 +9,8 @@
 // write in a more c++ way
 // add classes
 // add error management
+// implement password
+// implement commands
 
 int main(int argc, char **argv)
 {
@@ -20,7 +22,7 @@ int main(int argc, char **argv)
         // Create the server socket
         int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-        // Set the SO_REUSEADDR option
+        // Set the SO_REUSEADDR option to allow resuse of the port
         int opt = 1;
         setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
@@ -39,11 +41,11 @@ int main(int argc, char **argv)
         // Set up poll structures
         std::vector<struct pollfd> pollfds;
         std::vector<int> clientSockets;
-        pollfds.push_back({serverSocket, POLLIN, 0}); // Add server socket to poll
+        pollfds.push_back({serverSocket, POLLIN, 0}); // Add server socket to poll with the event POLLIN (data available to read)
 
         while (true)
         {
-            // Poll for events
+            // Continuously monitors sockets for events using poll()
             int pollCount = poll(pollfds.data(), pollfds.size(), -1);
             int client = pollfds.size();
             // Check the server socket for new incoming connections
@@ -58,7 +60,7 @@ int main(int argc, char **argv)
                 std::cout << "Client " << client << " connected" << std::endl;
             }
 
-            // Iterate through the client sockets and check for incoming data
+            // Handle client communication by iterating through the client sockets and check for incoming data
             for (size_t i = 1; i < pollfds.size(); i++)
             {
                 if (pollfds[i].revents & POLLIN)
