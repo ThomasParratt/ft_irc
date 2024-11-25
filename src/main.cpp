@@ -72,7 +72,7 @@ int main(int argc, char **argv)
                         close(pollfds[i].fd);
                         pollfds.erase(pollfds.begin() + i);
                         clientSockets.erase(clientSockets.begin() + i);
-                        --i;
+                        i--;
                         continue;
                     }
                     else if (bytesRead == 0)
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
                         close(pollfds[i].fd);
                         pollfds.erase(pollfds.begin() + i);
                         clientSockets.erase(clientSockets.begin() + i);
-                        --i;
+                        i--;
                         continue;
                     }
 
