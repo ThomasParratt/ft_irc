@@ -86,9 +86,10 @@ int main(int argc, char **argv)
                         i--;
                         continue;
                     }
-
                     // Process the message from the client
                     std::cout << "Message from client: " << buffer;
+                    std::cout << buffer;
+                    //send(pollfds[i].fd, buffer, sizeof(buffer), 0);
                 }
             }
         }
