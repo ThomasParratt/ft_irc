@@ -12,6 +12,8 @@
 // implement password
 // implement commands
 // handle exits gracefully
+// tidy code
+// smaller functions
 
 std::string    nick(char *buffer)
 {
@@ -47,7 +49,7 @@ void    authenticate(char *buffer, std::string password, int clientSocket)
             //std::cout << "clientPassword = " << clientPassword << std::endl;
             if (clientPassword != password)
             {
-                send(clientSocket, "Error: Password incorrect\n", 25, 0);
+                send(clientSocket, "Error: Password incorrect\r\n", 26, 0);
                 exit(1);
             }
             //else
@@ -111,8 +113,13 @@ int main(int argc, char **argv)
                 // NEED TO AUTHENTICATE PASSWORD HERE, AND pass, nick, user ?
                 authenticate(buffer, password, clientSocket);
                 nickname = nick(buffer);
-                std::string response = "You are now known as " + nickname + "\n";
-                send(clientSocket, response.c_str(), response.size(), 0);
+                if (!nickname.empty())
+                {
+                    std::string response = "You are now known as " + nickname + "\r\n";
+                    send(clientSocket, response.c_str(), response.size(), 0);
+                }
+                std::string welcomeMessage = ":server_name 001 " + nickname + " :Welcome to the IRC network\r\n"; //NEED TO FIX THIS
+                send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
             }
 
             // Handle client communication by iterating through the client sockets and check for incoming data
@@ -144,10 +151,15 @@ int main(int argc, char **argv)
                     }
                     // Process the message from the client
                     //std::cout << "Message from client: " << buffer;
+                    std::cout << buffer;
                     authenticate(buffer, password, pollfds[i].fd);
+                    std::string temp = nickname;
                     nickname = nick(buffer);
-                    std::string response = "You are now known as " + nickname + "\n";
-                    send(pollfds[i].fd, response.c_str(), response.size(), 0);
+                    if ((temp != nickname) && !nickname.empty())
+                    {
+                        std::string response = "You are now known as " + nickname + "\r\n";
+                        send(pollfds[i].fd, response.c_str(), response.size(), 0);
+                    }
 
                     //send(pollfds[i].fd, buffer, sizeof(buffer), 0);
                 }
@@ -164,4 +176,5 @@ int main(int argc, char **argv)
     else
         std::cout << "Usage: ./ircserv <port> <password>" << std::endl;
 }
+
 
