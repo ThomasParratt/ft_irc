@@ -65,6 +65,7 @@ int main(int argc, char **argv)
         u_int16_t port = std::stoi(argv[1]);
         std::string password = argv[2];
         std::string nickname;
+        bool welcomeSent = false;
 
         // Create the server socket
         int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -117,9 +118,10 @@ int main(int argc, char **argv)
                 {
                     std::string response = "You are now known as " + nickname + "\r\n";
                     send(clientSocket, response.c_str(), response.size(), 0);
+                    std::string welcomeMessage = ":ircserver 001 " + nickname + " :Welcome to the IRC network " + nickname + "\r\n"; //NEED TO FIX THIS
+                    send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+                    welcomeSent = true;
                 }
-                std::string welcomeMessage = ":server_name 001 " + nickname + " :Welcome to the IRC network\r\n"; //NEED TO FIX THIS
-                send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
             }
 
             // Handle client communication by iterating through the client sockets and check for incoming data
@@ -159,6 +161,11 @@ int main(int argc, char **argv)
                     {
                         std::string response = "You are now known as " + nickname + "\r\n";
                         send(pollfds[i].fd, response.c_str(), response.size(), 0);
+                        if (!welcomeSent)
+                        {
+                            std::string welcomeMessage = ":ircserver 001 " + nickname + " :Welcome to the IRC network " + nickname + "\r\n"; //NEED TO FIX THIS
+                            send(pollfds[i].fd, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+                        }
                     }
 
                     //send(pollfds[i].fd, buffer, sizeof(buffer), 0);
