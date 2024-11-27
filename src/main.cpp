@@ -4,45 +4,50 @@
 #include <unistd.h>
 #include <string.h>
 
-std::string    nick(char *buffer)
+std::string messageParam(char *buffer, std::string message)
 {
-    std::cout << "Storing nickname" << std::endl;
-    std::string nickname;
-    std::string message(buffer);
-    //std::cout << "message = " << message << std::endl;
-    size_t startPos = message.find("NICK ");
+    std::string param;
+    std::string received(buffer);
+    size_t startPos = received.find(message);
     if (startPos != std::string::npos)
     {
-        size_t endPos = message.find("\n", startPos);
+        size_t endPos = received.find("\n", startPos);
         if (endPos != std::string::npos)
-        {
-            nickname = message.substr(startPos + 5, endPos - (startPos + 6));
-            //std::cout << "nickname = " << nickname << std::endl;
-        }
+            param = received.substr(startPos + 5, endPos - (startPos + 6));
     }
-    return (nickname);
+    return (param);
 }
 
-void    authenticate(char *buffer, std::string password, int clientSocket)
+int    handleMessages(char *buffer, std::string password, std::string nickname, int clientSocket, bool welcomeSent)
 {
-    std::cout << "Checking password" << std::endl;
-    std::string message(buffer);
-    //std::cout << "message = " << message << std::endl;
-    size_t startPos = message.find("PASS ");
-    if (startPos != std::string::npos)
+    std::string clientPassword = messageParam(buffer, "PASS ");
+    if (!clientPassword.empty())
     {
-        size_t endPos = message.find("\n", startPos);
-        if (endPos != std::string::npos)
+        if (clientPassword != password)
         {
-            std::string clientPassword = message.substr(startPos + 5, endPos - (startPos + 6));
-            //std::cout << "clientPassword = " << clientPassword << std::endl;
-            if (clientPassword != password)
-            {
-                send(clientSocket, "Error: Password incorrect\r\n", 26, 0);
-                exit(1);
-            }
+            send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+            return (1);
         }
     }
+    nickname = messageParam(buffer, "NICK ");
+    if (!nickname.empty())
+    {
+        std::string response = "You are now known as " + nickname + "\r\n";
+        send(clientSocket, response.c_str(), response.size(), 0);
+        if (!welcomeSent)
+        {
+            std::string welcomeMessage = ":ircserver 001 " + nickname + " :Welcome to the IRC network " + nickname + "\r\n";
+            send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+            return (2);
+        }
+    }
+    std::string ping = messageParam(buffer, "PING ");
+    if (!ping.empty())
+    {
+        std::string response = "PONG " + ping + "\r\n";
+        send(clientSocket, response.c_str(), response.size(), 0);
+    }
+    return (0);
 }
 
 int main(int argc, char **argv)
@@ -93,21 +98,12 @@ int main(int argc, char **argv)
                 break ;
             }
             std::cout << buffer;
-            authenticate(buffer, password, clientSocket);
-            nickname = nick(buffer);
-            if (!nickname.empty())
-            {
-                std::string response = "You are now known as " + nickname + "\r\n";
-                send(clientSocket, response.c_str(), response.size(), 0);
-                if (!welcomeSent)
-                {
-                    std::string welcomeMessage = ":ircserver 001 " + nickname + " :Welcome to the IRC network " + nickname + "\r\n"; //NEED TO FIX THIS
-                    send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-                    welcomeSent = true;
-                }
-            }
+            int ret = handleMessages(buffer, password, nickname, clientSocket, welcomeSent);
+            if (ret == 1) 
+                break ;
+            else if (ret == 2)
+                welcomeSent = true;
         }
-        
         // Close the server socket
         close(clientSocket);
         close(serverSocket);
