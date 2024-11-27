@@ -11,11 +11,32 @@
 // add error management
 // implement password
 // implement commands
+// handle exits gracefully
+
+std::string    nick(char *buffer)
+{
+    std::cout << "Storing nickname" << std::endl;
+    std::string nickname;
+    std::string message(buffer);
+    //std::cout << "message = " << message << std::endl;
+    size_t startPos = message.find("NICK ");
+    if (startPos != std::string::npos)
+    {
+        size_t endPos = message.find("\n", startPos);
+        if (endPos != std::string::npos)
+        {
+            nickname = message.substr(startPos + 5, endPos - (startPos + 6));
+            //std::cout << "nickname = " << nickname << std::endl;
+        }
+    }
+    return (nickname);
+}
 
 void    authenticate(char *buffer, std::string password, int clientSocket)
 {
+    std::cout << "Checking password" << std::endl;
     std::string message(buffer);
-    std::cout << "message = " << message << std::endl;
+    //std::cout << "message = " << message << std::endl;
     size_t startPos = message.find("PASS ");
     if (startPos != std::string::npos)
     {
@@ -23,11 +44,14 @@ void    authenticate(char *buffer, std::string password, int clientSocket)
         if (endPos != std::string::npos)
         {
             std::string clientPassword = message.substr(startPos + 5, endPos - (startPos + 6));
-            std::cout << "clientPassword = " << clientPassword << std::endl;
+            //std::cout << "clientPassword = " << clientPassword << std::endl;
             if (clientPassword != password)
-                send(clientSocket, "Password incorrect\n", 19, 0);
-            else
-                send(clientSocket, "Password correct\n", 17, 0);
+            {
+                send(clientSocket, "Error: Password incorrect\n", 25, 0);
+                exit(1);
+            }
+            //else
+            //    send(clientSocket, "Password correct\n", 17, 0);
         }
     }
 }
@@ -38,6 +62,7 @@ int main(int argc, char **argv)
     {
         u_int16_t port = std::stoi(argv[1]);
         std::string password = argv[2];
+        std::string nickname;
 
         // Create the server socket
         int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -85,6 +110,9 @@ int main(int argc, char **argv)
                 //send(clientSocket, "HELLO\n", 6, 0);
                 // NEED TO AUTHENTICATE PASSWORD HERE, AND pass, nick, user ?
                 authenticate(buffer, password, clientSocket);
+                nickname = nick(buffer);
+                std::string response = "You are now known as " + nickname + "\n";
+                send(clientSocket, response.c_str(), response.size(), 0);
             }
 
             // Handle client communication by iterating through the client sockets and check for incoming data
@@ -115,8 +143,12 @@ int main(int argc, char **argv)
                         continue ;
                     }
                     // Process the message from the client
-                    std::cout << "Message from client: " << buffer;
+                    //std::cout << "Message from client: " << buffer;
                     authenticate(buffer, password, pollfds[i].fd);
+                    nickname = nick(buffer);
+                    std::string response = "You are now known as " + nickname + "\n";
+                    send(pollfds[i].fd, response.c_str(), response.size(), 0);
+
                     //send(pollfds[i].fd, buffer, sizeof(buffer), 0);
                 }
             }
