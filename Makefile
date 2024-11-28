@@ -1,6 +1,6 @@
 NAME		=	ircserv
 
-SRC			=	src/main.cpp
+SRC			=	src/main.cpp \
 
 OBJ			=	$(SRC:.cpp=.o)
 
@@ -8,7 +8,7 @@ CC			=	c++
 
 RM			=	rm -f
 
-CFLAGS		=	-Wextra -Wall -Werror
+CFLAGS		=	-Wextra -Wall -Werror 
 
 $(NAME):	$(OBJ)
 			$(CC) $(CFLAGS) -g -o $(NAME) $(OBJ)
