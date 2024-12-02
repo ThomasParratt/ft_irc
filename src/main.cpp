@@ -72,9 +72,6 @@ int main(int argc, char **argv)
     if (argc == 3)
     {
         u_int16_t port = std::stoi(argv[1]);
-        // std::string password = argv[2];
-        // std::string nickname;
-        // bool welcomeSent = false;
         Client client(argv[2], false);
 
         // Create the server socket
@@ -156,7 +153,6 @@ int main(int argc, char **argv)
                         continue ;
                     }
                     // Process the message from the client
-                    //std::cout << "Message from client: " << buffer;
                     std::cout << "********* 2 **********" << std::endl;
                     std::cout << buffer;
                     int ret = handleMessages(buffer, clientSockets[i], client);
@@ -164,8 +160,6 @@ int main(int argc, char **argv)
                         break ;
                     else if (ret == 2)
                         client.setWelcomeSent(true);
-
-                    //send(pollfds[i].fd, buffer, sizeof(buffer), 0);
                 }
             }
         }
