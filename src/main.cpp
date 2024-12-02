@@ -5,6 +5,9 @@
 #include <string.h>
 #include <vector>
 #include <poll.h>
+#include <chrono>
+#include <ctime>
+#include "client.hpp"
 
 // write in a more c++ way
 // add classes
@@ -29,28 +32,28 @@ std::string messageParam(char *buffer, std::string message)
     return (param);
 }
 
-int    handleMessages(char *buffer, std::string password, std::string nickname, int clientSocket, bool welcomeSent)
+int    handleMessages(char *buffer, int clientSocket, Client client)
 {
     std::cout << "Handling messages" << std::endl;
     std::string clientPassword = messageParam(buffer, "PASS ");
     if (!clientPassword.empty())
     {
-        if (clientPassword != password)
+        if (clientPassword != client.getPassword())
         {
             send(clientSocket, "Error: Wrong password\r\n", 23, 0);
             return (1);
         }
     }
-    nickname = messageParam(buffer, "NICK ");
-    if (!nickname.empty())
+    client.setNickname(messageParam(buffer, "NICK "));
+    if (!client.getNickname().empty())
     {
-        std::string response = "You are now known as " + nickname + "\r\n"; // Is this message needed?
+        std::string response = "You are now known as " + client.getNickname() + "\r\n";
         send(clientSocket, response.c_str(), response.size(), 0);
-        if (!welcomeSent)
+        if (!client.getWelcomeSent())
         {
-            std::string message_001 = ":ircserv 001 " + nickname + " :Welcome to the IRC network " + nickname + "\r\n";
+            std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "\r\n";
             send(clientSocket, message_001.c_str(), message_001.size(), 0);
-            std::string message_002 = ":ircserv 002 " + nickname + " :Your host ircserv, running version 1.0\r\n";
+            std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host ircserv, running version 1.0\r\n";
             send(clientSocket, message_002.c_str(), message_002.size(), 0);
             return (2);
         }
@@ -69,9 +72,10 @@ int main(int argc, char **argv)
     if (argc == 3)
     {
         u_int16_t port = std::stoi(argv[1]);
-        std::string password = argv[2];
-        std::string nickname;
-        bool welcomeSent = false;
+        // std::string password = argv[2];
+        // std::string nickname;
+        // bool welcomeSent = false;
+        Client client(argv[2], false);
 
         // Create the server socket
         int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -90,7 +94,7 @@ int main(int argc, char **argv)
         bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress));
 
         // Listen (wait) for connections with 5 incoming connections allowed in queue
-        listen(serverSocket, 5); // Is this required?
+        listen(serverSocket, 5);
 
         // Set up poll structures
         std::vector<struct pollfd> pollfds;
@@ -111,17 +115,17 @@ int main(int argc, char **argv)
                 pollfds.push_back({clientSocket, POLLIN, 0});
                 clientSockets.push_back(clientSocket);
 
-                std::cout << "Client connected" << std::endl;
+                std::cout << "Client " << clientSockets.size() << " connected" << std::endl;
 
                 char buffer[1024] = {0};
                 ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
                 std::cout << "********* 1 **********" << std::endl;
                 std::cout << buffer;
-                int ret = handleMessages(buffer, password, nickname, clientSocket, welcomeSent);
+                int ret = handleMessages(buffer, clientSocket, client);
                 if (ret == 1) 
                     break ;
                 else if (ret == 2)
-                    welcomeSent = true;
+                    client.setWelcomeSent(true);
             }
 
             // Handle client communication by iterating through the client sockets and check for incoming data
@@ -155,11 +159,11 @@ int main(int argc, char **argv)
                     //std::cout << "Message from client: " << buffer;
                     std::cout << "********* 2 **********" << std::endl;
                     std::cout << buffer;
-                    int ret = handleMessages(buffer, password, nickname, clientSockets[i], welcomeSent);
+                    int ret = handleMessages(buffer, clientSockets[i], client);
                     if (ret == 1) 
                         break ;
                     else if (ret == 2)
-                        welcomeSent = true;
+                        client.setWelcomeSent(true);
 
                     //send(pollfds[i].fd, buffer, sizeof(buffer), 0);
                 }
