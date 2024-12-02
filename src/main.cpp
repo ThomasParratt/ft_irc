@@ -44,12 +44,14 @@ int    handleMessages(char *buffer, std::string password, std::string nickname, 
     nickname = messageParam(buffer, "NICK ");
     if (!nickname.empty())
     {
-        std::string response = "You are now known as " + nickname + "\r\n";
+        std::string response = "You are now known as " + nickname + "\r\n"; // Is this message needed?
         send(clientSocket, response.c_str(), response.size(), 0);
         if (!welcomeSent)
         {
-            std::string welcomeMessage = ":ircserver 001 " + nickname + " :Welcome to the IRC network " + nickname + "\r\n";
-            send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+            std::string message_001 = ":ircserv 001 " + nickname + " :Welcome to the IRC network " + nickname + "\r\n";
+            send(clientSocket, message_001.c_str(), message_001.size(), 0);
+            std::string message_002 = ":ircserv 002 " + nickname + " :Your host ircserv, running version 1.0\r\n";
+            send(clientSocket, message_002.c_str(), message_002.size(), 0);
             return (2);
         }
     }
