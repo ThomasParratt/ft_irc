@@ -1,6 +1,6 @@
 #include "client.hpp"
 
-Client::Client(std::string password, bool welcomeSent) : password(password), welcomeSent(welcomeSent) {};
+Client::Client(int socket, const std::string& password) : socket(socket), password(password), welcomeSent(welcomeSent) {};
 
 std::string Client::getNickname()
 {
@@ -15,6 +15,11 @@ std::string Client::getPassword()
 bool        Client::getWelcomeSent()
 {
     return(welcomeSent);
+}
+
+int         Client::getSocket()
+{
+    return(socket);
 }
 
 void        Client::setNickname(std::string str)

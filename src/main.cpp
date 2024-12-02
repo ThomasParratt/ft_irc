@@ -32,7 +32,7 @@ std::string messageParam(char *buffer, std::string message)
     return (param);
 }
 
-int    handleMessages(char *buffer, int clientSocket, Client client)
+int    handleMessages(char *buffer, int clientSocket, Client &client)
 {
     std::cout << "Handling messages" << std::endl;
     std::string clientPassword = messageParam(buffer, "PASS ");
@@ -72,7 +72,6 @@ int main(int argc, char **argv)
     if (argc == 3)
     {
         u_int16_t port = std::stoi(argv[1]);
-        Client client(argv[2], false);
 
         // Create the server socket
         int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -95,7 +94,7 @@ int main(int argc, char **argv)
 
         // Set up poll structures
         std::vector<struct pollfd> pollfds;
-        std::vector<int> clientSockets;
+        std::vector<Client> clients;
         pollfds.push_back({serverSocket, POLLIN, 0}); // Add server socket to poll with the event POLLIN (data available to read)
 
         while (true)
@@ -110,19 +109,9 @@ int main(int argc, char **argv)
 
                 // Add the new client socket to the poll set
                 pollfds.push_back({clientSocket, POLLIN, 0});
-                clientSockets.push_back(clientSocket);
+                clients.emplace_back(clientSocket, argv[2]);
 
-                std::cout << "Client " << clientSockets.size() << " connected" << std::endl;
-
-                char buffer[1024] = {0};
-                ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-                std::cout << "********* 1 **********" << std::endl;
-                std::cout << buffer;
-                int ret = handleMessages(buffer, clientSocket, client);
-                if (ret == 1) 
-                    break ;
-                else if (ret == 2)
-                    client.setWelcomeSent(true);
+                std::cout << "New client connected, socket: " << clientSocket << std::endl;
             }
 
             // Handle client communication by iterating through the client sockets and check for incoming data
@@ -138,36 +127,39 @@ int main(int argc, char **argv)
                         std::cerr << "Error reading from socket" << std::endl;
                         close(pollfds[i].fd);
                         pollfds.erase(pollfds.begin() + i);
-                        clientSockets.erase(clientSockets.begin() + i);
+                        clients.erase(clients.begin() + (i - 1));
                         i--;
                         continue ;
                     }
                     else if (bytesRead == 0)
                     {
                         // Client closed connection
-                        std::cout << "Client disconnected" << std::endl;
+                        std::cout << "Client disconnected, socket: " << pollfds[i].fd << std::endl;
                         close(pollfds[i].fd);
                         pollfds.erase(pollfds.begin() + i);
-                        clientSockets.erase(clientSockets.begin() + i);
+                        clients.erase(clients.begin() + (i - 1));
                         i--;
                         continue ;
                     }
                     // Process the message from the client
-                    std::cout << "********* 2 **********" << std::endl;
                     std::cout << buffer;
-                    int ret = handleMessages(buffer, clientSockets[i], client);
-                    if (ret == 1) 
-                        break ;
-                    else if (ret == 2)
-                        client.setWelcomeSent(true);
+                    for (auto &client : clients) 
+                    {
+                        if (client.getSocket() == pollfds[i].fd) 
+                        {
+                            int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
+                            if (ret == 2)
+                                client.setWelcomeSent(true);
+                            break;
+                        }
+                    }
                 }
             }
         }
         close(serverSocket);
-        for (size_t i = 1; i < pollfds.size(); i++)
+        for (auto &pollfd : pollfds) 
         {
-            close(pollfds[i].fd);
-            close(clientSockets[i]);
+            close(pollfd.fd);
         }
         std::cout << "Exiting server..." << std::endl;
     }
