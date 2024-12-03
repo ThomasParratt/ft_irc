@@ -1,6 +1,7 @@
 NAME		=	ircserv
 
-SRC			=	src/main.cpp
+SRC			=	src/main.cpp \
+				src/message_handler.cpp \
 
 OBJ			=	$(SRC:.cpp=.o)
 

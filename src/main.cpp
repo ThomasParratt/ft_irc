@@ -1,8 +1,8 @@
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <string.h>
+#include "Msg.hpp"
+#include "Server.hpp"
+
+
+
 
 std::string messageParam(char *buffer, std::string message)
 {
@@ -52,7 +52,9 @@ int    handleMessages(char *buffer, std::string password, std::string nickname, 
 
 int main(int argc, char **argv)
 {
-    if (argc == 3)
+    Server	server;
+	
+	if (argc == 3)
     {
         u_int16_t port = std::stoi(argv[1]);
         std::string password = argv[2];
@@ -97,9 +99,12 @@ int main(int argc, char **argv)
                 std::cout << "Client disconnected" << std::endl;
                 break ;
             }
-            std::cout << buffer;
+			std::cout << "******* 1 ********" << std::endl;
+			std::cout << buffer;
+			std::cout << "******* 2 ********" << std::endl;
+			server.messageHandler(buffer);
             int ret = handleMessages(buffer, password, nickname, clientSocket, welcomeSent);
-            if (ret == 1) 
+            if (ret == 1)
                 break ;
             else if (ret == 2)
                 welcomeSent = true;
