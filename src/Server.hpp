@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include "Client.hpp"
+
 class Server {
 	private:
 		std::string _password;
@@ -29,5 +31,5 @@ class Server {
 		std::string getPassword() { return _password; }
 };
 
-	int handleMessages(char *buffer, std::string password, std::string nickname, int clientSocket, bool welcomeSent);
+	int    handleMessages(char *buffer, int clientSocket, Client &client);
 	std::string messageParam(char *buffer, std::string message);

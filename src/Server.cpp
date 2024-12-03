@@ -8,7 +8,6 @@
 #include <string.h>
 
 #include "Server.hpp"
-#include "Client.hpp"
 
 Server::Server(std::string password, int port) : _password(password), _port(port), _welcomeSent(false)
 {}
@@ -83,7 +82,7 @@ void Server::serverLoop() {
 			clientPollfd.fd = clientSocket;
 			clientPollfd.events = POLLIN | POLLOUT | POLLERR;
 			pollfds.push_back(clientPollfd);
-			clients.emplace_back(clientSocket, "password"); //PASSWORD IS NOT NEEDED?
+			clients.emplace_back(clientSocket, _password);
 			std::cout << "New client connected, socket: " << clientSocket << std::endl;
 		}
 		for (int i = 1; i < pollfds.size(); i++)
@@ -94,16 +93,16 @@ void Server::serverLoop() {
 				int bytesRead = recv(pollfds[i].fd, buffer, sizeof(buffer), 0);
 				if (bytesRead <= 0) {
 					if (bytesRead == 0) 
-						std::cout << "Client disconnected\n";
-						else 
-						std::cerr << "Error reading from socket " << strerror(errno) << std::endl;
+						std::cout << "Client disconnected, socket: " << pollfds[i].fd << std::endl;
+					else 
+						std::cerr << "Error reading from socket " << pollfds[i].fd << strerror(errno) << std::endl;
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
 					clients.erase(clients.begin() + (i - 1));
 					i--;
 					continue;
 				}
-				std::cout << "Message received: " << buffer;
+				std::cout << "Message received from socket: " << pollfds[i].fd << std::endl << buffer;
 				for (auto &client : clients) 
                 {
                     if (client.getSocket() == pollfds[i].fd) 
@@ -117,6 +116,11 @@ void Server::serverLoop() {
 			}
 		}
 	}
+	close(serverPollfd.fd);
+    for (auto &pollfd : pollfds) 
+    {
+        close(pollfd.fd);
+    }
 	std::cout << "Server stopped" << std::endl;
 }
 
