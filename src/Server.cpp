@@ -83,7 +83,7 @@ void Server::serverLoop() {
 			clientPollfd.events = POLLIN | POLLOUT | POLLERR;
 			pollfds.push_back(clientPollfd);
 			clients.emplace_back(clientSocket, _password);
-			std::cout << "New client connected, socket: " << clientSocket << std::endl;
+			std::cout << "New client connected, socket " << clientSocket << std::endl;
 		}
 		for (int i = 1; i < pollfds.size(); i++)
 		{
@@ -93,7 +93,7 @@ void Server::serverLoop() {
 				int bytesRead = recv(pollfds[i].fd, buffer, sizeof(buffer), 0);
 				if (bytesRead <= 0) {
 					if (bytesRead == 0) 
-						std::cout << "Client disconnected, socket: " << pollfds[i].fd << std::endl;
+						std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 					else 
 						std::cerr << "Error reading from socket " << pollfds[i].fd << strerror(errno) << std::endl;
 					close(pollfds[i].fd);
@@ -102,7 +102,7 @@ void Server::serverLoop() {
 					i--;
 					continue;
 				}
-				std::cout << "Message received from socket: " << pollfds[i].fd << std::endl << buffer;
+				std::cout << "Message received from socket " << pollfds[i].fd << std::endl << buffer;
 				for (auto &client : clients) 
                 {
                     if (client.getSocket() == pollfds[i].fd) 
@@ -160,7 +160,7 @@ int    handleMessages(char *buffer, int clientSocket, Client &client)
         {
             std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "\r\n";
             send(clientSocket, message_001.c_str(), message_001.size(), 0);
-            std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host ircserv, running version 1.0\r\n";
+            std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host localhost, running version ircserv1.0\r\n";
             send(clientSocket, message_002.c_str(), message_002.size(), 0);
             return (2);
         }
