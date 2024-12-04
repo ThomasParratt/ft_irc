@@ -3,13 +3,6 @@
 #include "Server.hpp"
 
 
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <string.h>
-
-#include <vector> //
 
 // std::string		getCommand(std::vector<std::string> array)
 // {
