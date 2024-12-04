@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int socket, const std::string& password) : socket(socket), password(password), welcomeSent(welcomeSent) {};
+Client::Client(int socket, const std::string& password) : socket(socket), password(password), welcomeSent(false) {};
 
 std::string Client::getNickname()
 {

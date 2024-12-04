@@ -29,10 +29,10 @@ class Server {
 		// int acceptClient(std::vector<pollfd>& pollfds);
 
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
-		void	messageHandler(std::string buffer);
+		void	messageHandler(std::string buffer, int clientSocket, Client &client);
 
 		//Getter
-		int getServerSocket() { return _serverSocket; }
+		int	getServerSocket() { return _serverSocket; }
 		bool getWelcomeSent() { return _welcomeSent; }
 		std::string getPassword() { return _password; }
 };
