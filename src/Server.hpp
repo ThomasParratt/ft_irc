@@ -9,6 +9,9 @@
 
 #include "Client.hpp"
 
+class Msg;
+// #include "Msg.hpp"
+
 class Server {
 	private:
 		std::string _password;
@@ -24,6 +27,9 @@ class Server {
 		int serverInit();
 		void serverLoop();
 		// int acceptClient(std::vector<pollfd>& pollfds);
+
+		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
+		void	messageHandler(std::string buffer);
 
 		//Getter
 		int getServerSocket() { return _serverSocket; }

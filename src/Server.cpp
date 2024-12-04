@@ -107,7 +107,8 @@ void Server::serverLoop() {
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
-                        int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
+                        this->messageHandler(buffer);//Client , fd
+						int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
                         if (ret == 2)
                             client.setWelcomeSent(true);
                         break;
@@ -141,7 +142,7 @@ std::string messageParam(char *buffer, std::string message)
 
 int    handleMessages(char *buffer, int clientSocket, Client &client)
 {
-    std::cout << "Handling messages" << std::endl;
+    // std::cout << "Handling messages" << std::endl;
     std::string clientPassword = messageParam(buffer, "PASS ");
     if (!clientPassword.empty())
     {
