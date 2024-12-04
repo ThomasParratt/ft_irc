@@ -81,7 +81,7 @@ int Server::setServHostName()
     {
         _servHostName = hostname;
     }
-
+	std::cout << "Server hostname set to " << _servHostName << std::endl;
     return 1;
 }
 
