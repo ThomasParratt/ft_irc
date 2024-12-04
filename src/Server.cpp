@@ -142,16 +142,16 @@ std::string messageParam(char *buffer, std::string message)
 
 int    handleMessages(char *buffer, int clientSocket, Client &client)
 {
-    // std::cout << "Handling messages" << std::endl;
-    // std::string clientPassword = messageParam(buffer, "PASS ");
-    // if (!clientPassword.empty())
-    // {
-    //     if (clientPassword != client.getPassword())
-    //     {
-    //         send(clientSocket, "Error: Wrong password\r\n", 23, 0);
-    //         return (1);
-    //     }
-    // }
+    std::cout << "Handling messages" << std::endl;
+    std::string clientPassword = messageParam(buffer, "PASS ");
+    if (!clientPassword.empty())
+    {
+        if (clientPassword != client.getPassword())
+        {
+            send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+            return (1);
+        }
+    }
     client.setNickname(messageParam(buffer, "NICK "));
     if (!client.getNickname().empty())
     {
@@ -166,11 +166,11 @@ int    handleMessages(char *buffer, int clientSocket, Client &client)
             return (2);
         }
     }
-    // std::string ping = messageParam(buffer, "PING ");
-    // if (!ping.empty())
-    // {
-    //     std::string response = "PONG " + ping + "\r\n";
-    //     send(clientSocket, response.c_str(), response.size(), 0);
-    // }
+    std::string ping = messageParam(buffer, "PING ");
+    if (!ping.empty())
+    {
+        std::string response = "PONG " + ping + "\r\n";
+        send(clientSocket, response.c_str(), response.size(), 0);
+    }
     return (0);
 }

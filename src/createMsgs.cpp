@@ -1,6 +1,22 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <poll.h>
+#include <sys/socket.h>//send
+#include <netinet/in.h>
+#include <unistd.h>
+#include <string.h>
+
+
+
+
 
 #include "Msg.hpp"
 #include "Server.hpp"
+
+
+
+
 
 size_t	skipSpaces(std::string string, size_t index)
 {
@@ -181,7 +197,9 @@ void	makeMsgfromString(Msg &msg, std::string message)
 {
     std::vector<std::string>	message_array;
 
-	removeStringEnd(message);
+	// removeStringEnd(message);
+	std::cout << "message: " << message << std::endl;
+	// message = message.substr(0, message.size() - 2);
 	// std::cout << "message: " << message  << std::endl;
 
 	//Array gets rid of spaces between Words (except for spaces within trailing msg)
@@ -203,7 +221,7 @@ void	Server::makeMessages(std::vector<Msg> &msgs, std::string buffer)
 	size_t			end = 0;
 	size_t			length = 0;
 
-	while ((end = buffer.find("\n", start)) != std::string::npos)
+	while ((end = buffer.find("\r", start)) != std::string::npos)
 	{
 		length = end - start;
 		single_msg = buffer.substr(start, length);
@@ -211,7 +229,7 @@ void	Server::makeMessages(std::vector<Msg> &msgs, std::string buffer)
 
 		makeMsgfromString(msg, single_msg);
 		msgs.push_back(msg);
-		start = end + 1;
+		start = end + 2;
 	}
 }
 
@@ -219,47 +237,105 @@ int	commandSelector(Msg msg, int clientSocket, Client &client)
 {
 	std::cout << "Command Selector: " << msg.command <<  std::endl;
 	
-	// if (msg.command == "CAP")
-	// 	//Do nothing?
-	// if (msg.command == "PASS")//This command should early.
-	// {
-
-	// }
-	if (msg.command == "NICK")
+	if (msg.command == "CAP")
+	{
+		//Do nothing?
+	}
+	else if (msg.command == "PASS")//This command should early.
+	{
+		// std::string clientPassword = messageParam(buffer, "PASS ");//Look here...
+		std::cout << "Pass from CLIENT sends this one: " << msg.parameters[0] << std::endl;
+		std::cout << "Pass from Client OBJECT: "<< client.getPassword() << std::endl;
+		if (msg.parameters[0] != client.getPassword())
+		{
+			std::cout << "PASS inCORRECT" << std::endl;
+			send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+			return (1);
+		}
+		else
+		{
+			std::cout << "PASS CORRECT" << std::endl;
+		}
+		// if (!clientPassword.empty())
+		// {
+		// 	if (clientPassword != client.getPassword())
+		// 	{
+		// 		send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+		// 		return (1);		
+		// 	}
+		// }
+	}
+	else if (msg.command == "NICK")
 	{
 		client.setNickname(msg.parameters[0]);
 		if (!client.getNickname().empty())
 		{
+			
+			std::cout << "************* 1 ***********" << std::endl;	
+			send(clientSocket, "START 1\r\n", 9, 0);
+
 			std::string response = "You are now known as " + client.getNickname() + "\r\n";
-			send(clientSocket, response.c_str(), response.size(), 0);
-			std::cout << "client.getWelcomeSent(): " << client.getWelcomeSent() << std::endl;
+			int bytesSent = send(clientSocket, response.c_str(), response.size(), 0);
+			std::cout << "bytesSent: " << bytesSent << std::endl;
+			if (bytesSent == -1)
+				 std::cerr << "Send failed: " << strerror(errno) << std::endl;
+			else if(bytesSent == 0)
+				std::cerr << "Client Disconnected" << std::endl;
+			else
+			{
+				std::cout << "Succeeded to send " << bytesSent << " bytes." << std::endl;
+			}
+
 			if (!client.getWelcomeSent())
 			{
+				send(clientSocket, "START 2\r\n", 9, 0);				
+				// send(clientSocket, "Hello\r\n", 8, 0);
+				std::cout << "************* 2 ***********" << std::endl;				
 				std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "\r\n";
 				send(clientSocket, message_001.c_str(), message_001.size(), 0);
+
 				std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host localhost, running version ircserv1.0\r\n";
 				send(clientSocket, message_002.c_str(), message_002.size(), 0);
 				//Set to true
+
+				std::cout << "************* 3 ***********" << std::endl;
+				send(clientSocket, "START 3\r\n", 9, 0);				
 				return (2);
 			}
    		 }
 	}
-	// else if (msg.command == "USER")
-	// {
+	else if (msg.command == "USER")
+	{
 
-	// }
-	// else if  (msg.command == "PING")
-	// {
+	}
+	else if  (msg.command == "PING")
+	{
 
-	// }
-	// else if  (msg.command == "MODE")
-	// {
+	}
+	else if  (msg.command == "KICK")
+	{
 
-	// }
-	// else
-	// {
-	// 	//command not found/// ERROR check
-	// }
+	}
+	else if  (msg.command == "INVITE")
+	{
+
+	}
+	else if  (msg.command == "TOPIC")
+	{
+
+	}
+	else if  (msg.command == "MODE")
+	{
+
+	}	
+	else if (msg.command[0] == ':')
+	{
+		// Check for Prefix
+	}
+	else
+	{
+		// 	//command not found
+	}
 	// return (0);
 	// /*
 	// 	Error
@@ -283,6 +359,45 @@ void    Server::messageHandler(std::string messages, int clientSocket, Client &c
 			//error / welcome msg
 		}
 	}
+
+
+	send(clientSocket, "WOLVES\r\n", 9, 0);
+	std::string word = "DOG'\r''\n";
+	send(clientSocket, word.c_str(), 6, 0);
+
+	// for (int i = 0; i < msgs.size(); i++)
+	// {
+	// 	if (msgs[i].command == "NICK")
+	// 	{
+
+
+	// 	client.setNickname(msgs[i].parameters[0]);
+	// 	if (!client.getNickname().empty())
+	// 	{
+	// 		std::string response = "You are now known as " + client.getNickname() + "\r\n";
+	// 		send(clientSocket, response.c_str(), response.size(), 0);
+	// 		std::cout << "client.getWelcomeSent(): " << client.getWelcomeSent() << std::endl;
+	// 		if (!client.getWelcomeSent())
+	// 		{
+	// 			std::cout << "************* 1 ***********" << std::endl;				
+	// 			std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "\r\n";
+	// 			send(clientSocket, "Hello", 6, 0);
+	// 			send(clientSocket, message_001.c_str(), message_001.size(), 0);
+	// 			send(clientSocket, "Again", 6, 0);
+	// 			std::string msg = "CATSS";
+	// 			send(clientSocket, msg.c_str(), msg.size(), 0);
+
+	// 			send(clientSocket, message_001.c_str(), 100, 0);
+	// 			std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host localhost, running version ircserv1.0\r\n";
+	// 			send(clientSocket, message_002.c_str(), message_002.size(), 0);
+	// 			//Set to true
+
+	// 			std::cout << "************* 2 ***********" << std::endl;
+	// 			// return (2);
+	// 		}
+	// 	}
+	// 	}
+	// }
 	/*
 		To Do:
 		1. Commmand Selector 
