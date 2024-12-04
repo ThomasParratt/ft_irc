@@ -1,27 +1,40 @@
 #pragma once
 
 #include <iostream>
+#include <ctime>
+#include <map>
 #include <string>
 #include <vector>
 #include <poll.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h> 
+#include <netdb.h>
+#include <unistd.h>
 
 #include "Client.hpp"
+
+#define MAX_LEN_HOSTNAME 64
+
+extern bool servRunning;
 
 class Server {
 	private:
 		std::string _password;
 		std::string _nickname;
+		std::string _servHostName;
 		sockaddr_in _serverAddr;
+
 
 		bool _welcomeSent;
 		int _port;
 		int _serverSocket;
+		time_t _startTime;
 	public:
 		Server(std::string password, int port);
 		~Server();
 		int serverInit();
+		int setServHostName();
 		void serverLoop();
 		// int acceptClient(std::vector<pollfd>& pollfds);
 
@@ -29,6 +42,7 @@ class Server {
 		int getServerSocket() { return _serverSocket; }
 		bool getWelcomeSent() { return _welcomeSent; }
 		std::string getPassword() { return _password; }
+		std::string getServHostName() { return _servHostName; }
 };
 
 	int    handleMessages(char *buffer, int clientSocket, Client &client);
