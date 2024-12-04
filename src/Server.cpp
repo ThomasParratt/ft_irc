@@ -45,8 +45,8 @@ int Server::serverInit() {
 		std::cerr << "Error setting server hostname" << std::endl;
 		return -4;
 	}
-	_startTime = time(nullptr); //
-	std::cout << "Server started" << std::endl;
+	_startTime = time(nullptr); //saves the time the server started
+	std::cout << "Server started at " << getCurrentTime() << std::endl;
 	servRunning = true;
 	// return 1 for success
 	return 1;
@@ -67,7 +67,6 @@ int Server::setServHostName()
     if (hostname[MAX_LEN_HOSTNAME - 1] != '\0')
     {
         std::cerr << "Hostname is too long, using host address instead" << std::endl;
-
         // Use the server address to get the host address
         char host_ip[INET_ADDRSTRLEN];
         if (inet_ntop(AF_INET, &(_serverAddr.sin_addr), host_ip, INET_ADDRSTRLEN) == nullptr)
@@ -208,4 +207,13 @@ int    handleMessages(char *buffer, int clientSocket, Client &client)
         send(clientSocket, response.c_str(), response.size(), 0);
     }
     return (0);
+}
+
+std::string getCurrentTime()
+{
+	time_t now = time(0);
+	char timeStr[100];
+    struct tm *localTime = localtime(&now);
+    strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localTime);
+    return std::string(timeStr);
 }

@@ -47,3 +47,4 @@ class Server {
 
 	int    handleMessages(char *buffer, int clientSocket, Client &client);
 	std::string messageParam(char *buffer, std::string message);
+	std::string getCurrentTime();
