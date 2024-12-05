@@ -234,7 +234,9 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())
 	{
-		send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+		//send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+		std::string message_464 = ":ircserv 464 * :Password incorrect\r\n";
+		send(clientSocket, message_464.c_str(), message_464.size(), 0);
 		//TO DO: Handle incorrect password -> Disconnect Client?
 		return (1);
 	}
@@ -243,23 +245,28 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 
 int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 {
-	client.setNickname(msg.parameters[0]);
-	if (!client.getNickname().empty())
-	{
-		std::string response = "You are now known as " + client.getNickname() + "\r\n";
-		send(clientSocket, response.c_str(), response.size(), 0);
-
-		if (!client.getWelcomeSent())
+		if (!client.getWelcomeSent() && client.getNickname().empty())
 		{
-			std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "\r\n";
+			client.setNickname(msg.parameters[0]);
+			std::string response = "You are now known as " + client.getNickname() + "\r\n";
+			send(clientSocket, response.c_str(), response.size(), 0);
+			std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getNickname() + "@" + "localhost\r\n";
 			send(clientSocket, message_001.c_str(), message_001.size(), 0);
-
-			std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host localhost, running version ircserv1.0\r\n";
+			std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host is localhost, running version ircserv1.0\r\n";
 			send(clientSocket, message_002.c_str(), message_002.size(), 0);
-
-			return (2);
+			client.setWelcomeSent(true);
+			//return (2);
 		}
-	}
+		else
+		{
+			std::string nick_message1 = ":" + client.getNickname() + "!" + client.getNickname() + "@ localhost NICK :";
+			client.setNickname(msg.parameters[0]);
+			std::string nick_message2 = client.getNickname() + "\r\n";
+			std::string nick_message = nick_message1 + nick_message2;
+			send(clientSocket, nick_message.c_str(), nick_message.size(), 0);
+			std::string response = "You are now known as " + client.getNickname() + "\r\n";
+			send(clientSocket, response.c_str(), response.size(), 0);
+		}
 	return (0);
 }
 
@@ -275,7 +282,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	{
 		if (Server::passwordCommand(msg, clientSocket, client) != 0)// To Do: If password incorrect...
 		{
-		
+			return (1);
 		}
 	}
 	else if (msg.command == "NICK")
@@ -288,7 +295,8 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "PING")
 	{
-
+		std::string response = "PONG " + msg.parameters[0] + "\r\n";
+        send(clientSocket, response.c_str(), response.size(), 0);
 	}
 	else if  (msg.command == "PRIVMSG")
 	{
@@ -321,7 +329,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	return (0);
 }
 
-void    Server::messageHandler(std::string messages, int clientSocket, Client &client)
+int    Server::messageHandler(std::string messages, int clientSocket, Client &client)
 {
     std::vector<Msg>     msgs;
     
@@ -330,9 +338,11 @@ void    Server::messageHandler(std::string messages, int clientSocket, Client &c
 
 	for (int i = 0; i < msgs.size(); i++)
 	{
-		if (this->commandSelector(msgs[i], clientSocket, client) != 0)
+		if (this->commandSelector(msgs[i], clientSocket, client) == 1)
 		{
+			return (1);
 			//TO DO. If error etc...
 		}
 	}
+	return (0);
 }
