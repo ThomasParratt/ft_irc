@@ -107,9 +107,10 @@ void Server::serverLoop() {
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
-                        int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
-                        if (ret == 2)
-                            client.setWelcomeSent(true);
+                        this->messageHandler(buffer, pollfds[i].fd, client);
+						// int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
+                        // if (ret == 2)
+                        //     client.setWelcomeSent(true);
                         break;
                     }
                 }
