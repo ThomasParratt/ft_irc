@@ -11,13 +11,15 @@ class Client
         std::string realname;
         std::string password;
         bool        welcomeSent;
+        bool        channelOperator;
         int         socket;
     public:
         Client(int socket, const std::string& password);
-
+        //getter
         std::string getNickname();
         std::string getPassword();
         bool        getWelcomeSent();
+        bool        getOperatorStatus();
         int         getSocket();
 
         void        setNickname(std::string str);

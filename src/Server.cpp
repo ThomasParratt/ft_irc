@@ -72,7 +72,7 @@ void Server::serverLoop() {
 		}
 		if (pollfds[0].revents & POLLIN)
 		{
-			// Accepting new client
+			// Accepting new client maybe need to move this to a function into a separate funcion
 			int clientSocket = accept(_serverSocket, nullptr, nullptr);
 			if (clientSocket == -1) {
 				std::cerr << "Error accepting connection" << strerror(errno) << std::endl;
@@ -107,7 +107,7 @@ void Server::serverLoop() {
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
-                        this->messageHandler(buffer, pollfds[i].fd, client);
+                        this->messageHandler(buffer, pollfds[i].fd, client, _password);
 						// int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
                         // if (ret == 2)
                         //     client.setWelcomeSent(true);
@@ -140,7 +140,7 @@ std::string messageParam(char *buffer, std::string message)
     return (param);
 }
 
-int    handleMessages(char *buffer, int clientSocket, Client &client)
+int    handleMessages(char *buffer, int clientSocket, Client &client, Server &server)
 {
     std::cout << "Handling messages" << std::endl;
     std::string clientPassword = messageParam(buffer, "PASS ");
