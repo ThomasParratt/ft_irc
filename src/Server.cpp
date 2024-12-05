@@ -107,11 +107,15 @@ void Server::serverLoop() {
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
-                        this->messageHandler(buffer, pollfds[i].fd, client);
-						// int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
-                        // if (ret == 2)
-                        //     client.setWelcomeSent(true);
-                        break;
+                        if (this->messageHandler(buffer, pollfds[i].fd, client) == 1)
+						{
+							std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
+							close(pollfds[i].fd);
+							pollfds.erase(pollfds.begin() + i);
+							clients.erase(clients.begin() + (i - 1));
+							i--;
+							continue;
+						}
                     }
                 }
 			}
@@ -123,54 +127,4 @@ void Server::serverLoop() {
         close(pollfd.fd);
     }
 	std::cout << "Server stopped" << std::endl;
-}
-
-
-std::string messageParam(char *buffer, std::string message)
-{
-    std::string param;
-    std::string received(buffer);
-    size_t startPos = received.find(message);
-    if (startPos != std::string::npos)
-    {
-        size_t endPos = received.find("\n", startPos);
-        if (endPos != std::string::npos)
-            param = received.substr(startPos + 5, endPos - (startPos + 6));
-    }
-    return (param);
-}
-
-int    handleMessages(char *buffer, int clientSocket, Client &client)
-{
-    std::cout << "Handling messages" << std::endl;
-    std::string clientPassword = messageParam(buffer, "PASS ");
-    if (!clientPassword.empty())
-    {
-        if (clientPassword != client.getPassword())
-        {
-            send(clientSocket, "Error: Wrong password\r\n", 23, 0);
-            return (1);
-        }
-    }
-    client.setNickname(messageParam(buffer, "NICK "));
-    if (!client.getNickname().empty())
-    {
-        std::string response = "You are now known as " + client.getNickname() + "\r\n";
-        send(clientSocket, response.c_str(), response.size(), 0);
-        if (!client.getWelcomeSent())
-        {
-            std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "\r\n";
-            send(clientSocket, message_001.c_str(), message_001.size(), 0);
-            std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host localhost, running version ircserv1.0\r\n";
-            send(clientSocket, message_002.c_str(), message_002.size(), 0);
-            return (2);
-        }
-    }
-    std::string ping = messageParam(buffer, "PING ");
-    if (!ping.empty())
-    {
-        std::string response = "PONG " + ping + "\r\n";
-        send(clientSocket, response.c_str(), response.size(), 0);
-    }
-    return (0);
 }

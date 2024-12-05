@@ -28,7 +28,7 @@ class Server {
 		void serverLoop();
 		// int acceptClient(std::vector<pollfd>& pollfds);
 
-		void	messageHandler(std::string buffer, int clientSocket, Client &client);
+		int		messageHandler(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
