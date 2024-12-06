@@ -275,7 +275,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	{
 		if (Server::passwordCommand(msg, clientSocket, client) != 0)// To Do: If password incorrect...
 		{
-		
+			close(clientSocket);
 		}
 	}
 	else if (msg.command == "NICK")

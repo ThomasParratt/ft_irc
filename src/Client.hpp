@@ -1,5 +1,7 @@
-#include <iostream>
 #pragma once
+
+#include <iostream>
+#include <vector>
 
 class Client
 {
@@ -10,6 +12,8 @@ class Client
         std::string servername;
         std::string realname;
         std::string password;
+
+        std::vector<std::string> channelsNames;
         bool        welcomeSent;
         int         socket;
     public:
@@ -17,9 +21,12 @@ class Client
 
         std::string getNickname();
         std::string getPassword();
+        std::vector<std::string>& getChannelsNames();
         bool        getWelcomeSent();
         int         getSocket();
 
         void        setNickname(std::string str);
         void        setWelcomeSent(bool value);
+        void        joinChannel(std::string channelName);
+        void        leaveChannel(std::string channelName);
 };

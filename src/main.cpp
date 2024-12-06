@@ -7,8 +7,15 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <csignal>
 
 #include "Server.hpp"
+
+void signalHandler(int signum) 
+{
+    std::cout << "Interrupt signal (" << signum << ") received.\n";
+    servRunning = false;
+}
 
 int main(int argc, char **argv)
 {
@@ -19,6 +26,7 @@ int main(int argc, char **argv)
             std::cout << "Server initialization failed" << std::endl;
             return -1;
         }
+        signal(SIGINT, signalHandler);
         server.serverLoop();
     } else {
         std::cout << "Usage: ./ircserv <port> <password>" << std::endl;
