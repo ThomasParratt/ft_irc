@@ -156,6 +156,17 @@ void Server::serverLoop() {
 	std::cout << "Server stopped" << std::endl;
 }
 
+// void Server::broadcastMessage(const std::string& channelName, const std::string& message, int senderSocket) {
+//     auto it = _channels.find(channelName);
+//     if (it != _channels.end()) {
+//         for (Client* client : it->second) {
+//             if (client->getSocket() != senderSocket) {
+//                 send(client->getSocket(), message.c_str(), message.size(), 0);
+//             }
+//         }
+//     }
+// }
+
 
 std::string messageParam(char *buffer, std::string message)
 {
