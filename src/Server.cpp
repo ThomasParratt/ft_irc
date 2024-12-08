@@ -138,7 +138,7 @@ void Server::serverLoop() {
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
-                    	if (this->messageHandler(buffer, pollfds[i].fd, client) == 1)
+                        if (this->messageHandler(buffer, pollfds[i].fd, client) == 1)
 						{
 							std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 							close(pollfds[i].fd);
@@ -243,3 +243,4 @@ std::string getCurrentTime()
     strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localTime);
     return std::string(timeStr);
 }
+
