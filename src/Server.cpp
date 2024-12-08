@@ -138,11 +138,15 @@ void Server::serverLoop() {
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
-                        this->messageHandler(buffer, pollfds[i].fd, client);
-						// int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
-                        // if (ret == 2)
-                        //     client.setWelcomeSent(true);
-                        break;
+                    	if (this->messageHandler(buffer, pollfds[i].fd, client) == 1)
+						{
+							std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
+							close(pollfds[i].fd);
+							pollfds.erase(pollfds.begin() + i);
+							clients.erase(clients.begin() + (i - 1));
+							i--;
+							continue;
+						}
                     }
                 }
 			}
@@ -167,6 +171,20 @@ void Server::serverLoop() {
 //     }
 // }
 
+// void Server::createChannel(Client& client, std::string channelName) {
+//     // Add '#' to the front of the channel name if it doesn't already have it
+//     if (channelName[0] != '#') {
+//         channelName = "#" + channelName;
+//     }
+//     auto it = _channels.find(channelName);
+//     if (it == _channels.end()) {
+//         // Create a new channel if it doesn't exist
+// 		_channels[channelName] = std::vector<Client*>();
+//     }
+//     _channels[channelName].push_back(&client);
+//     client.joinChannel(channelName);
+//     std::cout << "Client " << client.getNickname() << " joined channel " << channelName << std::endl;
+// }
 
 std::string messageParam(char *buffer, std::string message)
 {

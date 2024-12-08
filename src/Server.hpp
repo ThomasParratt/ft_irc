@@ -32,7 +32,7 @@ class Server {
 		int _port;
 		int _serverSocket;
 		time_t _startTime;
-		//std::map<std::string, std::vector<client>> _channels; Map of channel names to the lists of clients in each channel
+		std::map<std::string, std::vector<Client*>> _channels; //Map of channel names to the lists of clients in each channel
 	public:
 		Server(std::string password, int port);
 		~Server();
@@ -41,8 +41,8 @@ class Server {
 		// int acceptClient(std::vector<pollfd>& pollfds);
 		void serverLoop();
 		// void boardcastMessage(const std::string& message, const std::string& channelName, int senderSocket);
-
-		void	messageHandler(std::string buffer, int clientSocket, Client &client);
+		// void 	createChannel(Client &client, std::string channelName); // needs to double check
+		int		messageHandler(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
 		int		commandSelector(Msg msg, int clientSocket, Client &client);

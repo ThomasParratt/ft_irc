@@ -15,6 +15,7 @@ class Client
 
         std::vector<std::string> channelsNames;
         bool        welcomeSent;
+        bool        operatorStatus;
         int         socket;
     public:
         Client(int socket, const std::string& password);
@@ -23,6 +24,7 @@ class Client
         std::string getPassword();
         std::vector<std::string>& getChannelsNames();
         bool        getWelcomeSent();
+        bool        getOperatorStatus();
         int         getSocket();
 
         void        setNickname(std::string str);

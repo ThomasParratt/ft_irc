@@ -234,7 +234,9 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())
 	{
-		send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+		//send(clientSocket, "Error: Wrong password\r\n", 23, 0);
+		std::string message_464 = ":ircserv 464 * :Password incorrect\r\n";
+		send(clientSocket, message_464.c_str(), message_464.size(), 0);
 		//TO DO: Handle incorrect password -> Disconnect Client?
 		return (1);
 	}
@@ -275,7 +277,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	{
 		if (Server::passwordCommand(msg, clientSocket, client) != 0)// To Do: If password incorrect...
 		{
-			close(clientSocket);
+			return 1;
 		}
 	}
 	else if (msg.command == "NICK")
@@ -296,19 +298,53 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "KICK")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: Kick User
+		}
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}
 	else if  (msg.command == "INVITE")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: Invite User
+		}
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}
 	else if  (msg.command == "TOPIC")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: change channel topic
+		}
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}
 	else if  (msg.command == "MODE")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: Change channel's mode
+			//parse the command
+			// /MODE <channel> +i = invite only | /MODE <channel> -i = remove invite only
+			// /MODE <channel> +t = only operator can change topic | /MODE <channel> -t = anyone can change the topic
+			// /MODE <channel> +k <password> = add the password to the channel | /MODE <channel> -k = remove the password from the channel	
+			// /MODE <channel> +o <nickname> = give operator status | /MODE <channel> -o <nickname> = remove operator status
+			// /MODE <channel> +l <number> = set the limit of users in the channel | /MODE <channel> -l = remove the limit of users in the channel
+		}	
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}	
 	else if (msg.command[0] == ':')
 	{
@@ -321,7 +357,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	return (0);
 }
 
-void    Server::messageHandler(std::string messages, int clientSocket, Client &client)
+int    Server::messageHandler(std::string messages, int clientSocket, Client &client)
 {
     std::vector<Msg>     msgs;
     
@@ -330,9 +366,11 @@ void    Server::messageHandler(std::string messages, int clientSocket, Client &c
 
 	for (int i = 0; i < msgs.size(); i++)
 	{
-		if (this->commandSelector(msgs[i], clientSocket, client) != 0)
+		if (this->commandSelector(msgs[i], clientSocket, client) == 1)
 		{
 			//TO DO. If error etc...
+			return (1);
 		}
 	}
+	return (0);
 }
