@@ -13,6 +13,7 @@
 #include <netdb.h>
 
 #include "Client.hpp"
+#include "Channel.hpp"
 
 #define MAX_LEN_HOSTNAME 64
 
