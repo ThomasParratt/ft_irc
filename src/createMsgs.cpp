@@ -290,10 +290,22 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 	{
 		std::string message_464 = ":ircserv 464 * :Password incorrect\r\n";
 		send(clientSocket, message_464.c_str(), message_464.size(), 0);
+
 		return (1);
 	}
 	return (0);
 }
+
+// int Server::clientLoop(const std::string& nickname)
+// {
+//     // Check if any other client has the same nickname
+//     for (auto &client : this->clients) 
+//     {
+//         if (client.getNickname() == nickname)
+//             return 1; // Nickname is taken
+//     }
+//     return 0; // Nickname is available
+// }
 
 int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 {
@@ -312,13 +324,19 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 		send(clientSocket, message_005.c_str(), message_005.size(), 0);
 		client.setWelcomeSent(true);
 	}
+	else if (msg.parameters[0].empty()) //ERR_NONICKNAMEGIVEN (431)
+	{
+		std::string message_431 = ":ircserv 431 " + client.getNickname() + " :No nickname given\r\n";
+		send(clientSocket, message_431.c_str(), message_431.size(), 0);
+	}
 	// else if ()
 	// {
-	// 	//nickname already exists
-	// 	for (auto &cl : clients) 
-    //     {
-	// 		std::cout << cl.getNickname() << std::endl; 
-    //     }
+	// 	//ERR_ERRONEUSNICKNAME (432)
+	// }
+	// else if (this->clientLoop(msg.parameters[0])) //ERR_NICKNAMEINUSE (433)  // Not working
+	// {
+	// 	std::string message_433 = ":ircserv 433 " + msg.parameters[0] + " :Nickname is already in use\r\n";
+	// 	send(clientSocket, message_433.c_str(), message_433.size(), 0);
 	// }
 	else
 	{

@@ -88,7 +88,7 @@ int Server::setServHostName()
 // }
 void Server::serverLoop() {
 	// set serverPollfd
-	std::vector<Client> clients;
+	//std::vector<Client> clients; //changed this
 	std::vector<pollfd> pollfds;
 	pollfd serverPollfd;
 	serverPollfd.fd = _serverSocket;
@@ -114,7 +114,7 @@ void Server::serverLoop() {
 			clientPollfd.fd = clientSocket;
 			clientPollfd.events = POLLIN | POLLOUT | POLLERR;
 			pollfds.push_back(clientPollfd);
-			clients.emplace_back(clientSocket, _password);
+			clients.emplace_back(clientSocket, _password); //changed this
 			std::cout << "New client connected, socket " << clientSocket << std::endl;
 		}
 		for (int i = 1; i < pollfds.size(); i++)
@@ -130,12 +130,12 @@ void Server::serverLoop() {
 						std::cerr << "Error reading from socket " << pollfds[i].fd << strerror(errno) << std::endl;
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
-					clients.erase(clients.begin() + (i - 1));
+					clients.erase(clients.begin() + (i - 1)); //changed this
 					i--;
 					continue;
 				}
 				std::cout << "Message received from socket " << pollfds[i].fd << std::endl << buffer;
-				for (auto &client : clients) 
+				for (auto &client : clients) //changed this
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
@@ -144,7 +144,7 @@ void Server::serverLoop() {
 							std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 							close(pollfds[i].fd);
 							pollfds.erase(pollfds.begin() + i);
-							clients.erase(clients.begin() + (i - 1));
+							clients.erase(clients.begin() + (i - 1)); //changed this
 							i--;
 							continue;
 						}
