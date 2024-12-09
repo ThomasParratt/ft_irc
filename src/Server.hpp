@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <mutex>
 
 #include "Client.hpp"
 #include "Channel.hpp"
@@ -55,7 +56,7 @@ class Server {
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);		
 
-		//int		clientLoop(const std::string& nickname); //added this
+		int		clientLoop(const std::string& nickname); //added this
 
 		//Getter
 		int	getServerSocket() { return _serverSocket; }
