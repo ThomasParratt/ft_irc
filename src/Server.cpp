@@ -100,19 +100,7 @@ void Server::serverLoop() {
 					pollfds.erase(pollfds.begin() + i);
 					clients.erase(clients.begin() + (i - 1));
 					i--;
-					continue;
-				}
-				std::cout << "Message received from socket " << pollfds[i].fd << std::endl << buffer;
-				for (auto &client : clients) 
-                {
-                    if (client.getSocket() == pollfds[i].fd) 
-                    {
-                        this->messageHandler(buffer, pollfds[i].fd, client);
-						// int ret = handleMessages(buffer, pollfds[i].fd, client); // need to handle incorrect password
-                        // if (ret == 2)
-                        //     client.setWelcomeSent(true);
-                        break;
-                    }
+					
                 }
 			}
 		}

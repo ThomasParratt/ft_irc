@@ -8,8 +8,11 @@
 #include <netinet/in.h>
 
 #include "Client.hpp"
+#include "Channel.hpp"
 
 class Msg;
+
+
 // #include "Msg.hpp"
 
 class Server {
@@ -17,6 +20,8 @@ class Server {
 		std::string _password;
 		std::string _nickname;
 		sockaddr_in _serverAddr;
+
+		std::vector<Channel> _channels;
 
 		bool _welcomeSent;
 		int _port;
@@ -34,11 +39,13 @@ class Server {
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
+		int		joinCommand(Msg msg, int clientSocket, Client &client);
 
-		//Getter
+		//Getters
 		int	getServerSocket() { return _serverSocket; }
 		bool getWelcomeSent() { return _welcomeSent; }
 		std::string getPassword() { return _password; }
+		std::vector<Channel>	getChannels() { return _channels; }
 };
 
 	int    handleMessages(char *buffer, int clientSocket, Client &client);
