@@ -122,21 +122,23 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	new_channel.channel_users.push_back(new_user);
 
 	//Send Welcome msg to User
-  	std::string response = "Welcome to the Channel " + msg.parameters[0] + "\r\n";
-	// send(clientSocket, "Channel Welcome Message\r\n", 26, 0);
-    send(clientSocket, response.c_str(), response.size(), 0);// Note this isn't working.
+	std::string response = ":" + client.getNickname() + "!" + "USERNAME@ircserver PRIVMSG " + msg.parameters[0] + " :Welcome to the Channel " + msg.parameters[0] + "\r\n";
+	
+	send(clientSocket, response.c_str(), response.size(), 0);
 
 	this->channel_names.push_back(new_channel);
+	
+	//TODO: ADD into std::map -> Channel and Client
+
+
 
 	/*
-		Send This!
+		Send This to Server!
 			:sender_nickname!user@host PRIVMSG #channel_name :message_text
 			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
 	*/
 
-	//Push channel into channel vector on Server
 
-	//push back into server [at the end]
 
 	return (0);
 }
