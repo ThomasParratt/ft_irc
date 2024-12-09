@@ -32,7 +32,9 @@ class Server {
 		int _port;
 		int _serverSocket;
 		time_t _startTime;
-		std::map<std::string, std::vector<Client*>> _channels; //Map of channel names to the lists of clients in each channel
+		std::map<std::string, std::vector<Client*>> channel_map; //Map of channel names to the lists of clients in each channel
+		std::vector<Client> clients;
+		std::vector<Channel> channel_names;
 	public:
 		Server(std::string password, int port);
 		~Server();
@@ -49,6 +51,7 @@ class Server {
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
+		int		joinCommand(Msg msg, int clientSocket, Client &client);		
 
 		//Getter
 		int	getServerSocket() { return _serverSocket; }

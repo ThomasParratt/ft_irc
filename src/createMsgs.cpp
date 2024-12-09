@@ -12,6 +12,7 @@
 
 
 #include "Msg.hpp"
+#include "Channel.hpp"
 #include "Server.hpp"
 
 
@@ -85,6 +86,59 @@ std::string		getTrailingMessage(std::vector<std::string> array)
 	{
 		return ("");
 	}
+}
+
+int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
+{
+	//Welcome Msg for channel?
+	/*
+		1. Check if channel exists
+		a. If No
+			i. Create Channel (= create Channel Object)
+			ii. Add User to
+				-channel_user - Nickname
+				-permission  - operator
+			iii. Send Welcome message
+
+		b. If Yes
+			- join channel - consider password
+	*/
+	/*
+		Code:
+			Search for channel
+				-> If Find
+					-> Return channel?
+	*/
+
+	//If Channel Doesn't exist
+	Channel new_channel(msg.parameters[0]);
+
+	//Make new Channel User
+	User	new_user;
+	new_user.nickname = client.getNickname();
+	new_user.operator_permissions = true;
+
+	//Add into channel Users
+	new_channel.channel_users.push_back(new_user);
+
+	//Send Welcome msg to User
+  	std::string response = "Welcome to the Channel " + msg.parameters[0] + "\r\n";
+	// send(clientSocket, "Channel Welcome Message\r\n", 26, 0);
+    send(clientSocket, response.c_str(), response.size(), 0);// Note this isn't working.
+
+	this->channel_names.push_back(new_channel);
+
+	/*
+		Send This!
+			:sender_nickname!user@host PRIVMSG #channel_name :message_text
+			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
+	*/
+
+	//Push channel into channel vector on Server
+
+	//push back into server [at the end]
+
+	return (0);
 }
 
 void    initializeMsg(Msg &msg, std::vector<std::string> array)
@@ -352,6 +406,10 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 			//TO DO: Send Error Message "User does not have Operator Status"
 		}
 	}	
+	else if (msg.command == "JOIN")
+	{
+		joinCommand(msg, clientSocket, client);
+	}
 	else if (msg.command[0] == ':')
 	{
 		// Check for Prefix
