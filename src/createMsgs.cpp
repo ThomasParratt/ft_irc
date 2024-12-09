@@ -288,10 +288,8 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())
 	{
-		//send(clientSocket, "Error: Wrong password\r\n", 23, 0);
 		std::string message_464 = ":ircserv 464 * :Password incorrect\r\n";
 		send(clientSocket, message_464.c_str(), message_464.size(), 0);
-		//TO DO: Handle incorrect password -> Disconnect Client?
 		return (1);
 	}
 	return (0);
@@ -299,28 +297,38 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 
 int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 {
-		if (!client.getWelcomeSent() && client.getNickname().empty())
-		{
-			client.setNickname(msg.parameters[0]);
-			std::string response = "You are now known as " + client.getNickname() + "\r\n";
-			send(clientSocket, response.c_str(), response.size(), 0);
-			std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getNickname() + "@" + "localhost\r\n";
-			send(clientSocket, message_001.c_str(), message_001.size(), 0);
-			std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host is localhost, running version ircserv1.0\r\n";
-			send(clientSocket, message_002.c_str(), message_002.size(), 0);
-			client.setWelcomeSent(true);
-			//return (2);
-		}
-		else
-		{
-			std::string nick_message1 = ":" + client.getNickname() + "!" + client.getNickname() + "@ localhost NICK :";
-			client.setNickname(msg.parameters[0]);
-			std::string nick_message2 = client.getNickname() + "\r\n";
-			std::string nick_message = nick_message1 + nick_message2;
-			send(clientSocket, nick_message.c_str(), nick_message.size(), 0);
-			std::string response = "You are now known as " + client.getNickname() + "\r\n";
-			send(clientSocket, response.c_str(), response.size(), 0);
-		}
+	if (!client.getWelcomeSent() && client.getNickname().empty())
+	{
+		client.setNickname(msg.parameters[0]);
+		std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getNickname() + "@" + this->getServHostName() + "\r\n";
+		send(clientSocket, message_001.c_str(), message_001.size(), 0);
+		std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host is ircserv, running version 1.0\r\n";
+		send(clientSocket, message_002.c_str(), message_002.size(), 0);
+		std::string message_003 = ":ircserv 003 " + client.getNickname() + " :This server was created at " + this->getStartTimeStr() + "\r\n";
+		send(clientSocket, message_003.c_str(), message_003.size(), 0);
+		std::string message_004 = ":ircserv 004 " + client.getNickname() + " ircserv 1.0 or itkol\r\n";
+		send(clientSocket, message_004.c_str(), message_004.size(), 0);
+		std::string message_005 = ":ircserv 005 " + client.getNickname() + " :are supported by this server\r\n";
+		send(clientSocket, message_005.c_str(), message_005.size(), 0);
+		client.setWelcomeSent(true);
+	}
+	// else if ()
+	// {
+	// 	//nickname already exists
+	// 	for (auto &cl : clients) 
+    //     {
+	// 		std::cout << cl.getNickname() << std::endl; 
+    //     }
+	// }
+	else
+	{
+		//Change nickname
+		std::string nick_message1 = ":" + client.getNickname() + " NICK ";
+		client.setNickname(msg.parameters[0]);
+		std::string nick_message2 = client.getNickname() + "\r\n";
+		std::string nick_message = nick_message1 + nick_message2;
+		send(clientSocket, nick_message.c_str(), nick_message.size(), 0);
+	}
 	return (0);
 }
 

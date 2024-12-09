@@ -13,6 +13,7 @@
 #include <netdb.h>
 
 #include "Client.hpp"
+#include "Channel.hpp"
 
 #define MAX_LEN_HOSTNAME 64
 
@@ -32,6 +33,7 @@ class Server {
 		int _port;
 		int _serverSocket;
 		time_t _startTime;
+		std::string _startTimeStr;
 		std::map<std::string, std::vector<Client*>> channel_map; //Map of channel names to the lists of clients in each channel
 		std::vector<Client> clients;
 		std::vector<Channel> channel_names;
@@ -58,8 +60,9 @@ class Server {
 		bool getWelcomeSent() { return _welcomeSent; }
 		std::string getPassword() { return _password; }
 		std::string getServHostName() { return _servHostName; }
+		std::string getStartTimeStr() { return _startTimeStr; }
 };
 
-	int    handleMessages(char *buffer, int clientSocket, Client &client);
-	std::string messageParam(char *buffer, std::string message);
+	// int    handleMessages(char *buffer, int clientSocket, Client &client);
+	// std::string messageParam(char *buffer, std::string message);
 	std::string getCurrentTime();

@@ -10,8 +10,8 @@ class Client
     private:
         std::string nickname;
         std::string username;
-        std::string hostname;
-        std::string servername;
+        // std::string hostname;
+        // std::string servername;
         std::string realname;
         std::string password;
 
