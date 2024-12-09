@@ -304,19 +304,53 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "KICK")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: Kick User
+		}
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}
 	else if  (msg.command == "INVITE")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: Invite User
+		}
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}
 	else if  (msg.command == "TOPIC")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: change channel topic
+		}
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}
 	else if  (msg.command == "MODE")
 	{
-
+		if (client.getOperatorStatus())
+		{
+			//TO DO: Change channel's mode
+			//parse the command
+			// /MODE <channel> +i = invite only | /MODE <channel> -i = remove invite only
+			// /MODE <channel> +t = only operator can change topic | /MODE <channel> -t = anyone can change the topic
+			// /MODE <channel> +k <password> = add the password to the channel | /MODE <channel> -k = remove the password from the channel	
+			// /MODE <channel> +o <nickname> = give operator status | /MODE <channel> -o <nickname> = remove operator status
+			// /MODE <channel> +l <number> = set the limit of users in the channel | /MODE <channel> -l = remove the limit of users in the channel
+		}	
+		else
+		{
+			//TO DO: Send Error Message "User does not have Operator Status"
+		}
 	}	
 	else if (msg.command[0] == ':')
 	{
@@ -342,6 +376,7 @@ int    Server::messageHandler(std::string messages, int clientSocket, Client &cl
 		{
 			return (1);
 			//TO DO. If error etc...
+			return (1);
 		}
 	}
 	return (0);
