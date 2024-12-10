@@ -32,7 +32,7 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 		send(clientSocket, message_001.c_str(), message_001.size(), 0);
 		std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host is ircserv, running version 1.0\r\n";
 		send(clientSocket, message_002.c_str(), message_002.size(), 0);
-		std::string message_003 = ":ircserv 003 " + client.getNickname() + " :This server was created at " + this->getStartTimeStr() + "\r\n";
+		std::string message_003 = ":ircserv 003 " + client.getNickname() + " :This server was created " + this->getStartTimeStr() + "\r\n";
 		send(clientSocket, message_003.c_str(), message_003.size(), 0);
 		std::string message_004 = ":ircserv 004 " + client.getNickname() + " ircserv 1.0 ro itkol\r\n";
 		send(clientSocket, message_004.c_str(), message_004.size(), 0);

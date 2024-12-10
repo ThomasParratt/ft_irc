@@ -241,7 +241,7 @@ std::string getCurrentTime()
 	time_t now = time(0);
 	char timeStr[100];
     struct tm *localTime = localtime(&now);
-    strftime(timeStr, sizeof(timeStr), "%H:%M:%S", localTime);
+    strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", localTime);
     return std::string(timeStr);
 }
 
