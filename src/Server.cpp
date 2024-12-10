@@ -81,14 +81,23 @@ int Server::setServHostName()
     return 1;
 }
 
-// int acceptClient(std::vector<pollfd>& pollfds)
-// {
-
-// }
+void Server::acceptClient(std::vector<pollfd>& pollfds, int servSocket)
+{
+	int clientSocket = accept(servSocket, nullptr, nullptr);
+	if (clientSocket == -1)
+	{
+		std::cerr << "Error accepting connection" << strerror(errno) << std::endl;
+		return;
+	}
+	pollfd clientPollfd;
+	clientPollfd.fd = clientSocket;
+	clientPollfd.events = POLLIN | POLLOUT | POLLERR;
+	pollfds.push_back(clientPollfd);
+	clients.emplace_back(clientSocket, _password);
+	std::cout << "New client connected, socket " << clientSocket << std::endl;
+}
 void Server::serverLoop() {
 	// set serverPollfd
-	std::vector<Client> clients;
-	std::vector<pollfd> pollfds;
 	pollfd serverPollfd;
 	serverPollfd.fd = _serverSocket;
 	serverPollfd.events = POLLIN | POLLERR;
@@ -103,18 +112,7 @@ void Server::serverLoop() {
 		}
 		if (pollfds[0].revents & POLLIN)
 		{
-			// Accepting new client
-			int clientSocket = accept(_serverSocket, nullptr, nullptr);
-			if (clientSocket == -1) {
-				std::cerr << "Error accepting connection" << strerror(errno) << std::endl;
-				break;
-			}
-			pollfd clientPollfd;
-			clientPollfd.fd = clientSocket;
-			clientPollfd.events = POLLIN | POLLOUT | POLLERR;
-			pollfds.push_back(clientPollfd);
-			clients.emplace_back(clientSocket, _password);
-			std::cout << "New client connected, socket " << clientSocket << std::endl;
+			acceptClient(pollfds, _serverSocket);
 		}
 		for (int i = 1; i < pollfds.size(); i++)
 		{
@@ -158,6 +156,16 @@ void Server::serverLoop() {
         close(pfd.fd);
     }
 	std::cout << "Server stopped" << std::endl;
+}
+
+void Server::updateChannelMap(std::string channelName, Client *client)
+{
+	auto it = channel_map.find(channelName);
+	if (it == channel_map.end())
+	{
+		channel_map[channelName] = std::vector<Client*>();
+	}
+	channel_map[channelName].push_back(client);
 }
 
 // void Server::broadcastMessage(const std::string& channelName, const std::string& message, int senderSocket) {
