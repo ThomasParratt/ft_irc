@@ -34,19 +34,21 @@ class Server {
 		int _port;
 		int _serverSocket;
 		time_t _startTime;
+		std::map<std::string, std::vector<Client*> > channel_map; //Map of channel names to the lists of clients in each channel
 		std::string _startTimeStr;
-		std::map<std::string, std::vector<Client*>> channel_map; //Map of channel names to the lists of clients in each channel
+
 		std::vector<Client> clients;
 		std::vector<Channel> channel_names;
+		std::vector<pollfd> pollfds;
 	public:
 		Server(std::string password, int port);
 		~Server();
 		int serverInit();
 		int setServHostName();
-		// int acceptClient(std::vector<pollfd>& pollfds);
+		void acceptClient();
 		void serverLoop();
-		// void boardcastMessage(const std::string& message, const std::string& channelName, int senderSocket);
-		// void 	createChannel(Client &client, std::string channelName); // needs to double check
+		void broadcastMessage(const std::string& message, const std::string& channelName, int senderSocket);
+		void 	updateChannelMap(std::string channelName, Client *client, int joinOrQuit);
 
 		int		messageHandler(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
