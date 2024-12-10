@@ -33,6 +33,7 @@ class Client
         void        setNickname(std::string str);
         void        setUsername(std::string str);
         void        setWelcomeSent(bool value);
+        void        setOperatorStatus(bool value);
         void        joinChannel(std::string channelName);
         void        leaveChannel(std::string channelName);
 };

@@ -318,9 +318,9 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 		send(clientSocket, message_002.c_str(), message_002.size(), 0);
 		std::string message_003 = ":ircserv 003 " + client.getNickname() + " :This server was created at " + this->getStartTimeStr() + "\r\n";
 		send(clientSocket, message_003.c_str(), message_003.size(), 0);
-		std::string message_004 = ":ircserv 004 " + client.getNickname() + " ircserv 1.0 or itkol\r\n";
+		std::string message_004 = ":ircserv 004 " + client.getNickname() + " ircserv 1.0 ro itkol\r\n";
 		send(clientSocket, message_004.c_str(), message_004.size(), 0);
-		std::string message_005 = ":ircserv 005 " + client.getNickname() + " :are supported by this server\r\n";
+		std::string message_005 = ":ircserv 005 " + client.getNickname() + " CHANMODES=i,t,k,o,l :are supported by this server\r\n";
 		send(clientSocket, message_005.c_str(), message_005.size(), 0);
 		client.setWelcomeSent(true);
 	}
@@ -333,7 +333,7 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 	// {
 	// 	//ERR_ERRONEUSNICKNAME (432)
 	// }
-	else if (this->clientLoop(msg.parameters[0])) //ERR_NICKNAMEINUSE (433)  // Not printing the correct message
+	else if (this->clientLoop(msg.parameters[0])) //ERR_NICKNAMEINUSE (433)
 	{
 		std::string message_433 = ":ircserv 433 " + msg.parameters[0] + " :" + msg.parameters[0] + "\r\n";
 		send(clientSocket, message_433.c_str(), message_433.size(), 0);
@@ -349,6 +349,14 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 	}
 	return (0);
 }
+
+// int		Server::operCommand(Msg msg, int clientSocket, Client &client)
+// {
+// 	client.setOperatorStatus(true);
+// 	std::string message_381 = ":ircserv 381 " + client.getNickname() + " :You are now an IRC operator\r\n";
+// 	send(clientSocket, message_381.c_str(), message_381.size(), 0);
+// 	return (0);
+// }
 
 int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 {
@@ -373,6 +381,10 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	{
 		client.setUsername(msg.parameters[0]);
 	}
+	// else if (msg.command == "OPER")
+	// {
+	// 	Server::operCommand(msg, clientSocket, client);
+	// }
 	else if  (msg.command == "PING")
 	{
 		std::string response = "PONG " + msg.parameters[0] + "\r\n";

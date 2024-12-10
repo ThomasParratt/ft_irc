@@ -52,6 +52,11 @@ void        Client::setWelcomeSent(bool value)
     welcomeSent = value;
 }
 
+void        Client::setOperatorStatus(bool value)
+{
+    operatorStatus = value;
+}
+
 void        Client::joinChannel(std::string channelName)
 {
     /* how should we give the operator status? The first client that creates the channel should receive operatorStatus */

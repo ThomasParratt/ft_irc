@@ -54,6 +54,7 @@ class Server {
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
+		int		operCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);		
 
 		int		clientLoop(const std::string& nickname); //added this
