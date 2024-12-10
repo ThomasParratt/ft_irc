@@ -7,6 +7,11 @@ std::string Client::getNickname()
     return(nickname);
 }
 
+std::string Client::getUsername()
+{
+    return(username);
+}
+
 std::string Client::getPassword()
 {
     return(password);
@@ -37,9 +42,19 @@ void        Client::setNickname(std::string str)
     nickname = str;
 }
 
+void        Client::setUsername(std::string str)
+{
+    username = str;
+}
+
 void        Client::setWelcomeSent(bool value)
 {
     welcomeSent = value;
+}
+
+void        Client::setOperatorStatus(bool value)
+{
+    operatorStatus = value;
 }
 
 void        Client::joinChannel(std::string channelName)

@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <mutex>
 
 #include "Client.hpp"
 #include "Channel.hpp"
@@ -34,6 +35,8 @@ class Server {
 		int _serverSocket;
 		time_t _startTime;
 		std::map<std::string, std::vector<Client*> > channel_map; //Map of channel names to the lists of clients in each channel
+		std::string _startTimeStr;
+
 		std::vector<Client> clients;
 		std::vector<Channel> channel_names;
 		std::vector<pollfd> pollfds;
@@ -53,15 +56,19 @@ class Server {
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
+		int		operCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);		
+
+		int		clientLoop(const std::string& nickname); //added this
 
 		//Getter
 		int	getServerSocket() { return _serverSocket; }
 		bool getWelcomeSent() { return _welcomeSent; }
 		std::string getPassword() { return _password; }
 		std::string getServHostName() { return _servHostName; }
+		std::string getStartTimeStr() { return _startTimeStr; }
 };
 
-	int    handleMessages(char *buffer, int clientSocket, Client &client);
-	std::string messageParam(char *buffer, std::string message);
+	// int    handleMessages(char *buffer, int clientSocket, Client &client);
+	// std::string messageParam(char *buffer, std::string message);
 	std::string getCurrentTime();
