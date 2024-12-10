@@ -44,9 +44,8 @@ class Server {
 		int setServHostName();
 		void acceptClient(std::vector<pollfd>& pollfds, int servSocket);
 		void serverLoop();
-		// void boardcastMessage(const std::string& message, const std::string& channelName, int senderSocket);
-		// void 	createChannel(Client &client, std::string channelName); // needs to double check
-		void 	updateChannelMap(std::string channelName, Client *client);
+		void broadcastMessage(const std::string& message, const std::string& channelName, int senderSocket);
+		void 	updateChannelMap(std::string channelName, Client *client, int joinOrQuit);
 
 		int		messageHandler(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);

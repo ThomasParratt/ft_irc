@@ -158,41 +158,50 @@ void Server::serverLoop() {
 	std::cout << "Server stopped" << std::endl;
 }
 
-void Server::updateChannelMap(std::string channelName, Client *client)
+/* updateChannelMap we can intrduce a third parameter that checks if its join or quit | 0 for join and 1 for quit*/
+void Server::updateChannelMap(std::string channelName, Client *client, int joinOrQuit)
 {
-	auto it = channel_map.find(channelName);
-	if (it == channel_map.end())
+	if (joinOrQuit == 0)
 	{
-		channel_map[channelName] = std::vector<Client*>();
+		auto it = channel_map.find(channelName);
+		if (it == channel_map.end())
+		{
+			channel_map[channelName] = std::vector<Client*>();
+		}
+		channel_map[channelName].push_back(client);
 	}
-	channel_map[channelName].push_back(client);
+	else
+	{
+		auto it = channel_map.find(channelName);
+		if (it != channel_map.end())
+		{
+			for (auto it = channel_map[channelName].begin(); it != channel_map[channelName].end(); it++)
+			{
+				if (*it == client)
+				{
+					channel_map[channelName].erase(it);
+					break;
+				}
+			}
+		}
+		if (channel_map[channelName].empty())
+		{
+			channel_map.erase(channelName);
+		}
+	}
 }
 
-// void Server::broadcastMessage(const std::string& channelName, const std::string& message, int senderSocket) {
-//     auto it = _channels.find(channelName);
-//     if (it != _channels.end()) {
-//         for (Client* client : it->second) {
-//             if (client->getSocket() != senderSocket) {
-//                 send(client->getSocket(), message.c_str(), message.size(), 0);
-//             }
-//         }
-//     }
-// }
-
-// void Server::createChannel(Client& client, std::string channelName) {
-//     // Add '#' to the front of the channel name if it doesn't already have it
-//     if (channelName[0] != '#') {
-//         channelName = "#" + channelName;
-//     }
-//     auto it = _channels.find(channelName);
-//     if (it == _channels.end()) {
-//         // Create a new channel if it doesn't exist
-// 		_channels[channelName] = std::vector<Client*>();
-//     }
-//     _channels[channelName].push_back(&client);
-//     client.joinChannel(channelName);
-//     std::cout << "Client " << client.getNickname() << " joined channel " << channelName << std::endl;
-// }
+void Server::broadcastMessage(const std::string& channelName, const std::string& message, int senderSocket) 
+{
+    auto it = channel_map.find(channelName);
+    if (it != channel_map.end()) {
+        for (Client* client : it->second) {
+            if (client->getSocket() != senderSocket) {
+                send(client->getSocket(), message.c_str(), message.size(), 0);
+            }
+        }
+    }
+}
 
 std::string messageParam(char *buffer, std::string message)
 {
