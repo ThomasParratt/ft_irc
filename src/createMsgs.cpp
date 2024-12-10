@@ -335,7 +335,7 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 	// }
 	else if (this->clientLoop(msg.parameters[0])) //ERR_NICKNAMEINUSE (433)  // Not printing the correct message
 	{
-		std::string message_433 = ":ircserv 433 " + msg.parameters[0] + " :Nickname is already in use\r\n";
+		std::string message_433 = ":ircserv 433 " + msg.parameters[0] + " :" + msg.parameters[0] + "\r\n";
 		send(clientSocket, message_433.c_str(), message_433.size(), 0);
 	}
 	else
@@ -371,7 +371,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command == "USER")
 	{
-
+		client.setUsername(msg.parameters[0]);
 	}
 	else if  (msg.command == "PING")
 	{

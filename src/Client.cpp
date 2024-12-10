@@ -7,6 +7,11 @@ std::string Client::getNickname()
     return(nickname);
 }
 
+std::string Client::getUsername()
+{
+    return(username);
+}
+
 std::string Client::getPassword()
 {
     return(password);
@@ -35,6 +40,11 @@ std::vector<std::string>& Client::getChannelsNames()
 void        Client::setNickname(std::string str)
 {
     nickname = str;
+}
+
+void        Client::setUsername(std::string str)
+{
+    username = str;
 }
 
 void        Client::setWelcomeSent(bool value)
