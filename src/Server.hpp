@@ -42,7 +42,7 @@ class Server {
 		~Server();
 		int serverInit();
 		int setServHostName();
-		void acceptClient(std::vector<pollfd>& pollfds, int servSocket);
+		void acceptClient();
 		void serverLoop();
 		void broadcastMessage(const std::string& message, const std::string& channelName, int senderSocket);
 		void 	updateChannelMap(std::string channelName, Client *client, int joinOrQuit);

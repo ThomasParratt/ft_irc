@@ -81,9 +81,9 @@ int Server::setServHostName()
     return 1;
 }
 
-void Server::acceptClient(std::vector<pollfd>& pollfds, int servSocket)
+void Server::acceptClient()
 {
-	int clientSocket = accept(servSocket, nullptr, nullptr);
+	int clientSocket = accept(_serverSocket, nullptr, nullptr);
 	if (clientSocket == -1)
 	{
 		std::cerr << "Error accepting connection" << strerror(errno) << std::endl;
@@ -112,7 +112,7 @@ void Server::serverLoop() {
 		}
 		if (pollfds[0].revents & POLLIN)
 		{
-			acceptClient(pollfds, _serverSocket);
+			acceptClient();
 		}
 		for (int i = 1; i < pollfds.size(); i++)
 		{
@@ -169,6 +169,7 @@ void Server::updateChannelMap(std::string channelName, Client *client, int joinO
 			channel_map[channelName] = std::vector<Client*>();
 		}
 		channel_map[channelName].push_back(client);
+		//broadcastmessage
 	}
 	else
 	{
@@ -179,6 +180,7 @@ void Server::updateChannelMap(std::string channelName, Client *client, int joinO
 			{
 				if (*it == client)
 				{
+					//broadcastmessage
 					channel_map[channelName].erase(it);
 					break;
 				}
