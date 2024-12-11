@@ -35,7 +35,6 @@ class Server {
 		int _port;
 		int _serverSocket;
 		time_t _startTime;
-		std::map<std::string, std::vector<Client*> > channel_map; //Map of channel names to the lists of clients in each channel
 		std::string _startTimeStr;
 
 		std::vector<Client> clients;
@@ -49,8 +48,6 @@ class Server {
 		int setServHostName();
 		void acceptClient();
 		void serverLoop();
-		void broadcastMessage(const std::string& message, const std::string& channelName, int senderSocket);
-		void 	updateChannelMap(std::string channelName, Client *client, int joinOrQuit);
 
 		int		messageHandler(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
@@ -80,7 +77,5 @@ class Server {
 		std::string getStartTimeStr() { return _startTimeStr; }
 };
 
-	// int    handleMessages(char *buffer, int clientSocket, Client &client);
-	// std::string messageParam(char *buffer, std::string message);
 	std::string getCurrentTime();
 	int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);
