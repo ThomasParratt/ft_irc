@@ -319,6 +319,10 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 			//TO DO: Send Error Message "User does not have Operator Status"
 		}
 	}
+	else if (msg.command == "PART")
+	{
+		
+	}
 	else if  (msg.command == "TOPIC")
 	{
 		if (client.getOperatorStatus())
