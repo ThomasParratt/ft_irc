@@ -9,7 +9,7 @@ struct User
 {
 	std::string nickname;
 	bool		operator_permissions;
-	//user socket??? -> Is this needed?
+	//user socket -> Is this needed?
 };
 
 class Channel

@@ -81,10 +81,6 @@ int Server::setServHostName()
     return 1;
 }
 
-// int acceptClient(std::vector<pollfd>& pollfds)
-// {
-
-// }
 void Server::serverLoop() {
 	// set serverPollfd
 	std::vector<Client> clients;
@@ -244,3 +240,62 @@ std::string getCurrentTime()
     return std::string(timeStr);
 }
 
+void	Server::addChannelUser(Channel &channel, Client &client, bool operator_permissions)
+{
+	//Make new Channel User
+	User	new_user;
+	new_user.nickname = client.getNickname();
+	new_user.operator_permissions = operator_permissions;
+
+	//Add into channel Users
+	channel.channel_users.push_back(new_user);
+}
+
+int		Server::createChannel(Msg msg, int clientSocket, Client &client)
+{
+	Channel new_channel(msg.parameters[0]);
+
+	addChannelUser(new_channel, client, true);
+
+	std::string response = ":" + client.getNickname() + "!" + "USERNAME@ircserver PRIVMSG " + msg.parameters[0] + " :Welcome to the Channel " + msg.parameters[0] + "\r\n";
+	
+	send(clientSocket, response.c_str(), response.size(), 0);
+
+	/*
+		TODO: Send more messages to Irssi f.ex. tell Irssi who is operator -> Check Manual
+	*/
+
+	this->channel_names.push_back(new_channel);
+
+	return (0);
+}
+
+void	Server::printChannelUsers(Channel channel)
+{
+	for (int i = 0; i < channel.channel_users.size(); i++)
+	{
+		std::cout << "User[" << i << "]: " <<  channel.channel_users[i].nickname  << " (op = " <<  channel.channel_users[i].operator_permissions << ")" << std::endl;
+	}	
+}
+
+void		Server::printChannels()
+{
+	for (int i = 0; i < this->channel_names.size(); i++)
+	{
+		std::cout << "Channel[" << i << "]: "<< channel_names[i].name << std::endl;
+		printChannelUsers(channel_names[i]);
+	}
+}
+
+int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
+{
+	int index = getChannelIndex(msg.parameters[0], this->channel_names);
+
+	addChannelUser(this->channel_names[index], client, false);
+
+	//TODO: Do we send a message to Irssi? send broadcast msg?
+
+	//Broadcast to All NEW USER
+
+	return (0);
+}

@@ -14,6 +14,7 @@
 
 #include "Client.hpp"
 #include "Channel.hpp"
+#include "Msg.hpp"
 
 #define MAX_LEN_HOSTNAME 64
 
@@ -36,6 +37,7 @@ class Server {
 		std::map<std::string, std::vector<Client*>> channel_map; //Map of channel names to the lists of clients in each channel
 		std::vector<Client> clients;
 		std::vector<Channel> channel_names;
+
 	public:
 		Server(std::string password, int port);
 		~Server();
@@ -52,7 +54,13 @@ class Server {
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
-		int		joinCommand(Msg msg, int clientSocket, Client &client);		
+
+		int		joinCommand(Msg msg, int clientSocket, Client &client);
+		int     createChannel(Msg msg, int clientSocket, Client &client);
+		int		joinChannel(Msg msg, int clientSocket, Client &client);
+		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
+		void	printChannels();
+		void	printChannelUsers(Channel channel);
 
 		//Getter
 		int	getServerSocket() { return _serverSocket; }
@@ -64,3 +72,4 @@ class Server {
 	int    handleMessages(char *buffer, int clientSocket, Client &client);
 	std::string messageParam(char *buffer, std::string message);
 	std::string getCurrentTime();
+	int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);
