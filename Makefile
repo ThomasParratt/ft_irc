@@ -5,6 +5,7 @@ SRC			=	src/main.cpp \
 				src/Channel.cpp \
 				src/Client.cpp \
 				src/createMsgs.cpp \
+				src/connectionMessages.cpp
 
 OBJ			=	$(SRC:.cpp=.o)
 
