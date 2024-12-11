@@ -35,5 +35,5 @@ class Client
         void        setWelcomeSent(bool value);
         void        setOperatorStatus(bool value);
         void        joinChannel(std::string channelName);
-        void        leaveChannel(std::string channelName);
+        void        leaveChannel(std::string channelName);  
 };

@@ -88,56 +88,49 @@ std::string		getTrailingMessage(std::vector<std::string> array)
 	}
 }
 
+int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names)
+{
+	int i;
+
+	for (i = 0; i < channel_names.size(); i++)
+	{
+		if (channel_name == channel_names[i].name)
+		{
+			return (i);
+		}
+	}
+	return (-1);
+}
+
 int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 {
-	//Welcome Msg for channel?
-	/*
-		1. Check if channel exists
-		a. If No
-			i. Create Channel (= create Channel Object)
-			ii. Add User to
-				-channel_user - Nickname
-				-permission  - operator
-			iii. Send Welcome message
 
-		b. If Yes
-			- join channel - consider password
+	int i = getChannelIndex(msg.parameters[0], this->channel_names);
+	if (i == -1)
+	{
+		// std::cout << "No Existing Channel Found" << std::endl;
+		createChannel(msg, clientSocket, client);
+	}
+	else
+	{ 
+		// std::cout << "Channel Found at i = " << i << std::endl;
+		joinChannel(msg, clientSocket, client);
+	}
+	// printChannels(); //Note: You can print out all Channels and Users in channels with this function.
+
+	/*
+		Todo
+			1. Send message to client who connected to channel
+			2. Broadcast to all the member joined channel
 	*/
-	/*
-		Code:
-			Search for channel
-				-> If Find
-					-> Return channel?
-	*/
 
-	//If Channel Doesn't exist
-	Channel new_channel(msg.parameters[0]);
 
-	//Make new Channel User
-	User	new_user;
-	new_user.nickname = client.getNickname();
-	new_user.operator_permissions = true;
-
-	//Add into channel Users
-	new_channel.channel_users.push_back(new_user);
-
-	//Send Welcome msg to User
-  	std::string response = "Welcome to the Channel " + msg.parameters[0] + "\r\n";
-	// send(clientSocket, "Channel Welcome Message\r\n", 26, 0);
-    send(clientSocket, response.c_str(), response.size(), 0);// Note this isn't working.
-
-	this->channel_names.push_back(new_channel);
 
 	/*
-		Send This!
+		Send This to Server!
 			:sender_nickname!user@host PRIVMSG #channel_name :message_text
 			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
 	*/
-
-	//Push channel into channel vector on Server
-
-	//push back into server [at the end]
-
 	return (0);
 }
 
