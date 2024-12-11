@@ -108,14 +108,15 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	int i = getChannelIndex(msg.parameters[0], this->channel_names);
 	if (i == -1)
 	{
-		std::cout << "No Existing Channel Found" << std::endl;
+		// std::cout << "No Existing Channel Found" << std::endl;
 		createChannel(msg, clientSocket, client);
 	}
 	else
 	{ 
-		std::cout << "Channel Found at i = " << i << std::endl;
+		// std::cout << "Channel Found at i = " << i << std::endl;
 		joinChannel(msg, clientSocket, client);
 	}
+	// printChannels(); //Note: You can print out all Channels and Users in channels with this function.
 
 	/*
 		Todo
@@ -123,7 +124,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 			2. Broadcast to all the member joined channel
 	*/
 
-	printChannels();
+
 
 	/*
 		Send This to Server!
