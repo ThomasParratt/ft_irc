@@ -88,69 +88,6 @@ std::string		getTrailingMessage(std::vector<std::string> array)
 	}
 }
 
-int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names)
-{
-	int i;
-
-	for (i = 0; i < channel_names.size(); i++)
-	{
-		if (channel_name == channel_names[i].name)
-		{
-			return (i);
-		}
-	}
-	return (-1);
-}
-
-int		Server::getClientSocket(std::string nickname)
-{
-	/*
-		Do Studff
-		Client
-
-		Client
-			1 - cha1
-			2
-			3 - cha1 
-			4 - cha1
-			5
-	*/
-
-	/*
-		1. For (Clients)
-	*/
-	int socket;
-
-	for (int i = 0; i < this->clients.size(); i++)
-	{
-		if (nickname == clients[i].getNickname())
-		{
-			socket = clients[i].getSocket();
-			return (socket);
-		}
-	}
-	return (-2);//Return -2 to differentiate from -1 (failed socket)
-}
-
-void	Server::broadcastToChannel(Channel channel, std::string message)
-{
-	std::vector<User> users;
-	int socket;
-
-	// std::cout << "in broadcastToChannel Function" << std::endl;	
-	users = channel.getChannelUsers();
-
-	for (int i = 0; i < users.size(); i++)
-	{
-		// users[i].nickname;
-		int socket = getClientSocket(users[i].nickname);
-		if (socket != -2)
-		{
-			send(socket, message.c_str(), message.size(), 0);
-		}
-	}
-}
-
 int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 {
 	int i = getChannelIndex(msg.parameters[0], this->channel_names);
