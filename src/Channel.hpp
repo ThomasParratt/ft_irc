@@ -9,6 +9,7 @@ struct User
 {
 	std::string nickname;
 	bool		operator_permissions;
+	int 		socket;
 	//user socket -> Is this needed?
 };
 
@@ -27,6 +28,8 @@ class Channel
 
 		Channel(std::string name);
 
+		//Getters
+		std::vector<User>	getChannelUsers(){return channel_users;}
 
 	private:
 

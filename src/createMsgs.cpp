@@ -88,23 +88,8 @@ std::string		getTrailingMessage(std::vector<std::string> array)
 	}
 }
 
-int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names)
-{
-	int i;
-
-	for (i = 0; i < channel_names.size(); i++)
-	{
-		if (channel_name == channel_names[i].name)
-		{
-			return (i);
-		}
-	}
-	return (-1);
-}
-
 int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 {
-
 	int i = getChannelIndex(msg.parameters[0], this->channel_names);
 	if (i == -1)
 	{
@@ -116,15 +101,14 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 		// std::cout << "Channel Found at i = " << i << std::endl;
 		joinChannel(msg, clientSocket, client);
 	}
+	i = getChannelIndex(msg.parameters[0], this->channel_names);
+
+	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " has joined " + msg.parameters[0] + "\r\n";	
+
+	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
+	//WELCOME_MSG - Send message to client who connected to channel
+
 	// printChannels(); //Note: You can print out all Channels and Users in channels with this function.
-
-	/*
-		Todo
-			1. Send message to client who connected to channel
-			2. Broadcast to all the member joined channel
-	*/
-
-
 
 	/*
 		Send This to Server!

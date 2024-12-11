@@ -186,6 +186,9 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 
 	addChannelUser(new_channel, client, true);
 
+	this->channel_names.push_back(new_channel);
+
+
 	std::string response = ":" + client.getNickname() + "!" + "USERNAME@ircserver PRIVMSG " + msg.parameters[0] + " :Welcome to the Channel " + msg.parameters[0] + "\r\n";
 	
 	send(clientSocket, response.c_str(), response.size(), 0);
@@ -194,7 +197,6 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 		TODO: Send more messages to Irssi f.ex. tell Irssi who is operator -> Check Manual
 	*/
 
-	this->channel_names.push_back(new_channel);
 
 	return (0);
 }
@@ -216,6 +218,20 @@ void		Server::printChannels()
 	}
 }
 
+int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names)
+{
+	int i;
+
+	for (i = 0; i < channel_names.size(); i++)
+	{
+		if (channel_name == channel_names[i].name)
+		{
+			return (i);
+		}
+	}
+	return (-1);
+}
+
 int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 {
 	int index = getChannelIndex(msg.parameters[0], this->channel_names);
@@ -227,4 +243,40 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 	//Broadcast to All NEW USER
 
 	return (0);
+}
+
+
+
+int		Server::getClientSocket(std::string nickname)
+{
+	int socket;
+
+	for (int i = 0; i < this->clients.size(); i++)
+	{
+		if (nickname == clients[i].getNickname())
+		{
+			socket = clients[i].getSocket();
+			return (socket);
+		}
+	}
+	return (-2);//Return -2 to differentiate from -1 (failed socket)
+}
+
+void	Server::broadcastToChannel(Channel channel, std::string message)
+{
+	std::vector<User> users;
+	int socket;
+
+	// std::cout << "in broadcastToChannel Function" << std::endl;	
+	users = channel.getChannelUsers();
+
+	for (int i = 0; i < users.size(); i++)
+	{
+		// users[i].nickname;
+		int socket = getClientSocket(users[i].nickname);
+		if (socket != -2)
+		{
+			send(socket, message.c_str(), message.size(), 0);
+		}
+	}
 }
