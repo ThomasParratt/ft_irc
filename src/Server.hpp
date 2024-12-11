@@ -64,13 +64,15 @@ class Server {
 		int     createChannel(Msg msg, int clientSocket, Client &client);
 		int		joinChannel(Msg msg, int clientSocket, Client &client);
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
+		void	broadcastToChannel(Channel channel, std::string message);
+		int		getClientSocket(std::string nickname);
+
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
   	int		operCommand(Msg msg, int clientSocket, Client &client);
 
-
-
 		int		clientLoop(const std::string& nickname); //added this
+		
 
 		//Getter
 		int	getServerSocket() { return _serverSocket; }

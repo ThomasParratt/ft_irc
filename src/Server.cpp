@@ -282,6 +282,9 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 
 	addChannelUser(new_channel, client, true);
 
+	this->channel_names.push_back(new_channel);
+
+
 	std::string response = ":" + client.getNickname() + "!" + "USERNAME@ircserver PRIVMSG " + msg.parameters[0] + " :Welcome to the Channel " + msg.parameters[0] + "\r\n";
 	
 	send(clientSocket, response.c_str(), response.size(), 0);
@@ -290,7 +293,6 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 		TODO: Send more messages to Irssi f.ex. tell Irssi who is operator -> Check Manual
 	*/
 
-	this->channel_names.push_back(new_channel);
 
 	return (0);
 }

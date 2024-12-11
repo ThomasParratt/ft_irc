@@ -102,9 +102,57 @@ int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_name
 	return (-1);
 }
 
+int		Server::getClientSocket(std::string nickname)
+{
+	/*
+		Do Studff
+		Client
+
+		Client
+			1 - cha1
+			2
+			3 - cha1 
+			4 - cha1
+			5
+	*/
+
+	/*
+		1. For (Clients)
+	*/
+	int socket;
+
+	for (int i = 0; i < this->clients.size(); i++)
+	{
+		if (nickname == clients[i].getNickname())
+		{
+			socket = clients[i].getSocket();
+			return (socket);
+		}
+	}
+	return (-2);//Return -2 to differentiate from -1 (failed socket)
+}
+
+void	Server::broadcastToChannel(Channel channel, std::string message)
+{
+	std::vector<User> users;
+	int socket;
+
+	// std::cout << "in broadcastToChannel Function" << std::endl;	
+	users = channel.getChannelUsers();
+
+	for (int i = 0; i < users.size(); i++)
+	{
+		// users[i].nickname;
+		int socket = getClientSocket(users[i].nickname);
+		if (socket != -2)
+		{
+			send(socket, message.c_str(), message.size(), 0);
+		}
+	}
+}
+
 int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 {
-
 	int i = getChannelIndex(msg.parameters[0], this->channel_names);
 	if (i == -1)
 	{
@@ -116,15 +164,14 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 		// std::cout << "Channel Found at i = " << i << std::endl;
 		joinChannel(msg, clientSocket, client);
 	}
+	i = getChannelIndex(msg.parameters[0], this->channel_names);
+
+	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " has joined " + msg.parameters[0] + "\r\n";	
+
+	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
+	//WELCOME_MSG - Send message to client who connected to channel
+
 	// printChannels(); //Note: You can print out all Channels and Users in channels with this function.
-
-	/*
-		Todo
-			1. Send message to client who connected to channel
-			2. Broadcast to all the member joined channel
-	*/
-
-
 
 	/*
 		Send This to Server!
