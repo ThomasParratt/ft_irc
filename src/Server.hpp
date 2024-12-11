@@ -55,6 +55,7 @@ class Server {
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
+		int		kickCommand(Msg msg, int clientSocket, Client &client);
 
 
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
