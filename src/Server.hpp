@@ -72,6 +72,8 @@ class Server {
 		void	channelMessage(Msg msg, int clientSocket, Client &client);		
 		void	directMessage(Msg msg, int clientSocket, Client &client);
 
+		int		modeCommand(Msg msg, int clientSocket, Client &client);
+
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
   	int		operCommand(Msg msg, int clientSocket, Client &client);
