@@ -188,9 +188,8 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 
 	this->channel_names.push_back(new_channel);
 
+	std::string response = ":ircserver PRIVMSG " + msg.parameters[0] + " :Welcome to the Channel " + msg.parameters[0] + "\r\n";	
 
-	std::string response = ":" + client.getNickname() + "!" + "USERNAME@ircserver PRIVMSG " + msg.parameters[0] + " :Welcome to the Channel " + msg.parameters[0] + "\r\n";
-	
 	send(clientSocket, response.c_str(), response.size(), 0);
 
 	/*

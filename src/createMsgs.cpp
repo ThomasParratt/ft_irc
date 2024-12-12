@@ -295,7 +295,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "PRIVMSG")
 	{
-
+		privmsgCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "KICK")
 	{
