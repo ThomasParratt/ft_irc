@@ -202,6 +202,10 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 
 void	Server::printChannelUsers(Channel channel)
 {
+	if (channel.channel_users.size() == 0)
+	{
+		std::cout << "No Users in Channel" << std::endl;
+	}
 	for (int i = 0; i < channel.channel_users.size(); i++)
 	{
 		std::cout << "User[" << i << "]: " <<  channel.channel_users[i].nickname  << " (op = " <<  channel.channel_users[i].operator_permissions << ")" << std::endl;

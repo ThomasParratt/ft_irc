@@ -74,7 +74,7 @@ class Server {
 
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
-  	int		operCommand(Msg msg, int clientSocket, Client &client);
+  		int		operCommand(Msg msg, int clientSocket, Client &client);
 
 		int		clientLoop(const std::string& nickname); //added this
 		

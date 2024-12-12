@@ -61,7 +61,7 @@ std::vector<std::string>	getParameters(std::vector<std::string> array)
 	{
 		if (array[i][0] != ':')
 		{
-			// std::cout << "Params: " << array[i] << std::endl;
+			std::cout << "Params[" << i << "]: " << array[i] << std::endl;
 			parameters.push_back(array[i]);
 		}
     }
@@ -309,7 +309,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command == "PART")
 	{
-		
+		partCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "TOPIC")
 	{
