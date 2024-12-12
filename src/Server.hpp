@@ -64,6 +64,11 @@ class Server {
 		void	broadcastToChannel(Channel channel, std::string message);
 		int		getClientSocket(std::string nickname);
 
+		void	userMessageToChannel(Channel channel, int sender_socket, std::string message);
+		int		privmsgCommand(Msg msg, int clientSocket, Client &client);
+		void	channelMessage(Msg msg, int clientSocket, Client &client);		
+		void	directMessage(Msg msg, int clientSocket, Client &client);
+
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
   	int		operCommand(Msg msg, int clientSocket, Client &client);
