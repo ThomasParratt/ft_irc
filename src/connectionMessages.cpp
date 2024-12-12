@@ -1,37 +1,6 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
-int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
-{
-	for (auto &channel : channel_names)
-	{
-		if (channel.name == msg.parameters[0])
-		{
-			for (auto &user : channel.channel_users)
-			{
-				if ((user.nickname == client.getNickname()) && user.operator_permissions)
-				{
-					std::string kick = ":" + user.nickname + " KICK " + channel.name + " " + msg.parameters[1] + "\r\n";
-					send(clientSocket, kick.c_str(), kick.size(), 0);
-					//std::cout << "message sent = " << kick << std::endl;
-					//need to remove bob
-				}
-				/*else
-				{
-					// NO OPERATOR PERMISSIONS
-					std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.name + " :You're not channel operator\r\n";
-					send(clientSocket, message_482.c_str(), message_482.size(), 0);
-					std::cout << "message sent = " << message_482 << std::endl;
-				}*/
-			}
-		}
-	}
-	return (0);
-	//KICK #chan bob :
-
-	//:Admin KICK #general JohnDoe :Inappropriate behavior
-}
-
 int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())

@@ -57,7 +57,7 @@ class Server {
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
 		int		kickCommand(Msg msg, int clientSocket, Client &client);
 		int		userExists(std::string user, std::string channel);
-		int		removeUser(std::string user, std::string channel);
+		int		removeUser(std::string user, std::string channel, std::string message);
 
 
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
