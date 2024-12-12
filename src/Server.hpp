@@ -56,13 +56,15 @@ class Server {
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
 		int		kickCommand(Msg msg, int clientSocket, Client &client);
+		int		userExists(std::string user, std::string channel);
+		int		removeUser(std::string user, std::string channel);
 
 
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
 		int     createChannel(Msg msg, int clientSocket, Client &client);
 		int		joinChannel(Msg msg, int clientSocket, Client &client);
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
-		void	broadcastToChannel(Channel channel, std::string message);
+		void	broadcastToChannel(Channel &channel, std::string message);
 		int		getClientSocket(std::string nickname);
 
 		void	printChannels();

@@ -262,11 +262,10 @@ int		Server::getClientSocket(std::string nickname)
 	return (-2);//Return -2 to differentiate from -1 (failed socket)
 }
 
-void	Server::broadcastToChannel(Channel channel, std::string message)
+void	Server::broadcastToChannel(Channel &channel, std::string message)
 {
 	std::vector<User> users;
 	int socket;
-
 	// std::cout << "in broadcastToChannel Function" << std::endl;	
 	users = channel.getChannelUsers();
 
