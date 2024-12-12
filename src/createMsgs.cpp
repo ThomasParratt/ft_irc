@@ -299,14 +299,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "KICK")
 	{
-		if (client.getOperatorStatus())
-		{
-			//TO DO: Kick User
-		}
-		else
-		{
-			//TO DO: Send Error Message "User does not have Operator Status"
-		}
+		kickCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "INVITE")
 	{
