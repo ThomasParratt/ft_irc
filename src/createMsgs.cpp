@@ -325,6 +325,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "MODE")
 	{
+		modeCommand(msg, clientSocket, client);
 		if (client.getOperatorStatus())
 		{
 			//TO DO: Change channel's mode
