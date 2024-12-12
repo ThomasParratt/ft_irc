@@ -1,3 +1,4 @@
+//libraries
 #include <iostream>
 #include <vector>
 #include <map>
@@ -7,18 +8,12 @@
 #include <unistd.h>
 #include <string.h>
 
-
-
-
-
+//header files
 #include "Msg.hpp"
 #include "Channel.hpp"
 #include "Server.hpp"
 
-
-
-
-
+//functions definitions
 size_t	skipSpaces(std::string string, size_t index)
 {
 	while (string[index] == ' ')
@@ -365,6 +360,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	return (0);
 }
+
 
 int    Server::messageHandler(std::string messages, int clientSocket, Client &client)
 {

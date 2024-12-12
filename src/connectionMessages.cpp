@@ -1,6 +1,40 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
+int		Server::partCommand(Msg msg, int clientSocket, Client &client)
+{
+	if (msg.parameters.size() == 1)
+	{
+		//leave current channel
+		//remove user from channel
+	}
+	else if (msg.parameters.size() == 2)
+	{
+		//check if this msg.parameters[1] starts with # if not send, leave current channel.
+		if (msg.parameters[1][0] != '#')
+		{
+			//leave current channel
+			//Send Error Message
+		}
+		//if it does, search for the channel and leave it.
+		int i = getChannelIndex(msg.parameters[1], this->channel_names);
+		if (i == -1)
+		{
+			// std::cout << "No Existing Channel Found" << std::endl;
+			//Send Error Message
+			return 1;
+		}
+		else
+		{
+			//std::cout << "Channel Found at i = " << i << std::endl;
+			//TO DO: Leave Channel
+		}
+	}
+	//TO DO: Send Message to Channel
+	//TO DO: Send Message to User
+	return (0);
+}
+
 int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())
