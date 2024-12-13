@@ -15,7 +15,6 @@ class Client
         std::string nickname;
         std::string username;
         std::string hostIP;
-        // std::string servername;
         std::string realname;
         std::string password;
 
