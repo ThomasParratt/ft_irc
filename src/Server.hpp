@@ -79,7 +79,7 @@ class Server {
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
 
-		int		clientLoop(const std::string& nickname);
+		int		clientLoop(const std::string& nickname, int socket);
 		
 
 		//Getter
