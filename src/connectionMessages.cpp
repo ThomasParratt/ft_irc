@@ -12,7 +12,7 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 	return (0);
 }
 
-int Server::clientLoop(const std::string& nickname, int socket)
+int Server::nickClash(const std::string& nickname, int socket)
 {
     // Check if any other client has the same nickname
     for (auto &client : clients) 
@@ -41,7 +41,7 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 		send(clientSocket, message_004.c_str(), message_004.size(), 0);
 		std::string message_005 = ":ircserv 005 " + client.getNickname() + " CHANMODES=i,t,k,o,l :are supported by this server\r\n";
 		send(clientSocket, message_005.c_str(), message_005.size(), 0);
-		if (this->clientLoop(msg.parameters[0], clientSocket)) //ERR_NICKNAMEINUSE (433)
+		if (this->nickClash(msg.parameters[0], clientSocket)) //ERR_NICKNAMEINUSE (433)
 		{
 			std::string nick_message1 = ":" + client.getNickname() + " NICK ";
 			client.setNickname(msg.parameters[0] + "_" + std::to_string(clientSocket));
@@ -60,7 +60,7 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 	// {
 	// 	//ERR_ERRONEUSNICKNAME (432)
 	// }
-	else if (this->clientLoop(msg.parameters[0], clientSocket)) //ERR_NICKNAMEINUSE (433)
+	else if (this->nickClash(msg.parameters[0], clientSocket)) //ERR_NICKNAMEINUSE (433)
 	{
 		std::string message_433 = ":ircserv 433 " + msg.parameters[0] + " :" + msg.parameters[0] + "\r\n";
 		send(clientSocket, message_433.c_str(), message_433.size(), 0);
