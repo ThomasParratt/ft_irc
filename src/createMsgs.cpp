@@ -283,7 +283,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command == "USER")
 	{
-		client.setUsername(msg.parameters[0]);
+		Server::userCommand(msg, clientSocket, client);
 	}
 	// else if (msg.command == "OPER")
 	// {
