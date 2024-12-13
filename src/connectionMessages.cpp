@@ -31,7 +31,7 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 	if (!client.getWelcomeSent() && client.getNickname().empty())
 	{
 		client.setNickname(msg.parameters[0]);
-		std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getNickname() + "@" + this->getServHostName() + "\r\n";
+		std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getNickname() + "@" + client.getHostIP() + "\r\n";
 		send(clientSocket, message_001.c_str(), message_001.size(), 0);
 		std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host is ircserv, running version 1.0\r\n";
 		send(clientSocket, message_002.c_str(), message_002.size(), 0);
