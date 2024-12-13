@@ -4,14 +4,17 @@
 #include <vector>
 #include <algorithm>
 #include <string.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h> 
+#include <unistd.h>
 
 class Client
 {
     private:
         std::string nickname;
         std::string username;
-        // std::string hostname;
-        // std::string servername;
+        std::string hostIP;
         std::string realname;
         std::string password;
 
@@ -29,9 +32,11 @@ class Client
         bool        getWelcomeSent();
         bool        getOperatorStatus();
         int         getSocket();
+        std::string getHostIP();
 
         void        setNickname(std::string str);
         void        setUsername(std::string str);
+        void        setHostIP();
         void        setWelcomeSent(bool value);
         void        setOperatorStatus(bool value);
         void        joinChannel(std::string channelName);
