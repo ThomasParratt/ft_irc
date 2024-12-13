@@ -34,6 +34,7 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 								std::cout << "debug 3" << std::endl;
 								std::string error = ":ircserv NOTICE " + client.getNickname() + " :You do not have the required operator status to change the topic\r\n";
 								send(clientSocket, error.c_str(), error.size(), 0);
+								return 1;
 							}
 							else
 							{
@@ -51,6 +52,7 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 					it->setChannelTopic(msg.trailing_msg, client);
 					std::string topicMsg = ":ircserv TOPIC " + it->name + " :" + msg.trailing_msg + "\r\n";
 					broadcastToChannel(*it, topicMsg);
+					return 1;
 				}
 			}
 		}
@@ -60,6 +62,7 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 		std::string error = ":ircserv NOTICE " + client.getNickname() + " :Invalid number of parameters for TOPIC command\r\n";
 		send(clientSocket, error.c_str(), error.size(), 0);
 	}
+	return 0;
 }
 
 void Server::topicPrint(Msg msg, int clientSocket, Client &client)
