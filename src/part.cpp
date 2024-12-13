@@ -17,11 +17,10 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 					int i = getChannelIndex(msg.parameters[0], channel_names);
 					std::string part = ":" + client.getNickname() + " PART " + channel.name + "\r\n";
 					broadcastToChannel(channel_names[i], part);
-					printChannels();
+					// printChannels();
 					removeUser(client.getNickname(), msg.parameters[0], "has left");
 					client.leaveChannel(msg.parameters[0]); // probably don't need but just in case
-					std::cout << "USER Removed" << std::endl;
-					printChannels();
+					// printChannels();
 					return (0);
 				}
 			}

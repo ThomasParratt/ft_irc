@@ -313,14 +313,8 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "TOPIC")
 	{
-		if (client.getOperatorStatus())
-		{
-			//TO DO: change channel topic
-		}
-		else
-		{
-			//TO DO: Send Error Message "User does not have Operator Status"
-		}
+		std::cout << "debug 1" << std::endl;
+		topicCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "MODE")
 	{

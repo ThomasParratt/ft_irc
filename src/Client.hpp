@@ -17,7 +17,7 @@ class Client
 
         std::vector<std::string> channelsNames;
         bool        welcomeSent;
-        bool        operatorStatus;
+        bool        operatorStatus; // maybe we don't need this, as we are checking if the user is an operator through Channel
         int         socket;
     public:
         Client(int socket, const std::string& password);

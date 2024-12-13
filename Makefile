@@ -8,6 +8,7 @@ SRC			=	src/main.cpp \
 				src/connectionMessages.cpp \
 				src/kick.cpp \
 				src/part.cpp \
+				src/topic.cpp \
 				src/privmsg.cpp \
 
 OBJ			=	$(SRC:.cpp=.o)
