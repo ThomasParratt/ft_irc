@@ -31,6 +31,11 @@ int		Server::userExists(std::string user, std::string channel)
 	return (0);
 }
 
+int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
+{
+	return (0);
+}
+
 int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 {
 	for (auto &channel : channel_names)

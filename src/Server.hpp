@@ -56,6 +56,8 @@ class Server {
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
 		int		kickCommand(Msg msg, int clientSocket, Client &client);
+		int		inviteCommand(Msg msg, int clientSocket, Client &client);
+
 		int		userExists(std::string user, std::string channel);
 		int		removeUser(std::string user, std::string channel, std::string message);
 
@@ -76,9 +78,8 @@ class Server {
 
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
-  	int		operCommand(Msg msg, int clientSocket, Client &client);
 
-		int		clientLoop(const std::string& nickname); //added this
+		int		clientLoop(const std::string& nickname);
 		
 
 		//Getter
