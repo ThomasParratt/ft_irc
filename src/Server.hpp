@@ -59,6 +59,7 @@ class Server {
 		int		inviteCommand(Msg msg, int clientSocket, Client &client);
 
 		int		userExists(std::string user, std::string channel);
+		int		channelExists(std::string channel);
 		int		removeUser(std::string user, std::string channel, std::string message);
 
 

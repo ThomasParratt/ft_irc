@@ -31,12 +31,46 @@ int		Server::userExists(std::string user, std::string channel)
 	return (0);
 }
 
-int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
+int		Server::channelExists(std::string channel)
 {
+	for (auto &it : channel_names)
+	{
+		if (it.name == channel)
+			return (1);
+	}
 	return (0);
 }
 
-int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
+int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
+{
+	std::cout << msg.parameters[0] << " " << msg.parameters[1] << std::endl;
+	if (channelExists(msg.parameters[1]))
+	{
+		std::cout << "CHANNEL EXISTS" << std::endl;
+		if (userExists(client.getNickname(), msg.parameters[1]))
+		{
+			std::cout << "USER EXISTS ON CHANNEL" << std::endl;
+			// now here
+		}
+		else
+		{
+			std::cout << "USER DOESN'T EXIST ON CHANNEL" << std::endl;
+			std::string message_442 = ":ircserv 002 " + client.getNickname() + msg.parameters[1] + " :You're not on that channel\r\n";
+			send(clientSocket, message_442.c_str(), message_442.size(), 0);
+		}
+	}
+	else
+	{
+		std::cout << "CHANNEL DOESN'T EXIST" << std::endl;
+		std::string message_403 = ":ircserv 002 " + client.getNickname() + msg.parameters[1] + " :No such channel\r\n";
+		send(clientSocket, message_403.c_str(), message_403.size(), 0);
+	}
+	return (0);
+}
+
+// works for "/kick bob"
+// need extra checks if "/kick bob #channel"
+int		Server::kickCommand(Msg msg, int clientSocket, Client &client) 
 {
 	for (auto &channel : channel_names)
 	{
