@@ -60,11 +60,12 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 							if (!userExists(msg.parameters[0], msg.parameters[1]))
 							{
 								//invite
-								std::cout << "INVITE" << std::endl; //Not working
+								std::cout << "INVITE" << std::endl;
 								std::string message_341 = ":ircserv 341 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 								int socket = getClientSocket(msg.parameters[0]);
 								send(socket, message_341.c_str(), message_341.size(), 0);
-								// add to invitee list HERE!!!
+								// add to invited list
+								channel.invited.push_back(msg.parameters[0]);
 							}
 							else
 							{

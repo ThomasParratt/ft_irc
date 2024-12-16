@@ -24,6 +24,8 @@ class Channel
 		bool			invite_only;
 		bool			topic_requires_operator;
 
+		std::vector<std::string>	invited;
+
 		std::vector<User>	channel_users; // OR list of Clients???
 
 		Channel(std::string name);
