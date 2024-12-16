@@ -33,83 +33,55 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 	printArray(channels);
 	for (int i = 0; i < channels.size(); i++)
 	{
+		bool channelExists = false;
 		// std::cout << "first loop: " << i << std::endl;
 		for (auto &channel : channel_names)
 		{
 			// std::cout << "second loop: " << i << std::endl;
 			if (channel.name == channels[i])
 			{
+				channelExists = true;
 				for (auto &users : channel.channel_users)
 				{
 					// std::cout << "third loop: " << i << std::endl;
 					if (users.nickname == client.getNickname())
 					{
 						int j = getChannelIndex(channels[i], channel_names);
+						std::string part;
 						if (!msg.trailing_msg.empty())
-						{
-							std::string part = ":" + client.getNickname() + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
-							broadcastToChannel(channel_names[j], part);
-						}
+							part = ":" + client.getNickname() + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
 						else
-						{
-							std::string part = ":" + client.getNickname() + " PART " + channel.name + "\r\n";
-							broadcastToChannel(channel_names[j], part);
-						}
+							part = ":" + client.getNickname() + " PART " + channel.name + "\r\n";
+						broadcastToChannel(channel_names[j], part);
 						// printChannels();
+						std::cout << "removing user: " << client.getNickname() << " from channel: " << channels[i] << std::endl;
 						removeUser(client.getNickname(), channels[i], " has left"); // it didn't send it in libera chat
 						client.leaveChannel(channels[i]); // probably don't need but just in case
 						// printChannels();
 						break;
 					}
 				}
-			}
-			else
-			{
-				std::cout << "channel names: " << channels[i] << std::endl;
-				std::string notice = channels[i] + ": No such channel\r\n";
-				send(clientSocket, notice.c_str(), notice.size(), 0);
+				break;
 			}
 		}
+		if (!channelExists)
+		{
+			std::cout << "channel names: " << channels[i] << std::endl;
+			std::string notice = channels[i] + ": No such channel\r\n";
+			send(clientSocket, notice.c_str(), notice.size(), 0);
+		}
 	}
-	// for (auto &channel : channel_names)
-	// {
-	// 	if (channel.name == msg.parameters[0])
-	// 	{
-	// 		for (auto &users : channel.channel_users)
-	// 		{
-	// 			if (users.nickname == client.getNickname())
-	// 			{
-	// 				int i = getChannelIndex(msg.parameters[0], channel_names);
-	// 				if (!msg.trailing_msg.empty())
-	// 				{
-	// 					std::string part = ":" + client.getNickname() + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
-	// 					broadcastToChannel(channel_names[i], part);
-	// 				}
-	// 				else
-	// 				{
-	// 					std::string part = ":" + client.getNickname() + " PART " + channel.name + "\r\n";
-	// 					broadcastToChannel(channel_names[i], part);
-	// 				}
-	// 				// printChannels();
-	// 				removeUser(client.getNickname(), msg.parameters[0], "has left");
-	// 				client.leaveChannel(msg.parameters[0]); // probably don't need but just in case
-	// 				// printChannels();
-	// 				return (0);
-	// 			}
-	// 		}
-	// 	}
-	// }
 	//TO DO: Send Message to Channel
 	//TO DO: Send Message to User
 	// check channel user size if size = 0 then remove channel
-	// for ( auto &channel : channel_names)
-	// {
-	// 	if (channel.channel_users.size() == 0)
-	// 	{
-	// 		//remove channel
-	// 		int i = getChannelIndex(channel.name, channel_names);
-	// 		channel_names.erase(channel_names.begin() + i);
-	// 	}
-	// }
+	for ( auto &channel : channel_names)
+	{
+		if (channel.channel_users.size() == 0)
+		{
+			//remove channel
+			int i = getChannelIndex(channel.name, channel_names);
+			channel_names.erase(channel_names.begin() + i);
+		}
+	}
 	return (0);
 }

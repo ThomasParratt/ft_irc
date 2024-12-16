@@ -176,7 +176,6 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 	new_user.nickname = client.getNickname();
 	new_user.operator_permissions = operator_permissions;
 	new_user.topicSetter = false;
-
 	//Add into channel Users
 	channel.channel_users.push_back(new_user);
 }
