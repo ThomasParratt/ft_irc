@@ -43,7 +43,6 @@ int		Server::channelExists(std::string channel)
 
 int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 {
-	std::cout << msg.parameters[0] << " " << msg.parameters[1] << std::endl;
 	if (channelExists(msg.parameters[1]))
 	{
 		std::cout << "CHANNEL EXISTS" << std::endl;
@@ -58,14 +57,30 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 					{
 						if (inviter.operator_permissions)
 						{
-							//invite
+							if (!userExists(msg.parameters[0], msg.parameters[1]))
+							{
+								//invite
+								std::cout << "INVITE" << std::endl; //Not working
+								std::string message_341 = ":ircserv 341 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
+								int socket = getClientSocket(msg.parameters[0]);
+								send(socket, message_341.c_str(), message_341.size(), 0);
+								// add to invitee list HERE!!!
+							}
+							else
+							{
+								std::cout << "INVITEE ALREADY ON CHANNEL" << std::endl; // 443 only sends to main window and prints oddly
+								std::string notice = ":ircserv NOTICE " + msg.parameters[1] + " :" + msg.parameters[0] + " is already on channel\r\n";
+								send(clientSocket, notice.c_str(), notice.size(), 0);
+								std::string message_443 = ":ircserv 443 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :is already on channel\r\n";
+								send(clientSocket, message_443.c_str(), message_443.size(), 0);
+							}
 						}
 						else
 						{
-							std::cout << "USER IS NOT AN OPERATOR" << std::endl; // 482 only sends to main window
-							std::string notice = ":ircserv NOTICE " + msg.parameters[1] + " :You're not channel operator\r\n";
-							send(clientSocket, notice.c_str(), notice.size(), 0);
-							std::string message_482 = ":ircserv 482 " + client.getNickname() + msg.parameters[1] + " :You're not channel operator\r\n";
+							std::cout << "USER IS NOT AN OPERATOR" << std::endl;
+							// std::string notice = ":ircserv NOTICE " + msg.parameters[1] + " :You're not channel operator\r\n";
+							// send(clientSocket, notice.c_str(), notice.size(), 0);
+							std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[1] + " :You're not channel operator\r\n";
 							send(clientSocket, message_482.c_str(), message_482.size(), 0);
 						}
 					}
@@ -122,10 +137,10 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 					}
 					else
 					{
-						// NO OPERATOR PERMISSIONS // should this be message 482? // 482 sends to main window
-						std::string notice = ":ircserv NOTICE " + channel.name + " :You're not channel operator\r\n";
-						send(clientSocket, notice.c_str(), notice.size(), 0);
-						std::string message_482 = ":ircserv 482 " + client.getNickname() + channel.name + " :You're not channel operator\r\n";
+						// NO OPERATOR PERMISSIONS
+						// std::string notice = ":ircserv NOTICE " + channel.name + " :You're not channel operator\r\n";
+						// send(clientSocket, notice.c_str(), notice.size(), 0);
+						std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.name + " :You're not channel operator\r\n";
 						send(clientSocket, message_482.c_str(), message_482.size(), 0);
 						return (0);
 					}
