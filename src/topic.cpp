@@ -11,7 +11,7 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 			check if topic_requiredOp is true 
 		else -> error message	
 	*/
-	printMsg(msg);
+	printMsg(msg); // debug
 	if (msg.parameters.size() == 1 && msg.trailing_msg.empty())
 	{
 		topicPrint(msg, clientSocket, client);
@@ -30,7 +30,7 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 						{
 							if (!setter.operator_permissions)
 							{
-								std::string error = ":ircserv NOTICE " + client.getNickname() + " :You do not have the required operator status to change the topic\r\n";
+								std::string error = ":" + client.getNickname() + " :You do not have the required operator status to change the topic\r\n";
 								send(clientSocket, error.c_str(), error.size(), 0);
 								return 1;
 							}
