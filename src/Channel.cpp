@@ -10,6 +10,7 @@ Channel::Channel(std::string name) :
 	;
 }
 
+
 /*
 	14:27 -!- mkorpela [~mkorpela@194.136.126.51] has joined #ChanForChanny
 	14:27 -!- ServerMode/#ChanForChanny [+Cnst] by iridium.libera.chat

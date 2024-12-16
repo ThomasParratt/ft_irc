@@ -28,8 +28,15 @@ class Channel
 
 		Channel(std::string name);
 
+		bool				isChannelFull();
+		bool				isChannelInviteOnly() {return invite_only; };
+		bool				doesChannelHavePassword();
+
 		//Getters
 		std::vector<User>	getChannelUsers(){return channel_users;}
+		int					getUserLimit(){return user_limit;}
+		int					getNumberOfChannelUsers();
+		std::string			getChannelKey(){return channel_key;}
 
 	private:
 

@@ -99,13 +99,14 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	else
 	{ 
 		// std::cout << "Channel Found at i = " << i << std::endl;
-		joinChannel(msg, clientSocket, client);
+		joinChannel(msg, clientSocket, client);// If fail - then leave???
 	}
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
 
 	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " has joined " + msg.parameters[0] + "\r\n";	
 
 	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
+
 	//WELCOME_MSG - Send message to client who connected to channel
 
 	// printChannels(); //Note: You can print out all Channels and Users in channels with this function.

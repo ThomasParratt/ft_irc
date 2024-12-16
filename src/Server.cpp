@@ -190,6 +190,7 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 
 	std::string response = ":ircserver PRIVMSG " + msg.parameters[0] + " :Welcome to the Channel " + msg.parameters[0] + "\r\n";	
 
+
 	send(clientSocket, response.c_str(), response.size(), 0);
 
 	/*
@@ -217,6 +218,11 @@ void		Server::printChannels()
 	}
 }
 
+/*
+	Returns index of channel in vector.
+	- Returns 0 or greater, if channel exists.
+	- Returns -1, if channel doesn't exist. 
+*/
 int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names)
 {
 	int i;
@@ -231,11 +237,164 @@ int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_name
 	return (-1);
 }
 
+int		Channel::getNumberOfChannelUsers()
+{
+	std::vector<User> channel_users = this -> getChannelUsers();
+
+	int num_of_channel_users  = channel_users.size();
+
+	return (num_of_channel_users);
+}
+/*
+	Returns true, if Number of Channel Users equals or exceeds Channel User Limit.
+	Returns false,
+		i if that is not the case
+		ii. if no Channel Limit set.
+*/
+bool		Channel::isChannelFull()
+{
+	int user_limit 				= this -> getUserLimit();
+	int	num_of_channel_users 	= this -> getNumberOfChannelUsers();
+
+	std::cout << "User_limit: " << user_limit << std::endl;
+	std::cout << "Num_of_channel_users: " << num_of_channel_users << std::endl;
+
+	if (user_limit == -1 || user_limit > num_of_channel_users)
+	{
+		return (false);
+	}
+	else
+	{
+		return (true);
+	}
+}
+
+bool		Channel::doesChannelHavePassword()
+{
+	if (channel_key == "")
+	{
+		return (false);
+	}
+	else
+	{
+		return (true);
+	}
+}
+
+int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client)
+{
+	std::string message;
+	
+	if (channel.isChannelFull() == true)
+	{
+		//channel is full
+		message = ":ircserv 471 " + client.getNickname() +  " " + msg.parameters[0] + " :Cannot join channel (+l) - channel is full, try again later\r\n";
+		
+		//":ft_irc 471 mkorpela_ #ABC567 :Cannot join channel (+l) - channel is full, try again later";
+		
+		send(clientSocket, message.c_str(), message.size(), 0);
+
+		//Example - 14:13 -!- Cannot join to channel #ABC456 (Channel is full)
+		//Example - :copper.libera.chat 471 mkorpela_ #ABC567 :Cannot join channel (+l) - channel is full, try again later		
+		return (1) ;
+	}
+	channel.invite_only = true;
+	std::cout << "channel.isChannelInviteOnly(): " << channel.isChannelInviteOnly() << std::endl;
+	if (channel.isChannelInviteOnly() == true)
+	{
+		std::cout << "//User must have invite.." << std::endl;
+		//User must have invite...
+		//Check if User invited -> Talk to Tom
+		// Send msg
+
+		/*
+			a. If Invited
+				-> OK
+
+			b. If not Invited
+				-> Send message
+		*/
+
+		// YOU SHOULD'VE BEEN INVITED. 
+		message  = ":ircserv 473 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+i) - you must be invited\r\n";
+		send(clientSocket, message.c_str(), message.size(), 0);
+
+		//example << JOIN #BANNNANAss
+		//example >> :lithium.libera.chat 473 gravity123 #BANNNANAss :Cannot join channel (+i) - you must be invited
+		return (1);
+	}
+	
+ 	if (channel.doesChannelHavePassword() == true)
+	{
+		if (msg.parameters.size() <= 1)						 //No password parameter passed.
+		{
+			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - no password entered\r\n"; // Trailing messages don't print
+			send(clientSocket, message.c_str(), message.size(), 0);
+
+			// << JOIN #ABC1234
+			// >> :molybdenum.libera.chat 475 apppleess #ABC1234 :Cannot join channel (+k) - bad key
+
+			return (1);
+		}
+		if (channel.getChannelKey() == msg.parameters[1]) 	// Password Correct
+		{
+
+			// message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->getServHostName() + " JOIN " + msg.parameters[0] + "\r\n";
+			// std::cout << "message: " << message;
+			// send(clientSocket, message.c_str(), message.size(), 0); //Send MESSAGE here if needed... I'll think about it later. :)
+
+			// << JOIN #ABC1234 123456
+			// >> :apppleess!~mkorpela@194.136.126.52 JOIN #ABC1234
+		}
+		else 												//Password Incorrect
+		{
+			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - password incorrect\r\n"; // Trailing messages don't print
+			send(clientSocket, message.c_str(), message.size(), 0);
+
+			// << JOIN #ABC1234 lol
+			// >> :molybdenum.libera.chat 475 apppleess #ABC1234 :Cannot join channel (+k) - bad key
+		
+			return (1);
+		}
+	}
+	return (0);
+}
+
 int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 {
-	int index = getChannelIndex(msg.parameters[0], this->channel_names);
+	std::cout << "in Join Channel" << std::endl;
 
-	addChannelUser(this->channel_names[index], client, false);
+	int index = getChannelIndex(msg.parameters[0], this->channel_names);
+	if (index == -1)
+	{
+		//Channel doesn't exist
+	}
+
+	/*
+		1. Check user_limit
+			-1
+				-> all good
+			(user_limit <= number_of_users_in_channel)
+			f.ex. 20 <= 21
+
+
+			if user_limit >= getNumberOfChannelUsers()
+			getNumberOfChannelUsers
+
+		2. Check invite_only
+		3. Check Password
+	*/
+
+	if (channelJoinChecks(this -> channel_names[index], msg, clientSocket, client) != 0)
+	{
+		return (1);
+	}
+
+	addChannelUser(this->channel_names[index], client, false); // THIS comes later..
+
+
+
+
 
 	//TODO: Do we send a message to Irssi? send broadcast msg?
 
