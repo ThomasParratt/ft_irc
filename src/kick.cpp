@@ -49,20 +49,40 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 		std::cout << "CHANNEL EXISTS" << std::endl;
 		if (userExists(client.getNickname(), msg.parameters[1]))
 		{
-			std::cout << "USER EXISTS ON CHANNEL" << std::endl;
-			// now here
+			std::cout << "USER INVITING EXISTS ON CHANNEL" << std::endl;
+			for (auto &channel : channel_names)
+			{
+				for (auto &inviter : channel.channel_users)
+				{
+					if ((inviter.nickname == client.getNickname()))
+					{
+						if (inviter.operator_permissions)
+						{
+							//invite
+						}
+						else
+						{
+							std::cout << "USER IS NOT AN OPERATOR" << std::endl; // 482 only sends to main window
+							std::string notice = ":ircserv NOTICE " + msg.parameters[1] + " :You're not channel operator\r\n";
+							send(clientSocket, notice.c_str(), notice.size(), 0);
+							std::string message_482 = ":ircserv 482 " + client.getNickname() + msg.parameters[1] + " :You're not channel operator\r\n";
+							send(clientSocket, message_482.c_str(), message_482.size(), 0);
+						}
+					}
+				}
+			}
 		}
 		else
 		{
 			std::cout << "USER DOESN'T EXIST ON CHANNEL" << std::endl;
-			std::string message_442 = ":ircserv 002 " + client.getNickname() + msg.parameters[1] + " :You're not on that channel\r\n";
+			std::string message_442 = ":ircserv 442 " + client.getNickname() + msg.parameters[1] + " :You're not on that channel\r\n";
 			send(clientSocket, message_442.c_str(), message_442.size(), 0);
 		}
 	}
 	else
 	{
 		std::cout << "CHANNEL DOESN'T EXIST" << std::endl;
-		std::string message_403 = ":ircserv 002 " + client.getNickname() + msg.parameters[1] + " :No such channel\r\n";
+		std::string message_403 = ":ircserv 403 " + client.getNickname() + msg.parameters[1] + " :No such channel\r\n";
 		send(clientSocket, message_403.c_str(), message_403.size(), 0);
 	}
 	return (0);
@@ -70,7 +90,8 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 
 // works for "/kick bob"
 // need extra checks if "/kick bob #channel"
-int		Server::kickCommand(Msg msg, int clientSocket, Client &client) 
+// check if channel exists
+int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 {
 	for (auto &channel : channel_names)
 	{
@@ -101,9 +122,11 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 					}
 					else
 					{
-						// NO OPERATOR PERMISSIONS
-						std::string notice = ":ircserv NOTICE " + channel.name + " :You're not a channel operator\r\n";
+						// NO OPERATOR PERMISSIONS // should this be message 482? // 482 sends to main window
+						std::string notice = ":ircserv NOTICE " + channel.name + " :You're not channel operator\r\n";
 						send(clientSocket, notice.c_str(), notice.size(), 0);
+						std::string message_482 = ":ircserv 482 " + client.getNickname() + channel.name + " :You're not channel operator\r\n";
+						send(clientSocket, message_482.c_str(), message_482.size(), 0);
 						return (0);
 					}
 				}
