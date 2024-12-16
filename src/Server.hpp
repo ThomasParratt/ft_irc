@@ -91,4 +91,7 @@ class Server {
 
 	std::string getCurrentTime();
 	int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);
+
+	//debuggers
 	void	printMsg(Msg msg);
+	void	printArray(std::vector<std::string>message_array);
