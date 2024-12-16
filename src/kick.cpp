@@ -41,6 +41,8 @@ int		Server::channelExists(std::string channel)
 	return (0);
 }
 
+// TESTING NEEDED FOR INVITE AND KICK
+// A LOT OF REPETITION
 int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (channelExists(msg.parameters[1]))
@@ -57,7 +59,7 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 					{
 						if (inviter.operator_permissions)
 						{
-							if (!userExists(msg.parameters[0], msg.parameters[1]))
+							if (!userExists(msg.parameters[0], msg.parameters[1])) // what if the invitee doesn't exist at all? socket failure?
 							{
 								//invite
 								std::cout << "INVITE" << std::endl;
@@ -91,63 +93,88 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 		else
 		{
 			std::cout << "USER DOESN'T EXIST ON CHANNEL" << std::endl;
-			std::string message_442 = ":ircserv 442 " + client.getNickname() + msg.parameters[1] + " :You're not on that channel\r\n";
+			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[1] + " :You're not on that channel\r\n";
 			send(clientSocket, message_442.c_str(), message_442.size(), 0);
 		}
 	}
 	else
 	{
 		std::cout << "CHANNEL DOESN'T EXIST" << std::endl;
-		std::string message_403 = ":ircserv 403 " + client.getNickname() + msg.parameters[1] + " :No such channel\r\n";
+		std::string message_403 = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[1] + " :No such channel\r\n";
 		send(clientSocket, message_403.c_str(), message_403.size(), 0);
 	}
 	return (0);
 }
 
 // works for "/kick bob"
-// need extra checks if "/kick bob #channel"
+// need extra checks if "/kick #channel bob"
 // check if channel exists
 int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 {
-	for (auto &channel : channel_names)
+	if (channelExists(msg.parameters[0]))
 	{
-		if (channel.name == msg.parameters[0]) 
+		std::cout << "CHANNEL EXISTS" << std::endl;
+		if (userExists(client.getNickname(), msg.parameters[0]))
 		{
-			for (auto &kicker : channel.channel_users)
+			std::cout << "USER KICKING EXISTS ON CHANNEL" << std::endl;
+			for (auto &channel : channel_names)
 			{
-				if ((kicker.nickname == client.getNickname()))
+				if (channel.name == msg.parameters[0])
 				{
-					if (kicker.operator_permissions)
+					for (auto &kicker : channel.channel_users)
 					{
-						if (userExists(msg.parameters[1], msg.parameters[0]))
+						if ((kicker.nickname == client.getNickname()))
 						{
-							int i = getChannelIndex(msg.parameters[0], channel_names);
-							std::string kick = ":" + kicker.nickname + " KICK " + channel.name + " " + msg.parameters[1] + "\r\n";
-							broadcastToChannel(channel_names[i], kick);
-							//printChannels();
-							removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from");
-							//printChannels();
-							return (0);
+							if (kicker.operator_permissions)
+							{
+								if (userExists(msg.parameters[1], msg.parameters[0]))
+								{
+									std::cout << "KICK" << std::endl;
+									int i = getChannelIndex(msg.parameters[0], channel_names);
+									std::string kick = ":" + kicker.nickname + " KICK " + channel.name + " " + msg.parameters[1] + "\r\n";
+									broadcastToChannel(channel_names[i], kick);
+									//printChannels();
+									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from");
+									//printChannels();
+									//return (0); // do we need these returns?
+								}
+								else
+								{
+									// need to use message 441
+									std::string notice = ":ircserv NOTICE " + channel.name + " :" + msg.parameters[1] + " is not on this channel\r\n";
+									send(clientSocket, notice.c_str(), notice.size(), 0);
+									std::string message_441 = ":ircserv 441 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :They aren't on that channel\r\n";
+									send(clientSocket, message_441.c_str(), message_441.size(), 0);
+									//return (0); // do we need these returns?
+								}
+							}
+							else
+							{
+								// NO OPERATOR PERMISSIONS
+								std::cout << "USER IS NOT AN OPERATOR" << std::endl;
+								std::string notice = ":ircserv NOTICE " + channel.name + " :You're not channel operator\r\n";
+								send(clientSocket, notice.c_str(), notice.size(), 0);
+								std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.name + " :You're not channel operator\r\n";
+								send(clientSocket, message_482.c_str(), message_482.size(), 0);
+								//return (0); // do we need these returns?
+							}
 						}
-						else
-						{
-							std::string notice = ":ircserv NOTICE " + channel.name + " :" + msg.parameters[1] + " is not on this channel\r\n";
-							send(clientSocket, notice.c_str(), notice.size(), 0);
-							return (0);
-						}
-					}
-					else
-					{
-						// NO OPERATOR PERMISSIONS
-						// std::string notice = ":ircserv NOTICE " + channel.name + " :You're not channel operator\r\n";
-						// send(clientSocket, notice.c_str(), notice.size(), 0);
-						std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.name + " :You're not channel operator\r\n";
-						send(clientSocket, message_482.c_str(), message_482.size(), 0);
-						return (0);
 					}
 				}
 			}
 		}
+		else
+		{
+			std::cout << "USER DOESN'T EXIST ON CHANNEL" << std::endl;
+			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[1] + " :You're not on that channel\r\n";
+			send(clientSocket, message_442.c_str(), message_442.size(), 0);
+		}
+	}
+	else
+	{
+		std::cout << "CHANNEL DOESN'T EXIST" << std::endl;
+		std::string message_403 = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[1] + " :No such channel\r\n";
+		send(clientSocket, message_403.c_str(), message_403.size(), 0);
 	}
 	return (0);
 }
