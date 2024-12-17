@@ -11,6 +11,7 @@ struct User
 	std::string nickname;
 	bool		operator_permissions;
 	bool		topicSetter;
+	bool	    invited;
 	int 		socket; //user socket -> Is this needed?
 };
 

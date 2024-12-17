@@ -239,7 +239,20 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 {
 	int index = getChannelIndex(msg.parameters[0], this->channel_names);
 
-	addChannelUser(this->channel_names[index], client, false);
+	if (this->channel_names[index].channel_key.empty())
+		addChannelUser(this->channel_names[index], client, false);
+	else
+	{
+		if (msg.parameters[1] == this->channel_names[index].channel_key)
+		{
+			addChannelUser(this->channel_names[index], client, false);
+		}
+		else
+		{
+			std::string response = ":ircserver PRIVMSG " + msg.parameters[0] + " :Invalid Channel Key\r\n";
+			send(clientSocket, response.c_str(), response.size(), 0);
+		}
+	}
 
 	//TODO: Do we send a message to Irssi? send broadcast msg?
 
