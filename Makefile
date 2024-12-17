@@ -10,6 +10,7 @@ SRC			=	src/main.cpp \
 				src/part.cpp \
 				src/topic.cpp \
 				src/privmsg.cpp \
+				src/mode.cpp \
 
 OBJ			=	$(SRC:.cpp=.o)
 

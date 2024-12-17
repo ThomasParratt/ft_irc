@@ -110,6 +110,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 			:sender_nickname!user@host PRIVMSG #channel_name :message_text
 			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
 	*/
+	printChannels();
 	return (0);
 }
 
@@ -277,7 +278,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command == "USER")
 	{
-		client.setUsername(msg.parameters[0]);
+		Server::userCommand(msg, clientSocket, client);
 	}
 	// else if (msg.command == "OPER")
 	// {
@@ -298,14 +299,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "INVITE")
 	{
-		if (client.getOperatorStatus())
-		{
-			//TO DO: Invite User
-		}
-		else
-		{
-			//TO DO: Send Error Message "User does not have Operator Status"
-		}
+		inviteCommand(msg, clientSocket, client);
 	}
 	else if (msg.command == "PART")
 	{
@@ -318,6 +312,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "MODE")
 	{
+		//modeCommand(msg, clientSocket, client);
 		if (client.getOperatorStatus())
 		{
 			//TO DO: Change channel's mode

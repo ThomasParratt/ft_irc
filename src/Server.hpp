@@ -55,8 +55,12 @@ class Server {
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
 		int		passwordCommand(Msg msg, int clientSocket, Client &client);
 		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
+		int		userCommand(Msg msg, int clientSocket, Client &client);
 		int		kickCommand(Msg msg, int clientSocket, Client &client);
+		int		inviteCommand(Msg msg, int clientSocket, Client &client);
+
 		int		userExists(std::string user, std::string channel);
+		int		channelExists(std::string channel);
 		int		removeUser(std::string user, std::string channel, std::string message);
 
 		int     topicCommand(Msg msg, int clientSocket, Client &client);
@@ -74,11 +78,12 @@ class Server {
 		void	channelMessage(Msg msg, int clientSocket, Client &client);		
 		void	directMessage(Msg msg, int clientSocket, Client &client);
 
+		int		modeCommand(Msg msg, int clientSocket, Client &client);
+
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
-  		int		operCommand(Msg msg, int clientSocket, Client &client);
 
-		int		clientLoop(const std::string& nickname); //added this
+		int		nickClash(const std::string& nickname, int socket);
 		
 
 		//Getter
