@@ -1,3 +1,4 @@
+//libraries
 #include <iostream>
 #include <vector>
 #include <map>
@@ -7,18 +8,12 @@
 #include <unistd.h>
 #include <string.h>
 
-
-
-
-
+//header files
 #include "Msg.hpp"
 #include "Channel.hpp"
 #include "Server.hpp"
 
-
-
-
-
+//functions definitions
 size_t	skipSpaces(std::string string, size_t index)
 {
 	while (string[index] == ' ')
@@ -66,7 +61,7 @@ std::vector<std::string>	getParameters(std::vector<std::string> array)
 	{
 		if (array[i][0] != ':')
 		{
-			// std::cout << "Params: " << array[i] << std::endl;
+			std::cout << "Params[" << i << "]: " << array[i] << std::endl;
 			parameters.push_back(array[i]);
 		}
     }
@@ -116,6 +111,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 			:sender_nickname!user@host PRIVMSG #channel_name :message_text
 			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
 	*/
+	printChannels();
 	return (0);
 }
 
@@ -283,7 +279,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command == "USER")
 	{
-		client.setUsername(msg.parameters[0]);
+		Server::userCommand(msg, clientSocket, client);
 	}
 	// else if (msg.command == "OPER")
 	// {
@@ -304,29 +300,20 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "INVITE")
 	{
-		if (client.getOperatorStatus())
-		{
-			//TO DO: Invite User
-		}
-		else
-		{
-			//TO DO: Send Error Message "User does not have Operator Status"
-		}
+		inviteCommand(msg, clientSocket, client);
+	}
+	else if (msg.command == "PART")
+	{
+		partCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "TOPIC")
 	{
-		if (client.getOperatorStatus())
-		{
-			//TO DO: change channel topic
-		}
-		else
-		{
-			//TO DO: Send Error Message "User does not have Operator Status"
-		}
+		std::cout << "debug 1" << std::endl;
+		topicCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "MODE")
 	{
-		modeCommand(msg, clientSocket, client);
+		//modeCommand(msg, clientSocket, client);
 		if (client.getOperatorStatus())
 		{
 			//TO DO: Change channel's mode
@@ -356,6 +343,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	return (0);
 }
+
 
 int    Server::messageHandler(std::string messages, int clientSocket, Client &client)
 {

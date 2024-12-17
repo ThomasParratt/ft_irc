@@ -1,5 +1,6 @@
 
 #include "Channel.hpp"
+#include "Server.hpp"
 
 Channel::Channel(std::string name) : 
 		name					(name),
@@ -10,6 +11,13 @@ Channel::Channel(std::string name) :
 	;
 }
 
+
+void	Channel::setChannelTopic(std::string new_topic, Client &client)
+{
+	topic = new_topic;
+	topicSetter = client.getNickname();
+	topicSetTime = getCurrentTime();
+}
 
 /*
 	14:27 -!- mkorpela [~mkorpela@194.136.126.51] has joined #ChanForChanny
