@@ -45,6 +45,7 @@ int		Server::channelExists(std::string channel)
 // A LOT OF REPETITION
 int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 {
+	std::cout << "INVITE COMMAND" << std::endl;
 	if (channelExists(msg.parameters[1]))
 	{
 		std::cout << "CHANNEL EXISTS" << std::endl;
@@ -107,10 +108,11 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 }
 
 // works for "/kick bob"
-// need extra checks if "/kick #channel bob"
-// check if channel exists
+// need extra checks if "/kick #channel bob" // For example, if the kick command is executed while in a different channel
+// from main screen and from different channel screens
 int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 {
+	std::cout << "KICK COMMAND" << std::endl;
 	if (channelExists(msg.parameters[0]))
 	{
 		std::cout << "CHANNEL EXISTS" << std::endl;
@@ -133,9 +135,9 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 									int i = getChannelIndex(msg.parameters[0], channel_names);
 									std::string kick = ":" + kicker.nickname + " KICK " + channel.name + " " + msg.parameters[1] + "\r\n";
 									broadcastToChannel(channel_names[i], kick);
-									//printChannels();
+									printChannels();
 									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from");
-									//printChannels();
+									printChannels();
 									//return (0); // do we need these returns?
 								}
 								else
@@ -150,7 +152,6 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 							}
 							else
 							{
-								// NO OPERATOR PERMISSIONS
 								std::cout << "USER IS NOT AN OPERATOR" << std::endl;
 								std::string notice = ":ircserv NOTICE " + channel.name + " :You're not channel operator\r\n";
 								send(clientSocket, notice.c_str(), notice.size(), 0);
