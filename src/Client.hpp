@@ -12,16 +12,16 @@
 class Client
 {
     private:
-        std::string nickname;
-        std::string username;
-        std::string hostIP;
-        std::string realname;
-        std::string password;
+        std::string _nickname;
+        std::string _username;
+        std::string _hostIP;
+        std::string _realname;
+        std::string _password;
 
-        std::vector<std::string> channelsNames;
-        bool        welcomeSent;
-        bool        operatorStatus; // maybe we don't need this, as we are checking if the user is an operator through Channel
-        int         socket;
+        std::vector<std::string> _channelsNames;
+        bool        _welcomeSent;
+        bool        _operatorStatus;
+        int         _socket;
     public:
         Client(int socket, const std::string& password);
 
