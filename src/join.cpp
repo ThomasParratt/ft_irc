@@ -88,9 +88,6 @@ bool		Channel::isChannelFull()
 	int user_limit 				= this -> getUserLimit();
 	int	num_of_channel_users 	= this -> getNumberOfChannelUsers();
 
-	std::cout << "User_limit: " << user_limit << std::endl;
-	std::cout << "Num_of_channel_users: " << num_of_channel_users << std::endl;
-
 	if (user_limit == -1 || user_limit > num_of_channel_users)
 	{
 		return (false);
@@ -185,8 +182,6 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 
 int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 {
-	std::cout << "in Join Channel" << std::endl;
-
 	int index = getChannelIndex(msg.parameters[0], this->channel_names);
 	if (index == -1)
 	{
