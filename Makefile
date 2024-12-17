@@ -7,6 +7,8 @@ SRC			=	src/main.cpp \
 				src/createMsgs.cpp \
 				src/connectionMessages.cpp \
 				src/kick.cpp \
+				src/part.cpp \
+				src/topic.cpp \
 				src/privmsg.cpp \
 				src/mode.cpp \
 

@@ -63,7 +63,9 @@ class Server {
 		int		channelExists(std::string channel);
 		int		removeUser(std::string user, std::string channel, std::string message);
 
-
+		int     topicCommand(Msg msg, int clientSocket, Client &client);
+		void	topicPrint(Msg msg, int clientSocket, Client &client);
+		int		partCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
 		int     createChannel(Msg msg, int clientSocket, Client &client);
 		int		joinChannel(Msg msg, int clientSocket, Client &client);
@@ -94,3 +96,7 @@ class Server {
 
 	std::string getCurrentTime();
 	int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);
+
+	//debuggers
+	void	printMsg(Msg msg);
+	void	printArray(std::vector<std::string>message_array);

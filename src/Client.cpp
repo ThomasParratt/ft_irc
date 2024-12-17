@@ -122,4 +122,5 @@ void       Client::leaveChannel(std::string channelName)
     std::vector<std::string>::iterator it = std::find(channelsNames.begin(), channelsNames.end(), channelName);
     if (it != channelsNames.end())
         channelsNames.erase(it);
+    
 }

@@ -7,6 +7,7 @@ void	Server::userMessageToChannel(Channel channel, int sender_socket, std::strin
 	int socket;
 
 	users = channel.getChannelUsers();
+	printChannels();
 	for (int i = 0; i < users.size(); i++)
 	{
 		int socket = getClientSocket(users[i].nickname);
