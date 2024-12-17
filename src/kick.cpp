@@ -168,14 +168,14 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 		else
 		{
 			std::cout << "USER DOESN'T EXIST ON CHANNEL" << std::endl;
-			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[1] + " :You're not on that channel\r\n";
+			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[0] + " :You're not on that channel\r\n";
 			send(clientSocket, message_442.c_str(), message_442.size(), 0);
 		}
 	}
 	else
 	{
 		std::cout << "CHANNEL DOESN'T EXIST" << std::endl;
-		std::string message_403 = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[1] + " :No such channel\r\n";
+		std::string message_403 = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
 		send(clientSocket, message_403.c_str(), message_403.size(), 0);
 	}
 	return (0);
