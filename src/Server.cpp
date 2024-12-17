@@ -175,7 +175,7 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 	User	new_user;
 	new_user.nickname = client.getNickname();
 	new_user.operator_permissions = operator_permissions;
-
+	new_user.topicSetter = false;
 	//Add into channel Users
 	channel.channel_users.push_back(new_user);
 }
@@ -202,6 +202,10 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 
 void	Server::printChannelUsers(Channel channel)
 {
+	if (channel.channel_users.size() == 0)
+	{
+		std::cout << "No Users in Channel" << std::endl;
+	}
 	for (int i = 0; i < channel.channel_users.size(); i++)
 	{
 		std::cout << "User[" << i << "]: " <<  channel.channel_users[i].nickname  << " (op = " <<  channel.channel_users[i].operator_permissions << ")" << std::endl;

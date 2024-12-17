@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
+
 int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())
