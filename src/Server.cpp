@@ -298,15 +298,10 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 		//Example - :copper.libera.chat 471 mkorpela_ #ABC567 :Cannot join channel (+l) - channel is full, try again later		
 		return (1) ;
 	}
-	channel.invite_only = true;
-	std::cout << "channel.isChannelInviteOnly(): " << channel.isChannelInviteOnly() << std::endl;
+	// channel.invite_only = true;
+	// std::cout << "channel.isChannelInviteOnly(): " << channel.isChannelInviteOnly() << std::endl;
 	if (channel.isChannelInviteOnly() == true)
 	{
-		std::cout << "//User must have invite.." << std::endl;
-		//User must have invite...
-		//Check if User invited -> Talk to Tom
-		// Send msg
-
 		/*
 			a. If Invited
 				-> OK
@@ -353,7 +348,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 
 			// << JOIN #ABC1234 lol
 			// >> :molybdenum.libera.chat 475 apppleess #ABC1234 :Cannot join channel (+k) - bad key
-		
+
 			return (1);
 		}
 	}
