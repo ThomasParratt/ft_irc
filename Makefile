@@ -1,12 +1,14 @@
 NAME		=	ircserv
 
 SRC			=	src/main.cpp \
+				src/join.cpp \
 				src/Server.cpp \
 				src/Channel.cpp \
 				src/Client.cpp \
 				src/createMsgs.cpp \
 				src/connectionMessages.cpp \
 				src/kick.cpp \
+				src/invite.cpp \
 				src/part.cpp \
 				src/topic.cpp \
 				src/privmsg.cpp \

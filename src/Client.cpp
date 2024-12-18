@@ -1,58 +1,58 @@
 #include "Client.hpp"
 
-Client::Client(int socket, const std::string& password) : socket(socket), password(password), welcomeSent(false) 
+Client::Client(int socket, const std::string& password) : _socket(socket), _password(password), _welcomeSent(false) 
 {
     setHostIP();
 };
 
 std::string Client::getNickname()
 {
-    return(nickname);
+    return(_nickname);
 }
 
 std::string Client::getUsername()
 {
-    return(username);
+    return(_username);
 }
 
 std::string Client::getPassword()
 {
-    return(password);
+    return(_password);
 }
 
 std::string Client::getHostIP()
 {
-    return(hostIP);
+    return(_hostIP);
 }
 
 bool        Client::getWelcomeSent()
 {
-    return(welcomeSent);
+    return(_welcomeSent);
 }
 
 bool       Client::getOperatorStatus()
 {
-    return(operatorStatus);
+    return(_operatorStatus);
 }
 
 int         Client::getSocket()
 {
-    return(socket);
+    return(_socket);
 }
 
 std::vector<std::string>& Client::getChannelsNames()
 {
-    return(channelsNames);
+    return(_channelsNames);
 }
 
 void        Client::setNickname(std::string str)
 {
-    nickname = str;
+    _nickname = str;
 }
 
 void        Client::setUsername(std::string str)
 {
-    username = str;
+    _username = str;
 }
 
 void Client::setHostIP()
@@ -82,7 +82,7 @@ void Client::setHostIP()
         char host_ip[INET_ADDRSTRLEN];
         if (inet_ntop(AF_INET, &(ipv4->sin_addr), host_ip, sizeof(host_ip)) != nullptr)
         {
-            hostIP = host_ip;
+            _hostIP = host_ip;
             freeaddrinfo(res); // Clean up
             return ;
         }
@@ -95,32 +95,31 @@ void Client::setHostIP()
 
 void        Client::setWelcomeSent(bool value)
 {
-    welcomeSent = value;
+    _welcomeSent = value;
 }
 
 void        Client::setOperatorStatus(bool value)
 {
-    operatorStatus = value;
+    _operatorStatus = value;
 }
 
 void        Client::joinChannel(std::string channelName)
 {
     /* how should we give the operator status? The first client that creates the channel should receive operatorStatus */
-    std::vector<std::string>::iterator it = std::find(channelsNames.begin(), channelsNames.end(), channelName);
-    if (it != channelsNames.end())
+    std::vector<std::string>::iterator it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
+    if (it != _channelsNames.end())
         return;
     else
     {
         /* check if channel is invite only, check the channel size, check if channel requires a password*/
-        channelsNames.push_back(channelName);
+        _channelsNames.push_back(channelName);
 
     }
 }
 
 void       Client::leaveChannel(std::string channelName)
 {
-    std::vector<std::string>::iterator it = std::find(channelsNames.begin(), channelsNames.end(), channelName);
-    if (it != channelsNames.end())
-        channelsNames.erase(it);
-    
+    std::vector<std::string>::iterator it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
+    if (it != _channelsNames.end())
+        _channelsNames.erase(it);
 }
