@@ -61,7 +61,7 @@ std::vector<std::string>	getParameters(std::vector<std::string> array)
 	{
 		if (array[i][0] != ':')
 		{
-			std::cout << "Params[" << i << "]: " << array[i] << std::endl;
+			// std::cout << "Params[" << i << "]: " << array[i] << std::endl;
 			parameters.push_back(array[i]);
 		}
     }
@@ -75,7 +75,7 @@ std::string		getTrailingMessage(std::vector<std::string> array)
 	if (array[last_string][0] == ':')
 	{
 		// std::cout << "Trailing Message: " << &(array[last_string][1]) << std::endl;		
-		return (&(array[last_string][1]));			//getting rid of 
+		return (&(array[last_string][1]));			//get rid of ':' character
 	}
 	else
 	{
@@ -94,23 +94,23 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	else
 	{ 
 		// std::cout << "Channel Found at i = " << i << std::endl;
-		joinChannel(msg, clientSocket, client);
+		joinChannel(msg, clientSocket, client);// If fail - then leave???
 	}
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
 
 	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " has joined " + msg.parameters[0] + "\r\n";	
 
 	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
-	//WELCOME_MSG - Send message to client who connected to channel
 
-	// printChannels(); //Note: You can print out all Channels and Users in channels with this function.
+	//WELCOME_MSG - Send message to client who connected to channel
 
 	/*
 		Send This to Server!
 			:sender_nickname!user@host PRIVMSG #channel_name :message_text
 			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
 	*/
-	printChannels();
+
+	// printChannels();
 	return (0);
 }
 

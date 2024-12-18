@@ -69,6 +69,8 @@ class Server {
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
 		int     createChannel(Msg msg, int clientSocket, Client &client);
 		int		joinChannel(Msg msg, int clientSocket, Client &client);
+		int		channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client);
+
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
 		void	broadcastToChannel(Channel &channel, std::string message);
 		int		getClientSocket(std::string nickname);
