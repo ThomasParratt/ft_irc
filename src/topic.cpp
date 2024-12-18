@@ -1,76 +1,92 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
+/*
+Topic command
+checks if enough parameter is given
+check if channel exists
+check if its asking for the topic or setting the topic
+check if user exists in the channel
+check if operator privilige is required
+*/
+
 int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 {
-	/* check msg.parameter size,
-		if (size == 1) -> get topic
-		else if (size == 2) -> set topic
-			check if topic_requiredOp is true 
-		else if (size == 3) -> find the channel and set topic 
-			check if topic_requiredOp is true 
-		else -> error message	
-	*/
 	printMsg(msg); // debug
-	if (msg.parameters.size() == 1 && msg.trailing_msg.empty())
+	if (msg.parameters[0].empty())
 	{
-		topicPrint(msg, clientSocket, client);
+		std::cout << "Not enough parameters" << std::endl;
+		std::string error_461 = ":ircserv 461 " + client.getNickname() + " :TOPIC Not enough parameters\r\n";
+		send(clientSocket, error_461.c_str(), error_461.size(), 0);
+		return 1;
 	}
-	else if (!msg.trailing_msg.empty())
+	Channel *tarChannel = getChannel(msg.parameters[0]);
+	if (tarChannel == nullptr)
 	{
-		for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
+		std::string error_403 = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
+		send(clientSocket, error_403.c_str(), error_403.size(), 0);
+	}
+	else if (msg.trailing_msg.empty())
+	{
+		if (userExists(client.getNickname(), tarChannel->name))
+			topicPrint(tarChannel, clientSocket, client);
+		else
 		{
-			if (it->name == msg.parameters[0])
-			{
-				if (it->topic_requires_operator)
-				{
-					for (auto &setter : it->channel_users)
-					{
-						if (setter.nickname == client.getNickname())
-						{
-							if (!setter.operator_permissions)
-							{
-								std::string error = ":" + client.getNickname() + " :You do not have the required operator status to change the topic\r\n";
-								send(clientSocket, error.c_str(), error.size(), 0);
-								return 1;
-							}
-							else
-							{
-								it->setChannelTopic(msg.trailing_msg, client);
-								std::string topicMsg = ":" + client.getNickname() + " TOPIC " + it->name + " :" + msg.trailing_msg + "\r\n";
-								broadcastToChannel(*it, topicMsg);
-							}
-						}
-					}
-				}
-				else
-				{
-					it->setChannelTopic(msg.trailing_msg, client);
-					std::string topicMsg = ":" + client.getNickname() + " TOPIC " + it->name + " :" + msg.trailing_msg + "\r\n";
-					broadcastToChannel(*it, topicMsg);
-					return 1;
-				}
-			}
+			std::string error_442 = ":ircserv 442 " + client.getNickname() + " " + tarChannel->name + " :You're not on that channel\r\n";
+			send(clientSocket, error_442.c_str(), error_442.size(), 0);
 		}
 	}
 	else
 	{
-		// dont think I need this section. 
-		std::string error = ":" + client.getNickname() + " :Invalid number of parameters for TOPIC command\r\n";
-		send(clientSocket, error.c_str(), error.size(), 0);
+		std::cout << "Setting Topic" << std::endl;
+		if (tarChannel->topic_requires_operator)
+		{
+			for (auto &setter : tarChannel->channel_users)
+			{
+				if (setter.nickname == client.getNickname())
+				{
+					if (!setter.operator_permissions)
+					{
+						std::string error_482 = ":ircserv 482 " + client.getNickname() + " " + tarChannel->name + " :You're not channel operator\r\n";
+						send(clientSocket, error_482.c_str(), error_482.size(), 0);
+						return 1;
+					}
+					else
+					{
+						tarChannel->setChannelTopic(msg.trailing_msg, client);
+						std::string topicMsg = ":" + client.getNickname() + " TOPIC " + tarChannel->name + " :" + msg.trailing_msg + "\r\n";
+						broadcastToChannel(*tarChannel, topicMsg);
+					}
+				}
+				else
+				{
+					std::string error_442 = ":ircserv 442 " + client.getNickname() + " " + tarChannel->name + " :You're not on that channel\r\n";
+					send(clientSocket, error_442.c_str(), error_442.size(), 0);
+				}
+			}
+		}
+		else
+		{
+			tarChannel->setChannelTopic(msg.trailing_msg, client);
+			std::string topicMsg = ":" + client.getNickname() + " TOPIC " + tarChannel->name + " :" + msg.trailing_msg + "\r\n";
+			broadcastToChannel(*tarChannel, topicMsg);
+		}
 	}
 	return 0;
 }
 
-void Server::topicPrint(Msg msg, int clientSocket, Client &client)
+void Server::topicPrint(Channel *tarChannel, int clientSocket, Client &client)
 {
-	for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
+	if (tarChannel->getChannelTopic().empty())
 	{
-		if (it->name == msg.parameters[0])
-		{
-			std::string channelTopic = it->getChannelTopic();
-			std::string topicMsg = "Topic for " + msg.parameters[0] + ": " + channelTopic + "\r\n" + "Topic set by " + it->topicSetter + "[server hostname]" + " " + it->topicSetTime + "\r\n";
-			send(clientSocket, topicMsg.c_str(), topicMsg.size(), 0);
-		}
+		std::string noTopicMsg_331 = "No topic is set for " + tarChannel->name + "\r\n";
+		send(clientSocket, noTopicMsg_331.c_str(), noTopicMsg_331.size(), 0);
+		return;
+	}
+	else 
+	{
+		std::string topicMsg = "Topic for " + tarChannel->name + ": " + tarChannel->getChannelTopic() + "\r\n" + "Topic set by " + tarChannel->topicSetter + "[server hostname]" + " " + tarChannel->topicSetTime + "\r\n";
+		send(clientSocket, topicMsg.c_str(), topicMsg.size(), 0);
 	}
 }
+
