@@ -98,8 +98,8 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	}
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
 
+	// need to make sure that we don't send this message to the channels if the user didn't join
 	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " has joined " + msg.parameters[0] + "\r\n";	
-
 	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
 
 	//WELCOME_MSG - Send message to client who connected to channel
@@ -307,14 +307,11 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "TOPIC")
 	{
-		std::cout << "debug 1" << std::endl;
 		topicCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "MODE")
 	{
 		//modeCommand(msg, clientSocket, client);
-		if (client.getOperatorStatus())
-		{
 			//TO DO: Change channel's mode
 			//parse the command
 			// /MODE <channel> +i = invite only | /MODE <channel> -i = remove invite only
@@ -322,11 +319,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 			// /MODE <channel> +k <password> = add the password to the channel | /MODE <channel> -k = remove the password from the channel	
 			// /MODE <channel> +o <nickname> = give operator status | /MODE <channel> -o <nickname> = remove operator status
 			// /MODE <channel> +l <number> = set the limit of users in the channel | /MODE <channel> -l = remove the limit of users in the channel
-		}	
-		else
-		{
-			//TO DO: Send Error Message "User does not have Operator Status"
-		}
+		modeCommand(msg, clientSocket, client);
 	}	
 	else if (msg.command == "JOIN")
 	{
