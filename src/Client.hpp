@@ -19,6 +19,7 @@ class Client
         std::string _password;
 
         std::vector<std::string> _channelsNames;
+        bool        _passwordChecked;
         bool        _welcomeSent;
         bool        _operatorStatus;
         int         _socket;
@@ -29,6 +30,7 @@ class Client
         std::string getUsername();
         std::string getPassword();
         std::vector<std::string>& getChannelsNames();
+        bool        getPasswordChecked();
         bool        getWelcomeSent();
         bool        getOperatorStatus();
         int         getSocket();
@@ -37,6 +39,7 @@ class Client
         void        setNickname(std::string str);
         void        setUsername(std::string str);
         void        setHostIP();
+        void        setPasswordChecked(bool value);
         void        setWelcomeSent(bool value);
         void        setOperatorStatus(bool value);
         void        joinChannel(std::string channelName);

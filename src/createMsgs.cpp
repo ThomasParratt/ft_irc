@@ -296,7 +296,8 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command == "USER")
 	{
-		Server::userCommand(msg, clientSocket, client);
+		if (Server::userCommand(msg, clientSocket, client) != 0)
+			return (1);
 	}
 	// else if (msg.command == "OPER")
 	// {
