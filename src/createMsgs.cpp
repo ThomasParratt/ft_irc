@@ -245,15 +245,31 @@ void	Server::makeMessages(std::vector<Msg> &msgs, std::string buffer)
 	size_t			end = 0;
 	size_t			length = 0;
 
-	while ((end = buffer.find("\r", start)) != std::string::npos)
+ 	if (buffer.find("\r") != std::string::npos)
 	{
-		length = end - start;
-		single_msg = buffer.substr(start, length);
-		// std::cout << "single_msg: " << single_msg << std::endl;
+		while ((end = buffer.find("\r", start)) != std::string::npos)
+		{
+			length = end - start;
+			single_msg = buffer.substr(start, length);
+			// std::cout << "single_msg: " << single_msg << std::endl;
 
-		makeMsgfromString(msg, single_msg);
-		msgs.push_back(msg);
-		start = end + 2;
+			makeMsgfromString(msg, single_msg);
+			msgs.push_back(msg);
+			start = end + 2;
+		}
+	}
+	else
+	{
+		while ((end = buffer.find("\n", start)) != std::string::npos)
+		{
+			length = end - start;
+			single_msg = buffer.substr(start, length);
+			// std::cout << "single_msg: " << single_msg << std::endl;
+
+			makeMsgfromString(msg, single_msg);
+			msgs.push_back(msg);
+			start = end + 1;
+		}
 	}
 }
 
