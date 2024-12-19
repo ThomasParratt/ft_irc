@@ -19,13 +19,11 @@ u_int16_t	getAndCheckPortValue(std::string port_string)
 		std::cerr << "Range Error: Pass in a port value between 1024–49151." << '\n';
 		return (1);
 	}
-	std::cout << "Port: " << port << std::endl;
 	return (port);
 }
 
 int		passwordCheck(std::string password)
 {
-	std::cout << "Password: " << password << std::endl;
 	if (password == "")
 	{
 		std::cout << "Error: Password can't be an empty string." << std::endl;
