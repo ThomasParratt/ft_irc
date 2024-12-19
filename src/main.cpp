@@ -19,17 +19,22 @@ void signalHandler(int signum)
 
 int main(int argc, char **argv)
 {
-    if (argc ==3) {
-        u_int16_t port = std::stoi(argv[1]);
-        Server server(argv[2], port);
-        if (server.serverInit() != 1) {
-            std::cout << "Server initialization failed" << std::endl;
-            return -1;
-        }
-        signal(SIGINT, signalHandler);
-        server.serverLoop();
-    } else {
-        std::cout << "Usage: ./ircserv <port> <password>" << std::endl;
-    }
-    return 0;
+	u_int16_t port;
+
+	if (checkArgumentCount(argc) == 1)
+		return (1);
+	if (passwordCheck(argv[2]) == 1)
+		return (1);
+	if ((port = getAndCheckPortValue(argv[1])) == 1)
+		return (1);
+
+	Server server(argv[2], port);
+	if (server.serverInit() != 1) {
+		std::cout << "Server initialization failed" << std::endl;
+		return (1);
+	}
+	signal(SIGINT, signalHandler);
+	server.serverLoop();
+
+    return (0);
 }

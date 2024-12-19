@@ -102,6 +102,11 @@ class Server {
 	std::string getCurrentTime();
 	int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);
 
+	//User input checks
+	int			checkArgumentCount(int argc);
+	u_int16_t	getAndCheckPortValue(std::string port_string);
+	int			passwordCheck(std::string password);
+
 	//debuggers
 	void	printMsg(Msg msg);
 	void	printArray(std::vector<std::string>message_array);
