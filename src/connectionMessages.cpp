@@ -88,7 +88,6 @@ int		Server::userCommand(Msg msg, int clientSocket, Client &client)
 	}
 	else
 	{
-		std::cout << "PASSWORD NEEDED" << std::endl;
 		std::string message_464 = ":ircserv 464 * :Password needed\r\n";
 		send(clientSocket, message_464.c_str(), message_464.size(), 0);
 		return (1);
