@@ -54,7 +54,10 @@ int		Server::privmsgCommand(Msg msg, int clientSocket, Client &client)
 
 	if (msg.parameters[0][0] == '#')
 	{
-		channelMessage(msg, clientSocket, client);
+		if (userExists(client.getNickname(), msg.parameters[0]))
+			channelMessage(msg, clientSocket, client);
+		else
+			std::cout << "User is not on channel" << std::endl;
 	}
 	else
 	{
