@@ -135,6 +135,14 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 				-> Send message
 		*/
 
+		for (auto &it : channel.invited)
+		{
+			if (it == client.getNickname())
+			{
+				return (0);
+			}
+		}
+
 		// YOU SHOULD'VE BEEN INVITED. 
 		message  = ":ircserv 473 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+i) - you must be invited\r\n";
 		send(clientSocket, message.c_str(), message.size(), 0);
@@ -192,7 +200,6 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 	{
 		return (1);
 	}
-
 	addChannelUser(this->channel_names[index], client, false);
 
 	return (0);

@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int socket, const std::string& password) : _socket(socket), _password(password), _welcomeSent(false) 
+Client::Client(int socket, const std::string& password) : _socket(socket), _password(password), _welcomeSent(false), _passwordChecked(false) 
 {
     setHostIP();
 };
@@ -23,6 +23,11 @@ std::string Client::getPassword()
 std::string Client::getHostIP()
 {
     return(_hostIP);
+}
+
+bool        Client::getPasswordChecked()
+{
+    return(_passwordChecked);
 }
 
 bool        Client::getWelcomeSent()
@@ -92,6 +97,10 @@ void Client::setHostIP()
     freeaddrinfo(res);
 }
 
+void        Client::setPasswordChecked(bool value)
+{
+    _passwordChecked = value;
+}
 
 void        Client::setWelcomeSent(bool value)
 {

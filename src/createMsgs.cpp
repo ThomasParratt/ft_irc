@@ -94,7 +94,9 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	else
 	{ 
 		// std::cout << "Channel Found at i = " << i << std::endl;
-		joinChannel(msg, clientSocket, client);// If fail - then leave???
+		if (joinChannel(msg, clientSocket, client) != 0)// If fail - then leave???
+			return (1);
+		
 	}
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
 
@@ -110,7 +112,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
 	*/
 
-	// printChannels();
+	printChannels();
 	return (0);
 }
 
@@ -245,15 +247,31 @@ void	Server::makeMessages(std::vector<Msg> &msgs, std::string buffer)
 	size_t			end = 0;
 	size_t			length = 0;
 
-	while ((end = buffer.find("\r", start)) != std::string::npos)
+ 	if (buffer.find("\r") != std::string::npos)
 	{
-		length = end - start;
-		single_msg = buffer.substr(start, length);
-		// std::cout << "single_msg: " << single_msg << std::endl;
+		while ((end = buffer.find("\r", start)) != std::string::npos)
+		{
+			length = end - start;
+			single_msg = buffer.substr(start, length);
+			// std::cout << "single_msg: " << single_msg << std::endl;
 
-		makeMsgfromString(msg, single_msg);
-		msgs.push_back(msg);
-		start = end + 2;
+			makeMsgfromString(msg, single_msg);
+			msgs.push_back(msg);
+			start = end + 2;
+		}
+	}
+	else
+	{
+		while ((end = buffer.find("\n", start)) != std::string::npos)
+		{
+			length = end - start;
+			single_msg = buffer.substr(start, length);
+			// std::cout << "single_msg: " << single_msg << std::endl;
+
+			makeMsgfromString(msg, single_msg);
+			msgs.push_back(msg);
+			start = end + 1;
+		}
 	}
 }
 
@@ -278,7 +296,8 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command == "USER")
 	{
-		Server::userCommand(msg, clientSocket, client);
+		if (Server::userCommand(msg, clientSocket, client) != 0)
+			return (1);
 	}
 	// else if (msg.command == "OPER")
 	// {

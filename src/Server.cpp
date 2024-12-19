@@ -122,19 +122,20 @@ void Server::serverLoop() {
 			{
 				char buffer[1024] = {0};
 				int bytesRead = recv(pollfds[i].fd, buffer, sizeof(buffer), 0);
-				if (bytesRead <= 0) {
+				if (bytesRead <= 0) 
+				{
 					if (bytesRead == 0) 
 						std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 					else 
 						std::cerr << "Error reading from socket " << pollfds[i].fd << strerror(errno) << std::endl;
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
-					clients.erase(clients.begin() + (i - 1)); //changed this
+					clients.erase(clients.begin() + (i - 1));
 					i--;
 					continue;
 				}
 				std::cout << "Message received from socket " << pollfds[i].fd << std::endl << buffer;
-				for (auto &client : clients) //changed this
+				for (auto &client : clients)
                 {
                     if (client.getSocket() == pollfds[i].fd) 
                     {
@@ -143,7 +144,7 @@ void Server::serverLoop() {
 							std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 							close(pollfds[i].fd);
 							pollfds.erase(pollfds.begin() + i);
-							clients.erase(clients.begin() + (i - 1)); //changed this
+							clients.erase(clients.begin() + (i - 1));
 							i--;
 							continue;
 						}

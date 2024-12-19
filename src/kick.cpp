@@ -42,8 +42,6 @@ int		Server::channelExists(std::string channel)
 	return (0);
 }
 
-// /kick channel nick
-// kick multiple users in one command?
 int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 {
 	//std::cout << "KICK COMMAND" << std::endl;
