@@ -127,6 +127,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 
 	if (channel.isChannelInviteOnly() == true)
 	{
+		std::cout << "INVITE ONLY" << std::endl;
 		/*
 			a. If Invited
 				-> OK
@@ -135,12 +136,23 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 				-> Send message
 		*/
 
+		for (auto &it : channel.invited)
+		{
+			if (it == client.getNickname())
+			{
+				std::cout << "Invited user = " << it << std::endl;
+				std::cout << "ZERO" << std::endl;
+				return (0);
+			}
+		}
+
 		// YOU SHOULD'VE BEEN INVITED. 
 		message  = ":ircserv 473 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+i) - you must be invited\r\n";
 		send(clientSocket, message.c_str(), message.size(), 0);
 
 		//example << JOIN #BANNNANAss
 		//example >> :lithium.libera.chat 473 gravity123 #BANNNANAss :Cannot join channel (+i) - you must be invited
+		std::cout << "ONE" << std::endl;
 		return (1);
 	}
 	
@@ -192,7 +204,7 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 	{
 		return (1);
 	}
-
+	std::cout << "ADDING CHANNEL USER" << std::endl;
 	addChannelUser(this->channel_names[index], client, false);
 
 	return (0);

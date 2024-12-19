@@ -94,7 +94,9 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	else
 	{ 
 		// std::cout << "Channel Found at i = " << i << std::endl;
-		joinChannel(msg, clientSocket, client);// If fail - then leave???
+		if (joinChannel(msg, clientSocket, client) != 0)// If fail - then leave???
+			return (1);
+		
 	}
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
 
@@ -110,7 +112,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
 	*/
 
-	// printChannels();
+	printChannels();
 	return (0);
 }
 

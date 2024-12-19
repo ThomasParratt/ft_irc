@@ -74,6 +74,7 @@ int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 	{
 		std::cout << "i" << std::endl; //debug
 		tarChannel->invite_only = (msg.parameters[1] == "+i") ? true : false;
+		std::cout << "Invite only? " << tarChannel->invite_only << std::endl;
 	}
 	else if (msg.parameters[1] == "+t" || msg.parameters[1] == "-t")
 	{
