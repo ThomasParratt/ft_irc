@@ -98,7 +98,8 @@ void Server::acceptClient()
 	std::cout << "New client connected, socket " << clientSocket << std::endl;
 }
 
-void Server::serverLoop() {
+void Server::serverLoop() 
+{
 	// set serverPollfd
 	pollfd serverPollfd;
 	serverPollfd.fd = _serverSocket;
@@ -106,7 +107,12 @@ void Server::serverLoop() {
 	// push serverPollfd to pollfds
 	pollfds.push_back(serverPollfd);
 	std::cout << "Server loop started" << std::endl;
-	while (servRunning) {
+
+	// Map to store partial messages for each client
+	std::map<int, std::string> clientBuffers;
+
+	while (servRunning) 
+	{
 		if (poll(pollfds.data(), pollfds.size(), -1) == -1) 
 		{
 			std::cerr << "Error polling sockets " << strerror(errno) << std::endl;
@@ -131,35 +137,53 @@ void Server::serverLoop() {
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
 					clients.erase(clients.begin() + (i - 1));
+					clientBuffers.erase(pollfds[i].fd);
 					i--;
 					continue;
 				}
-				std::cout << "Message received from socket " << pollfds[i].fd << std::endl << buffer;
-				for (auto &client : clients)
-                {
-                    if (client.getSocket() == pollfds[i].fd) 
-                    {
-                        if (this->messageHandler(buffer, pollfds[i].fd, client) == 1)
+				// Append received data to the client's buffer
+				clientBuffers[pollfds[i].fd] += std::string(buffer);
+
+				// Check for complete messages (assuming '\n' as a delimiter)
+				std::string &clientBuffer = clientBuffers[pollfds[i].fd];
+				size_t pos;
+				while ((pos = clientBuffer.find('\n')) != std::string::npos)
+				{
+					// Extract the complete message
+					std::string message = clientBuffer.substr(0, pos);
+					clientBuffer.erase(0, pos + 1); // Remove the processed message
+
+					std::cout << "Message received from socket " << pollfds[i].fd << ": " << message << std::endl;
+
+					for (auto &client : clients)
+					{
+						if (client.getSocket() == pollfds[i].fd) 
 						{
-							std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
-							close(pollfds[i].fd);
-							pollfds.erase(pollfds.begin() + i);
-							clients.erase(clients.begin() + (i - 1));
-							i--;
-							continue;
+							if (this->messageHandler(message.c_str(), pollfds[i].fd, client) == 1)
+							{
+								std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
+								close(pollfds[i].fd);
+								pollfds.erase(pollfds.begin() + i);
+								clients.erase(clients.begin() + (i - 1));
+								clientBuffers.erase(pollfds[i].fd);
+								i--;
+								break;
+							}
 						}
-                    }
-                }
+					}
+				}
 			}
 		}
 	}
+
 	close(serverPollfd.fd);
-    for (auto &pfd : pollfds) 
-    {
-        close(pfd.fd);
-    }
+	for (auto &pfd : pollfds) 
+	{
+		close(pfd.fd);
+	}
 	std::cout << "Server stopped" << std::endl;
 }
+
 
 std::string getCurrentTime()
 {
