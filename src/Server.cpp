@@ -15,7 +15,7 @@ Server::~Server()
 
 int Server::serverInit() {
 	// create server socket
-	_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+	_serverSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
 	if (_serverSocket == -1)
 	{
 		std::cerr << "Error creating socket" << std::endl;
