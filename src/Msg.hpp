@@ -15,7 +15,6 @@
 class Msg
 {
 	public:
-		std::string					prefix;//Not really needed...
 		std::string					command;
 		std::vector<std::string>	parameters;
 		std::string					trailing_msg;

@@ -23,7 +23,8 @@ void		Server::directMessage(Msg msg, int clientSocket, Client &client)
 	int socket = getClientSocket(msg.parameters[0]);
 	if (socket == -2)
 	{
-		std::cout << "Nickname that you wish to DM Doesn't exist." << std::endl;
+		std::string message = "ircserv: Nickname that you wish to DM Doesn't exist.\r\n";//TODO: This should be redirected to the DM window.
+		send(clientSocket, message.c_str(), message.size(), 0);
 	}
 	else
 	{

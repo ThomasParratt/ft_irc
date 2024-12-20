@@ -1,21 +1,18 @@
 
 #include "Server.hpp"
 
-int		Server::checkError(Msg msg)
+int		Server::checkErrorInMode(Msg msg, int clientSocket)
 {
 	if (msg.parameters.size() <= 1)
 	{
-		std::cout << "Error: Not enough parameter" << std::endl;
 		return (1);
 	}
 	else if (msg.parameters[0][0] != '#')
 	{
-		std::cout << "Error: Not a Channel" << std::endl;
 		return (1);
 	}
 	else if (msg.parameters[1].empty())
 	{
-		std::cout << "Error: No Mode Parameter Given" << std::endl;
 		return (1);
 	}
 	return (0);
@@ -52,7 +49,7 @@ Channel* Server::getChannel(std::string channelName)
 
 int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 {
-	if (checkError(msg) == 1)
+	if (checkErrorInMode(msg, clientSocket) == 1)
 		return (1);
 	if (clientStatus(msg, client) == 0)
 	{

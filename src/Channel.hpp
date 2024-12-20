@@ -30,7 +30,7 @@ class Channel
 
 		std::vector<std::string>	invited;
 
-		std::vector<User>	channel_users; // OR list of Clients???
+		std::vector<User>	channel_users;
 
 		Channel(std::string name);
 
@@ -38,15 +38,21 @@ class Channel
 		bool				isChannelInviteOnly() {return invite_only; };
 		bool				doesChannelHavePassword();
 
+		void 				setChannelTopic(std::string new_topic, Client &client);	
+		int					getNumberOfChannelUsers();
+	
 		//Getters
-		std::vector<User>	getChannelUsers(){return channel_users;}
-
+		std::string			getChannelName(){return name;}
+		std::string			getChannelKey(){return channel_key;}
 		std::string 		getChannelTopic(){return topic;}
-		void 				setChannelTopic(std::string new_topic, Client &client);		
+		std::string 		getTopicSetter(){return topicSetter;}
+		std::string 		getTopicSetTime(){return topicSetTime;}
 
 		int					getUserLimit(){return user_limit;}
-		int					getNumberOfChannelUsers();
-		std::string			getChannelKey(){return channel_key;}
+		bool				getInviteOnly(){return invite_only;}
+		bool				getTopicRequiresOperator(){return topic_requires_operator;}
+	
+		std::vector<User>	getChannelUsers(){return channel_users;}
 
 	private:
 
