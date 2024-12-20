@@ -281,7 +281,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	
 	if (msg.command == "CAP")
 	{
-		//Do nothing?
+		
 	}
 	else if (msg.command == "PASS")
 	{
@@ -346,11 +346,13 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if (msg.command[0] == ':')
 	{
-		// Check for Prefix
+		std::string response = "Please no Prefixes in Commands. Server No like.\r\n";
+        send(clientSocket, response.c_str(), response.size(), 0);
 	}
 	else
 	{
-		//Command Not Found
+		std::string response = "ft_irc: Command not found: " + msg.command + "\r\n";
+		send(clientSocket, response.c_str(), response.size(), 0);
 	}
 	return (0);
 }
@@ -367,7 +369,6 @@ int    Server::messageHandler(std::string messages, int clientSocket, Client &cl
 	{
 		if (this->commandSelector(msgs[i], clientSocket, client) == 1)
 		{
-			return (1);
 			//TO DO. If error etc...
 			return (1);
 		}
