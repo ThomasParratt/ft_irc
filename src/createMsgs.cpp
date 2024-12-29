@@ -99,12 +99,18 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 		
 	}
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
-
+	//WELCOME_MSG - Send message to client who connected to channel
+	int num_of_users = this->channel_names[i].getNumberOfChannelUsers();
+	int num_of_ops = this->channel_names[i].getNumberOfChannelOperators();
+	int num_of_normal = num_of_users - num_of_ops;
+	std::string welcomeMsg = ":ircserver PRIVMSG " + msg.parameters[0] + " :Irssi: " + msg.parameters[0] + ": Total of " + std::to_string(num_of_users) + " nicks [" + std::to_string(num_of_ops) + " ops, " + std::to_string(num_of_normal) + " normal]" + "\r\n";
+	send(clientSocket, welcomeMsg.c_str(), welcomeMsg.size(), 0);
+	std::string channelInfo = ":ircserver PRIVMSG " + msg.parameters[0] + " :Channel " + msg.parameters[0] + " created " + this->channel_names[i].getChannelTime() + "\r\n";
+	send(clientSocket, channelInfo.c_str(), channelInfo.size(), 0);
 	// need to make sure that we don't send this message to the channels if the user didn't join
 	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " has joined " + msg.parameters[0] + "\r\n";	
 	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
 
-	//WELCOME_MSG - Send message to client who connected to channel
 
 	/*
 		Send This to Server!

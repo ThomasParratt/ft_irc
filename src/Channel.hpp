@@ -23,6 +23,7 @@ class Channel
 		std::string 	topic;
 		std::string		topicSetter;
 		std::string 	topicSetTime;
+		std::string		creationTime;
 
 		int				user_limit;
 		bool			invite_only;
@@ -40,6 +41,7 @@ class Channel
 
 		void 				setChannelTopic(std::string new_topic, Client &client);	
 		int					getNumberOfChannelUsers();
+		int					getNumberOfChannelOperators();
 	
 		//Getters
 		std::string			getChannelName(){return name;}
@@ -47,6 +49,7 @@ class Channel
 		std::string 		getChannelTopic(){return topic;}
 		std::string 		getTopicSetter(){return topicSetter;}
 		std::string 		getTopicSetTime(){return topicSetTime;}
+		std::string			getChannelTime(){return creationTime;}
 
 		int					getUserLimit(){return user_limit;}
 		bool				getInviteOnly(){return invite_only;}
