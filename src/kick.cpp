@@ -1,6 +1,8 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
+
+// 30/12 when the user is kicked, the user is removed from the channel however, the user is unable to switch window
 // removes a user from a channel
 int		Server::removeUser(std::string user, std::string channel, std::string message)
 {

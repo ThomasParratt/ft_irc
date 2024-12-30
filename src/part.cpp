@@ -71,9 +71,6 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 			send(clientSocket, notice.c_str(), notice.size(), 0);
 		}
 	}
-	//TO DO: Send Message to Channel
-	//TO DO: Send Message to User
-	// check channel user size if size = 0 then remove channel
 	for ( auto &channel : channel_names)
 	{
 		if (channel.channel_users.size() == 0)
