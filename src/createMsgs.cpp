@@ -108,7 +108,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	std::string channelInfo = ":ircserver PRIVMSG " + msg.parameters[0] + " :Channel " + msg.parameters[0] + " created " + this->channel_names[i].getChannelTime() + "\r\n";
 	send(clientSocket, channelInfo.c_str(), channelInfo.size(), 0);
 	// need to make sure that we don't send this message to the channels if the user didn't join
-	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " [" + client.getHostIP() + "] has joined " + msg.parameters[0] + "\r\n";	
+	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " [" + client.getUsername() + "@" + client.getHostIP() + "] has joined " + msg.parameters[0] + "\r\n";	
 	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
 
 
