@@ -2,7 +2,6 @@
 #include "Msg.hpp"
 
 
-// 30/12 when the user is kicked, the user is removed from the channel however, the user is unable to switch window
 // removes a user from a channel
 int		Server::removeUser(std::string user, std::string channel, std::string message)
 {
@@ -13,9 +12,11 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 		{
 			int socket = getClientSocket(channel_names[i].channel_users[j].nickname);
 			channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
-			std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
+			// std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
 			// std::string notice = user + " :" + message + " " + channel + " \r\n";
-			send(socket, notice.c_str(), notice.size(), 0);
+			// send(socket, notice.c_str(), notice.size(), 0);
+			send(socket, message.c_str(), message.size(), 0);
+			std::cout << "Debug: message = " << message << std::endl;
 			return (1);
 		}
 	}

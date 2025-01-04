@@ -47,17 +47,19 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 					if (users.nickname == client.getNickname())
 					{
 						int j = getChannelIndex(channels[i], channel_names);
+						std::string fullPrefix = client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP();
 						std::string part;
 						if (!msg.trailing_msg.empty())
-							part = ":" + client.getNickname() + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
+							part = ":" + fullPrefix + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
 						else
-							part = ":" + client.getNickname() + " PART " + channel.name + "\r\n";
-						broadcastToChannel(channel_names[j], part);
-						// printChannels();
+							part = ":" + fullPrefix + " PART " + channel.name + "\r\n";
+						std::cout << "debug part channel before:" << std::endl;
+						printChannelUsers(channel_names[j]);
 						std::cout << "removing user: " << client.getNickname() << " from channel: " << channels[i] << std::endl;
-						removeUser(client.getNickname(), channels[i], " has left"); // it didn't send it in libera chat
-						client.leaveChannel(channels[i]); // probably don't need but just in case
-						// printChannels();
+						removeUser(client.getNickname(), channels[i], part);
+						client.leaveChannel(channels[i]);
+						broadcastToChannel(channel_names[j], part);
+						printChannelUsers(channel_names[j]);
 						break;
 					}
 				}
@@ -76,6 +78,7 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 		if (channel.channel_users.size() == 0)
 		{
 			//remove channel
+			std::cout << "Removing: " << channel.name << " :no more users"<<std::endl;
 			int i = getChannelIndex(channel.name, channel_names);
 			channel_names.erase(channel_names.begin() + i);
 		}

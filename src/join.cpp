@@ -18,6 +18,7 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 
 	//Add into channel Users
 	channel.channel_users.push_back(new_user);
+	client.joinChannel(channel.name);
 }
 
 int		Server::createChannel(Msg msg, int clientSocket, Client &client)
@@ -217,6 +218,7 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 		return (1);
 	}
 	addChannelUser(this->channel_names[index], client, false);
+	client.joinChannel(msg.parameters[0]);
 
 	return (0);
 }
