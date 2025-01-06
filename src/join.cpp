@@ -218,7 +218,6 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client)
 		return (1);
 	}
 	addChannelUser(this->channel_names[index], client, false);
-	client.joinChannel(msg.parameters[0]);
 
 	return (0);
 }
