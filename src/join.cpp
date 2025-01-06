@@ -239,3 +239,36 @@ void	Server::broadcastToChannel(Channel &channel, std::string message)
 	}
 }
 
+int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
+{
+	int i = getChannelIndex(msg.parameters[0], this->channel_names);
+	if (i == -1)
+	{
+		// std::cout << "No Existing Channel Found" << std::endl;
+		createChannel(msg, clientSocket, client);
+	}
+	else
+	{ 
+		// std::cout << "Channel Found at i = " << i << std::endl;
+		if (joinChannel(msg, clientSocket, client) != 0)// If fail - then leave???
+			return (1);
+		
+	}
+	i = getChannelIndex(msg.parameters[0], this->channel_names);
+
+	// need to make sure that we don't send this message to the channels if the user didn't join
+	std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " has joined " + msg.parameters[0] + "\r\n";	
+	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
+
+	//WELCOME_MSG - Send message to client who connected to channel
+
+	/*
+		Send This to Server!
+			:sender_nickname!user@host PRIVMSG #channel_name :message_text
+			:Alice!alice@irc.example.com PRIVMSG #general :Hello everyone!
+	*/
+
+	printChannels();
+	return (0);
+}
+

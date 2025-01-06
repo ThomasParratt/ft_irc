@@ -49,7 +49,7 @@ class Server {
 		void acceptClient();
 		void serverLoop();
 
-		int		messageHandler(std::string buffer, int clientSocket, Client &client);
+		int		makeAndRunCommand(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
@@ -101,6 +101,8 @@ class Server {
 
 	std::string getCurrentTime();
 	int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);
+	void	initializeMsg(Msg &msg, std::vector<std::string> array);
+
 
 	//User input checks
 	int			checkArgumentCount(int argc);
