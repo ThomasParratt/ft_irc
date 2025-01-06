@@ -18,6 +18,7 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 
 	//Add into channel Users
 	channel.channel_users.push_back(new_user);
+	client.joinChannel(channel.name);
 }
 
 int		Server::createChannel(Msg msg, int clientSocket, Client &client)
@@ -76,6 +77,22 @@ int		Channel::getNumberOfChannelUsers()
 	int num_of_channel_users  = channel_users.size();
 
 	return (num_of_channel_users);
+}
+
+int		Channel::getNumberOfChannelOperators()
+{
+	std::vector<User> channel_users = this -> getChannelUsers();
+
+	int num_of_channel_operators = 0;
+
+	for (int i = 0; i < channel_users.size(); i++)
+	{
+		if (channel_users[i].operator_permissions == true)
+		{
+			num_of_channel_operators++;
+		}
+	}
+	return (num_of_channel_operators);
 }
 /*
 	Returns true, if Number of Channel Users equals or exceeds Channel User Limit.

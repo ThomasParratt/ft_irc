@@ -1,8 +1,9 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
+
 // removes a user from a channel
-int		Server::removeUser(std::string user, std::string channel, std::string message)
+int		Server::removeUser(std::string user, std::string channel, std::string message, int partOrKick)
 {
 	int i = getChannelIndex(channel, channel_names);
 	for (int j = 0 ; j < sizeof(channel_names[i].channel_users) ; j++)
@@ -11,9 +12,14 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 		{
 			int socket = getClientSocket(channel_names[i].channel_users[j].nickname);
 			channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
-			std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
-			// std::string notice = user + " :" + message + " " + channel + " \r\n";
-			send(socket, notice.c_str(), notice.size(), 0);
+			if (partOrKick == 1)
+			{
+				std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
+				send(socket, notice.c_str(), notice.size(), 0);
+			} else {
+				send(socket, message.c_str(), message.size(), 0);
+				std::cout << "Debug: message = " << message << std::endl;
+			}
 			return (1);
 		}
 	}
@@ -67,7 +73,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 									int i = getChannelIndex(msg.parameters[0], channel_names);
 									std::string kick = ":" + kicker.nickname + " KICK " + channel.name + " " + msg.parameters[1] + "\r\n";
 									broadcastToChannel(channel_names[i], kick);
-									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from");
+									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from", 1);
 								}
 								else
 								{

@@ -8,7 +8,7 @@ Channel::Channel(std::string name) :
 		invite_only				(false),//TODO. Confirm this is default setting
 		topic_requires_operator	(true)	//TODO. Confirm this is default setting
 {
-	;
+	creationTime = getCurrentTime();
 }
 
 
