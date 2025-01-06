@@ -5,7 +5,9 @@ SRC			=	src/main.cpp \
 				src/Server.cpp \
 				src/Channel.cpp \
 				src/Client.cpp \
-				src/createMsgs.cpp \
+				src/initializeMsg.cpp \
+				src/makeAndRunCommand.cpp \
+				src/makeMessages.cpp \
 				src/connectionMessages.cpp \
 				src/kick.cpp \
 				src/invite.cpp \

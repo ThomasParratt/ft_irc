@@ -159,7 +159,7 @@ void Server::serverLoop()
 					{
 						if (client.getSocket() == pollfds[i].fd) 
 						{
-							if (this->messageHandler(message.c_str(), pollfds[i].fd, client) == 1)
+							if (this->makeAndRunCommand(message.c_str(), pollfds[i].fd, client) == 1)
 							{
 								std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 								close(pollfds[i].fd);
