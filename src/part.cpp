@@ -57,12 +57,12 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 					// std::cout << "debug part channel before:" << std::endl;
 					// printChannelUsers(channel_names[j]);
 					// std::cout << "removing user: " << client.getNickname() << " from channel: " << channels[i] << std::endl;
-					removeUser(client.getNickname(), channels[i], part);
+					removeUser(client.getNickname(), channels[i], part, 0);
 					client.leaveChannel(channels[i]);
 					broadcastToChannel(channel_names[j], part);
 					// printChannelUsers(channel_names[j]);
 					break;
-				}	else {
+				} else {
 					std::string notice = ":ircserv 442 " + client.getNickname() + " " + channels[i] + " :You're not on that channel\r\n";
 					send(clientSocket, notice.c_str(), notice.size(), 0);
 				}
