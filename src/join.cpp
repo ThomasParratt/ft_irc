@@ -11,19 +11,13 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 {
 	//Make new Channel User
 	User	new_user;
-	new_user.nickname				= client.getNickname();
-	new_user.operator_permissions	= operator_permissions;
+	new_user.nickname = client.getNickname();
+	new_user.operator_permissions = operator_permissions;
 
-	//Add into Channel Users
-	std::vector<User> channel_users;
+	//Add into channel Users
+	channel.addUserIntoChannelUsers(new_user);
+	client.joinChannel(channel.getChannelName());
 
-	channel_users = channel.channel_users;
-	channel_users.push_back(new_user);
-	client.joinChannel(channel.name);
-
-	// channel_users = channel.getChannelUsers();
-	// channel_users.push_back(new_user);
-	// client.joinChannel(channel.getChannelName());
 }
 
 int		Server::createChannel(Msg msg, int clientSocket, Client &client)

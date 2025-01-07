@@ -23,6 +23,29 @@ void		Server::printChannels()
 	}
 }
 
+// checks if a user exists in a channel
+int		Server::userExists(std::string user, std::string channel)
+{
+	std::cout <<  "User Might Exist"  << std::endl;
+	int i = getChannelIndex(channel, channel_names);
+	for (auto &userToCheck : channel_names[i].getChannelUsers())
+	{
+		if (userToCheck.nickname == user)
+			return (1);
+	}
+	return (0);
+}
+
+int		Server::channelExists(std::string channel)
+{
+	for (auto &it : channel_names)
+	{
+		if (it.name == channel)
+			return (1);
+	}
+	return (0);
+}
+
 /*
 	Returns index of channel in vector.
 	- Returns 0 or greater, if channel exists.
@@ -34,7 +57,7 @@ int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_name
 
 	for (i = 0; i < channel_names.size(); i++)
 	{
-		if (channel_name == channel_names[i].name)
+		if (channel_name == channel_names[i].getChannelName())
 		{
 			return (i);
 		}

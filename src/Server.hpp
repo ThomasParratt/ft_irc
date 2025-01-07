@@ -22,7 +22,6 @@
 extern bool servRunning;
 
 class Msg;
-// #include "Msg.hpp"
 
 class Server {
 	private:
@@ -31,10 +30,10 @@ class Server {
 		std::string _servHostName;
 		sockaddr_in _serverAddr;
 
-		bool _welcomeSent;
-		int _port;
-		int _serverSocket;
-		time_t _startTime;
+		bool		_welcomeSent;
+		int			_port;
+		int			_serverSocket;
+		time_t		_startTime;
 		std::string _startTimeStr;
 
 		std::vector<Client> clients;

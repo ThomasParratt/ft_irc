@@ -19,6 +19,11 @@ void	Channel::setChannelTopic(std::string new_topic, Client &client)
 	topicSetTime = getCurrentTime();
 }
 
+void	Channel::addUserIntoChannelUsers(User new_user)
+{
+	this->channel_users.push_back(new_user);
+}
+
 /*
 	14:27 -!- mkorpela [~mkorpela@194.136.126.51] has joined #ChanForChanny
 	14:27 -!- ServerMode/#ChanForChanny [+Cnst] by iridium.libera.chat

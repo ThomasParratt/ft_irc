@@ -35,7 +35,9 @@ void		Server::channelMessage(Msg msg, int clientSocket, Client &client)
 
 void		Server::directMessage(Msg msg, int clientSocket, Client &client)
 {
-	int socket = getClientSocket(msg.parameters[0]);
+	std::string user_name = msg.parameters[0];
+
+	int socket = getClientSocket(user_name);
 	if (socket == -2)
 	{
 		std::string message = "ircserv: Nickname that you wish to DM Doesn't exist.\r\n";//TODO: This should be redirected to the DM window.
@@ -51,11 +53,11 @@ void		Server::directMessage(Msg msg, int clientSocket, Client &client)
 
 int		Server::privmsgCommand(Msg msg, int clientSocket, Client &client)
 {
-	//ToDo: Check for that parameter exists, if someones sends with rawmsg etc. [Maybe do this...]
-
 	if (msg.parameters[0][0] == '#')
 	{
-		if (userExists(client.getNickname(), msg.parameters[0]))
+		std::string channel_name = msg.parameters[0];
+
+		if (userExists(client.getNickname(), channel_name))
 			channelMessage(msg, clientSocket, client);
 		else
 			std::cout << "User is not on channel" << std::endl;

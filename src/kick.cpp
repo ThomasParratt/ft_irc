@@ -26,28 +26,6 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 	return (0);
 }
 
-// checks if a user exists in a channel
-int		Server::userExists(std::string user, std::string channel)
-{
-	int i = getChannelIndex(channel, channel_names);
-	for (auto &userToCheck : channel_names[i].channel_users)
-	{
-		if (userToCheck.nickname == user)
-			return (1);
-	}
-	return (0);
-}
-
-int		Server::channelExists(std::string channel)
-{
-	for (auto &it : channel_names)
-	{
-		if (it.name == channel)
-			return (1);
-	}
-	return (0);
-}
-
 int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 {
 	//std::cout << "KICK COMMAND" << std::endl;
@@ -59,7 +37,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 			//std::cout << "USER KICKING EXISTS ON CHANNEL" << std::endl;
 			for (auto &channel : channel_names)
 			{
-				if (channel.name == msg.parameters[0])
+				if (channel.getChannelName() == msg.parameters[0])
 				{
 					for (auto &kicker : channel.channel_users)
 					{
@@ -71,14 +49,14 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 								{
 									//std::cout << "KICK" << std::endl;
 									int i = getChannelIndex(msg.parameters[0], channel_names);
-									std::string kick = ":" + kicker.nickname + " KICK " + channel.name + " " + msg.parameters[1] + "\r\n";
+									std::string kick = ":" + kicker.nickname + " KICK " + channel.getChannelName() + " " + msg.parameters[1] + "\r\n";
 									broadcastToChannel(channel_names[i], kick);
 									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from", 1);
 								}
 								else
 								{
 									//std::cout << "KICKEE DOESN'T EXIST" << std::endl;
-									std::string notice = ":ircserv NOTICE " + channel.name + " :" + msg.parameters[1] + " is not on this channel\r\n";
+									std::string notice = ":ircserv NOTICE " + channel.getChannelName() + " :" + msg.parameters[1] + " is not on this channel\r\n";
 									send(clientSocket, notice.c_str(), notice.size(), 0);
 									// std::string priv = ":ircserv PRIVMSG " + channel.name + " :" + msg.parameters[1] + " is not on this channel\r\n";
 									// send(clientSocket, priv.c_str(), priv.size(), 0);
@@ -91,7 +69,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 								//std::cout << "USER IS NOT AN OPERATOR" << std::endl;
 								std::string notice = ":ircserv NOTICE " + client.getNickname() + " :You're not channel operator for " + channel.name + "\r\n";
 								send(clientSocket, notice.c_str(), notice.size(), 0);
-								std::string priv = ":ircserv PRIVMSG " + channel.name + " :You're not channel operator\r\n";
+								std::string priv = ":ircserv PRIVMSG " + channel.getChannelName() + " :You're not channel operator\r\n";
 								send(clientSocket, priv.c_str(), priv.size(), 0);
 								// std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.name + " :You're not channel operator\r\n";
 								// send(clientSocket, message_482.c_str(), message_482.size(), 0); //THIS WILL EXIT THE CHANNEL WINDOW
