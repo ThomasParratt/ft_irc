@@ -160,7 +160,7 @@ void Server::serverLoop()
 					{
 						if (client.getSocket() == pollfds[i].fd) 
 						{
-							if (this->makeAndRunCommand(message.c_str(), pollfds[i].fd, client) == 1)
+							if (this->makeSelectAndRunCommand(message.c_str(), pollfds[i].fd, client) == 1)
 							{
 								std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 								close(pollfds[i].fd);
@@ -195,6 +195,9 @@ std::string getCurrentTime()
     return std::string(timeStr);
 }
 
+/*
+	Uses the client's nickname to find and return its socket.
+*/
 int		Server::getClientSocket(std::string nickname)
 {
 	int socket;

@@ -6,7 +6,7 @@ SRC			=	src/main.cpp \
 				src/Channel.cpp \
 				src/Client.cpp \
 				src/initializeMsg.cpp \
-				src/makeAndRunCommand.cpp \
+				src/makeSelectAndRunCommand.cpp \
 				src/makeMessages.cpp \
 				src/connectionMessages.cpp \
 				src/kick.cpp \
@@ -16,6 +16,8 @@ SRC			=	src/main.cpp \
 				src/topic.cpp \
 				src/privmsg.cpp \
 				src/mode.cpp \
+				src/channelUtils.cpp \
+				src/joinChecks.cpp \
 
 OBJ			=	$(SRC:.cpp=.o)
 

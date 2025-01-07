@@ -1,6 +1,26 @@
 
 #include "Server.hpp"
 
+void	printMsg(Msg msg)									//Debug function
+{
+	std::cout << "Command: " << msg.command << std::endl;
+	for (int i = 0;  i < msg.parameters.size();  i++)
+	{
+		std::cout  << "Parameter[" << i << "]: " << msg.parameters[i] << std::endl;
+	}
+	if (msg.trailing_msg != "")
+	{
+		std::cout << "Trailing_msg: " << msg.trailing_msg << std::endl;
+	}
+}
+
+void	printArray(std::vector<std::string>message_array)		//Debug function
+{
+	for (size_t i = 0; i < message_array.size(); i++)
+	{
+		std::cout << "Array: " << message_array[i] << std::endl;
+	}
+}
 
 size_t	skipSpaces(std::string string, size_t index)
 {
@@ -46,27 +66,6 @@ void	stringToArray(std::string string, std::vector<std::string> &array)
 	}
 }
 
-
-void	printMsg(Msg msg)									//Debug function
-{
-	std::cout << "Command: " << msg.command << std::endl;
-	for (int i = 0;  i < msg.parameters.size();  i++)
-	{
-		std::cout  << "Parameter[" << i << "]: " << msg.parameters[i] << std::endl;
-	}
-	if (msg.trailing_msg != "")
-	{
-		std::cout << "Trailing_msg: " << msg.trailing_msg << std::endl;
-	}
-}
-
-void	printArray(std::vector<std::string>message_array)		//Debug function
-{
-    for (size_t i = 0; i < message_array.size(); i++)
-	{
-        std::cout << "Array: " << message_array[i] << std::endl;
-    }
-}
 
 void	makeMsgfromString(Msg &msg, std::string message)
 {

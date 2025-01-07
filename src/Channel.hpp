@@ -55,7 +55,7 @@ class Channel
 		bool				getInviteOnly(){return invite_only;}
 		bool				getTopicRequiresOperator(){return topic_requires_operator;}
 	
-		std::vector<User>	getChannelUsers(){return channel_users;}
+		std::vector<User>&	getChannelUsers(){return channel_users;}
 
 	private:
 

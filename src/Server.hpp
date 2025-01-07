@@ -49,7 +49,7 @@ class Server {
 		void acceptClient();
 		void serverLoop();
 
-		int		makeAndRunCommand(std::string buffer, int clientSocket, Client &client);
+		int		makeSelectAndRunCommand(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
@@ -71,7 +71,7 @@ class Server {
 		int		partCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
 		int     createChannel(Msg msg, int clientSocket, Client &client);
-		int		joinChannel(Msg msg, int clientSocket, Client &client);
+		int		joinChannel(Msg msg, int clientSocket, Client &client, int index);
 		int		channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client);
 
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
