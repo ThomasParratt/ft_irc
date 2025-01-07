@@ -48,7 +48,7 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 				if (userExists(client.getNickname(), channels[i]))
 				{
 					int j = getChannelIndex(channels[i], channel_names);
-					std::string fullPrefix = client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP();
+					std::string fullPrefix = client.getNickname() + "!" + "~" + client.getUsername() + "@" + client.getHostIP();
 					std::string part;
 					if (!msg.trailing_msg.empty())
 						part = ":" + fullPrefix + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
