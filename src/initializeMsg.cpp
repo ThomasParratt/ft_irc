@@ -28,7 +28,7 @@ std::string		getTrailingMessage(std::vector<std::string> array)
 	if (array[last_string][0] == ':')
 	{
 		// std::cout << "Trailing Message: " << &(array[last_string][1]) << std::endl;		
-		return (&(array[last_string][1]));			//gets rid of ':' character
+		return (&(array[last_string][1]));			//the '1' skips the ':' character
 	}
 	else
 	{

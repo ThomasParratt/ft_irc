@@ -22,7 +22,6 @@
 extern bool servRunning;
 
 class Msg;
-// #include "Msg.hpp"
 
 class Server {
 	private:
@@ -31,10 +30,10 @@ class Server {
 		std::string _servHostName;
 		sockaddr_in _serverAddr;
 
-		bool _welcomeSent;
-		int _port;
-		int _serverSocket;
-		time_t _startTime;
+		bool		_welcomeSent;
+		int			_port;
+		int			_serverSocket;
+		time_t		_startTime;
 		std::string _startTimeStr;
 
 		std::vector<Client> clients;
@@ -49,7 +48,7 @@ class Server {
 		void acceptClient();
 		void serverLoop();
 
-		int		makeAndRunCommand(std::string buffer, int clientSocket, Client &client);
+		int		makeSelectAndRunCommand(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
 		int		commandSelector(Msg msg, int clientSocket, Client &client);
@@ -71,7 +70,7 @@ class Server {
 		int		partCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
 		int     createChannel(Msg msg, int clientSocket, Client &client);
-		int		joinChannel(Msg msg, int clientSocket, Client &client);
+		int		joinChannel(Msg msg, int clientSocket, Client &client, int index);
 		int		channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client);
 
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);

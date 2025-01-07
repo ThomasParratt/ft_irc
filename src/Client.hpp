@@ -25,6 +25,7 @@ class Client
         int         _socket;
     public:
         Client(int socket, const std::string& password);
+        //Add Destructor
 
         std::string getNickname();
         std::string getUsername();

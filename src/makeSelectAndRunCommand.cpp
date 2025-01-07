@@ -96,12 +96,11 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 }
 
 
-int    Server::makeAndRunCommand(std::string messages, int clientSocket, Client &client)
+int    Server::makeSelectAndRunCommand(std::string messages, int clientSocket, Client &client)
 {
-    std::vector<Msg>     msgs;
+	std::vector<Msg>     msgs;
     
-	// std::cout << "Message Handler" << std::endl;
-    this->makeMessages(msgs, messages);
+    this -> makeMessages(msgs, messages);
 
 	for (int i = 0; i < msgs.size(); i++)
 	{
