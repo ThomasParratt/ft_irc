@@ -11,6 +11,21 @@ Channel::Channel(std::string name) :
 	creationTime = getCurrentTime();
 }
 
+int	Channel::getOpCount()
+{
+	int count = 0;
+	for (std::vector<User>::iterator it = channel_users.begin(); it != channel_users.end(); it++)
+	{
+		if (it->operator_permissions)
+			count++;
+	}
+	return count;
+}
+
+int		Channel::getTotalCount()
+{
+	return channel_users.size();
+}
 
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
