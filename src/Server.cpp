@@ -125,6 +125,7 @@ void Server::serverLoop()
 		}
 		for (int i = 1; i < pollfds.size(); i++)
 		{
+			bool clientDisconnected = false;
 			if (pollfds[i].revents & POLLIN)
 			{
 				char buffer[1024] = {0};
@@ -134,7 +135,7 @@ void Server::serverLoop()
 					if (bytesRead == 0) 
 						std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 					else 
-						std::cerr << "Error reading from socket " << pollfds[i].fd << strerror(errno) << std::endl;
+						std::cerr << "Error reading from socket " << pollfds[i].fd << " " << strerror(errno) << std::endl;
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
 					clients.erase(clients.begin() + (i - 1));
@@ -152,7 +153,8 @@ void Server::serverLoop()
 				{
 					// Extract the complete message
 					std::string message = clientBuffer.substr(0, pos);
-					clientBuffer.erase(0, pos + 1); // Remove the processed message
+					std::cout << message << std::endl;
+					clientBuffer.erase(0, pos + 1); // Remove the processed message // SEGFAULT IN HERE WHEN WRONG PASSWORD
 
 					std::cout << "Message received from socket " << pollfds[i].fd << ": " << message << std::endl;
 
@@ -168,12 +170,17 @@ void Server::serverLoop()
 								clients.erase(clients.begin() + (i - 1));
 								clientBuffers.erase(pollfds[i].fd);
 								i--;
+								clientDisconnected = true;
 								break;
 							}
 						}
 					}
+					if (clientDisconnected)
+						break ;
 				}
 			}
+			if (clientDisconnected)
+				continue ;
 		}
 	}
 
