@@ -154,7 +154,7 @@ void Server::serverLoop()
 					// Extract the complete message
 					std::string message = clientBuffer.substr(0, pos);
 					std::cout << message << std::endl;
-					clientBuffer.erase(0, pos + 1); // Remove the processed message // SEGFAULT IN HERE WHEN WRONG PASSWORD
+					clientBuffer.erase(0, pos + 1); // Remove the processed message
 
 					std::cout << "Message received from socket " << pollfds[i].fd << ": " << message << std::endl;
 
