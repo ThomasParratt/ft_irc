@@ -62,7 +62,6 @@ class Server {
 		int		channelExists(std::string channel);
 		int		removeUser(std::string user, std::string channel, std::string message, int partOrKick);
 		int		clientStatus(Msg msg, Client &client);
-		int 	checkErrorInMode(Msg msg, int clientSocket);
 		Channel* getChannel(std::string channelName);
 
 		int     topicCommand(Msg msg, int clientSocket, Client &client);
