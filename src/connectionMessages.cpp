@@ -51,11 +51,31 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 	else
 	{
 		//Change nickname 
-		std::string nick_message1 = ":" + client.getNickname() + " NICK ";
+		std::string old_nick = client.getNickname();
 		client.setNickname(msg.parameters[0]);
-		std::string nick_message2 = client.getNickname() + "\r\n";
-		std::string nick_message = nick_message1 + nick_message2;
+		std::string new_nick = client.getNickname();
+		std::string nick_message = ":" + old_nick + " NICK " + new_nick + "\r\n";
 		send(clientSocket, nick_message.c_str(), nick_message.size(), 0);
+
+		//need to change channel users name to to new nick
+
+		for (auto &channel : channel_names) 
+		{
+        	std::cout << "CHANNEL NAME: " << channel.getChannelName() << std::endl;
+			for (auto &user : channel.getChannelUsers())
+			{
+				std::cout << "user nick = " << user.nickname << std::endl;
+				std::cout << "old nick = " << old_nick << std::endl;
+				std::cout << "new nick = " << new_nick << std::endl;
+				if (user.nickname == old_nick)
+				{
+					std::cout << "CHANGE USER NICK" << std::endl;
+					user.nickname = new_nick;
+					std::cout << "user nickname = " << user.nickname << std::endl;
+				}
+			}
+			printChannelUsers(channel);
+		}
 	}
 	return (0);
 }
