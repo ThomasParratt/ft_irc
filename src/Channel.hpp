@@ -26,6 +26,9 @@ class Channel
 		std::string		creationTime;
 
 		int				user_limit;
+		int 			OpCount;
+		int				totalCount;
+		bool			keyRequired; // maybe we don't need this?
 		bool			invite_only;
 		bool			topic_requires_operator;
 
@@ -53,6 +56,8 @@ class Channel
 		std::string			getChannelTime(){return creationTime;}
 
 		int					getUserLimit(){return user_limit;}
+		int					getOpCount();
+		int					getTotalCount();
 		bool				getInviteOnly(){return invite_only;}
 		bool				getTopicRequiresOperator(){return topic_requires_operator;}
 		std::vector<User>&	getChannelUsers(){return channel_users;}

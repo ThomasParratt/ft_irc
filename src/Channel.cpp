@@ -6,11 +6,27 @@ Channel::Channel(std::string name) :
 		name					(name),
 		user_limit				(-1),
 		invite_only				(false),//TODO. Confirm this is default setting
+		keyRequired				(false),
 		topic_requires_operator	(true)	//TODO. Confirm this is default setting
 {
 	creationTime = getCurrentTime();
 }
 
+int	Channel::getOpCount()
+{
+	int count = 0;
+	for (std::vector<User>::iterator it = channel_users.begin(); it != channel_users.end(); it++)
+	{
+		if (it->operator_permissions)
+			count++;
+	}
+	return count;
+}
+
+int		Channel::getTotalCount()
+{
+	return channel_users.size();
+}
 
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
