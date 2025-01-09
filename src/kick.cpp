@@ -16,10 +16,14 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 			{
 				std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
 				send(socket, notice.c_str(), notice.size(), 0);
-			} else {
+			} 
+			else if (partOrKick == 0) 
+			{
 				send(socket, message.c_str(), message.size(), 0);
 				std::cout << "Debug: message = " << message << std::endl;
 			}
+			else
+				std::cout << "Debug: message = " << message << std::endl;
 			return (1);
 		}
 	}
@@ -52,6 +56,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 									std::string kick = ":" + kicker.nickname + " KICK " + channel.getChannelName() + " " + msg.parameters[1] + "\r\n";
 									broadcastToChannel(channel_names[i], kick);
 									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from", 1);
+									client.leaveChannel(msg.parameters[0]);
 								}
 								else
 								{
