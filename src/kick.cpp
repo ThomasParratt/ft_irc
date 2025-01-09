@@ -16,10 +16,14 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 			{
 				std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
 				send(socket, notice.c_str(), notice.size(), 0);
-			} else {
+			} 
+			else if (partOrKick == 0) 
+			{
 				send(socket, message.c_str(), message.size(), 0);
 				std::cout << "Debug: message = " << message << std::endl;
 			}
+			else
+				std::cout << "Debug: message = " << message << std::endl;
 			return (1);
 		}
 	}
