@@ -65,7 +65,6 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 	std::string topic = this->channel_names[i].getChannelTopic();
 	if (!topic.empty())
 	{
-		std::cout << "debug: there is topic" << std::endl; //debug
 		topicPrint(channelName, client.getSocket(), client);
 	}
 	std::string joinMsg;

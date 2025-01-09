@@ -12,7 +12,6 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 	{
 		std::cout << "debug: just /topic" << std::endl;
 		topicPrint(msg.parameters[0], clientSocket, client);
-		return (0);
 	}
 	else
 	{
@@ -38,10 +37,12 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 
 void Server::topicPrint(std::string channelName, int clientSocket, Client &client)
 {
+	bool found = false;
 	for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
 	{
 		if (it->name == channelName)
 		{
+			found = true;
             std::string channelTopic = it->getChannelTopic();
 			if (channelTopic.empty())
 			{
@@ -55,5 +56,10 @@ void Server::topicPrint(std::string channelName, int clientSocket, Client &clien
             send(clientSocket, topicSetByMsg.c_str(), topicSetByMsg.size(), 0);
             break;
 		}
+	}
+	if (!found)
+	{
+		std::string noSuchChannel = ":ircserver 403 " + client.getNickname() + " " + channelName + " :No such channel\r\n";
+		send(clientSocket, noSuchChannel.c_str(), noSuchChannel.size(), 0);
 	}
 }

@@ -69,7 +69,6 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "MODE")
 	{
-		//modeCommand(msg, clientSocket, client);
 			//TO DO: Change channel's mode
 			//parse the command
 			// /MODE <channel> +i = invite only | /MODE <channel> -i = remove invite only
