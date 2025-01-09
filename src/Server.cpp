@@ -99,6 +99,28 @@ void Server::acceptClient()
 	std::cout << "New client connected, socket " << clientSocket << std::endl;
 }
 
+void Server::removeFromAll(int i)
+{
+	for (auto &client : clients) // remove user from all channels
+	{
+		if (client.getSocket() == pollfds[i].fd) 
+		{
+			for (auto &channel : channel_names)
+			{
+				for (auto &user : channel.channel_users)
+				{
+					if (client.getNickname() == user.nickname)
+					{
+						std::string message = "REMOVE " + user.nickname + " from " + channel.name;
+						removeUser(user.nickname, channel.name, message, 2);
+						client.leaveChannel(channel.name);
+					}
+				}
+			}
+		}
+	}
+}
+
 void Server::serverLoop() 
 {
 	// set serverPollfd
@@ -125,6 +147,7 @@ void Server::serverLoop()
 		}
 		for (int i = 1; i < pollfds.size(); i++)
 		{
+			bool clientDisconnected = false;
 			if (pollfds[i].revents & POLLIN)
 			{
 				char buffer[1024] = {0};
@@ -134,13 +157,16 @@ void Server::serverLoop()
 					if (bytesRead == 0) 
 						std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
 					else 
-						std::cerr << "Error reading from socket " << pollfds[i].fd << strerror(errno) << std::endl;
+						std::cerr << "Error reading from socket " << pollfds[i].fd << " " << strerror(errno) << std::endl;
+
+					removeFromAll(i);
+
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
 					clients.erase(clients.begin() + (i - 1));
 					clientBuffers.erase(pollfds[i].fd);
 					i--;
-					continue;
+					continue ;
 				}
 				// Append received data to the client's buffer
 				clientBuffers[pollfds[i].fd] += std::string(buffer);
@@ -152,6 +178,7 @@ void Server::serverLoop()
 				{
 					// Extract the complete message
 					std::string message = clientBuffer.substr(0, pos);
+					std::cout << message << std::endl;
 					clientBuffer.erase(0, pos + 1); // Remove the processed message
 
 					std::cout << "Message received from socket " << pollfds[i].fd << ": " << message << std::endl;
@@ -168,12 +195,17 @@ void Server::serverLoop()
 								clients.erase(clients.begin() + (i - 1));
 								clientBuffers.erase(pollfds[i].fd);
 								i--;
-								break;
+								clientDisconnected = true;
+								break ;
 							}
 						}
 					}
+					if (clientDisconnected)
+						break ;
 				}
 			}
+			if (clientDisconnected)
+				continue ;
 		}
 	}
 

@@ -48,6 +48,8 @@ class Server {
 		void acceptClient();
 		void serverLoop();
 
+		void	removeFromAll(int i);
+
 		int		makeSelectAndRunCommand(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
