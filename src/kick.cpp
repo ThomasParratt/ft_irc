@@ -52,6 +52,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 									std::string kick = ":" + kicker.nickname + " KICK " + channel.getChannelName() + " " + msg.parameters[1] + "\r\n";
 									broadcastToChannel(channel_names[i], kick);
 									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from", 1);
+									client.leaveChannel(msg.parameters[0]);
 								}
 								else
 								{
