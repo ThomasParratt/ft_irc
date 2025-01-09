@@ -1,76 +1,59 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
+
+/*
+9/1 currently, it is not entering this function when we just type /topic
+*/
 int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 {
-	/* check msg.parameter size,
-		if (size == 1) -> get topic
-		else if (size == 2) -> set topic
-			check if topic_requiredOp is true 
-		else if (size == 3) -> find the channel and set topic 
-			check if topic_requiredOp is true 
-		else -> error message	
-	*/
 	printMsg(msg); // debug
-	if (msg.parameters.size() == 1 && msg.trailing_msg.empty())
+	if (msg.trailing_msg.empty()) 
 	{
-		topicPrint(msg, clientSocket, client);
-	}
-	else if (!msg.trailing_msg.empty())
-	{
-		for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
-		{
-			if (it->name == msg.parameters[0])
-			{
-				if (it->topic_requires_operator)
-				{
-					for (auto &setter : it->channel_users)
-					{
-						if (setter.nickname == client.getNickname())
-						{
-							if (!setter.operator_permissions)
-							{
-								std::string error = ":" + client.getNickname() + " :You do not have the required operator status to change the topic\r\n";
-								send(clientSocket, error.c_str(), error.size(), 0);
-								return 1;
-							}
-							else
-							{
-								it->setChannelTopic(msg.trailing_msg, client);
-								std::string topicMsg = ":" + client.getNickname() + " TOPIC " + it->name + " :" + msg.trailing_msg + "\r\n";
-								broadcastToChannel(*it, topicMsg);
-							}
-						}
-					}
-				}
-				else
-				{
-					it->setChannelTopic(msg.trailing_msg, client);
-					std::string topicMsg = ":" + client.getNickname() + " TOPIC " + it->name + " :" + msg.trailing_msg + "\r\n";
-					broadcastToChannel(*it, topicMsg);
-					return 1;
-				}
-			}
-		}
+		std::cout << "debug: just /topic" << std::endl;
+		topicPrint(msg.parameters[0], clientSocket, client);
+		return (0);
 	}
 	else
 	{
-		// dont think I need this section. 
-		std::string error = ":" + client.getNickname() + " :Invalid number of parameters for TOPIC command\r\n";
-		send(clientSocket, error.c_str(), error.size(), 0);
+		int i = getChannelIndex(msg.parameters[0], channel_names);
+		if (i == -1)
+		{
+			std::string notice = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
+			send(clientSocket, notice.c_str(), notice.size(), 0);
+			return (1);
+		}
+		if (channel_names[i].getTopicRequiresOperator() && clientStatus(msg, client) == 0)
+		{
+			std::string errMsg = ":ircserver 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
+			send(clientSocket, errMsg.c_str(), errMsg.size(), 0);
+			return (1);
+		}
+		channel_names[i].setChannelTopic(msg.trailing_msg, client);
+		std::string topicMsg = ":" + client.getNickname() + " TOPIC " + channel_names[i].getChannelName() + " :" + msg.trailing_msg + "\r\n";
+		broadcastToChannel(channel_names[i], topicMsg);
 	}
 	return 0;
 }
 
-void Server::topicPrint(Msg msg, int clientSocket, Client &client)
+void Server::topicPrint(std::string channelName, int clientSocket, Client &client)
 {
 	for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
 	{
-		if (it->name == msg.parameters[0])
+		if (it->name == channelName)
 		{
-			std::string channelTopic = it->getChannelTopic();
-			std::string topicMsg = "Topic for " + msg.parameters[0] + ": " + channelTopic + "\r\n" + "Topic set by " + it->topicSetter + "[server hostname]" + " " + it->topicSetTime + "\r\n";
-			send(clientSocket, topicMsg.c_str(), topicMsg.size(), 0);
+            std::string channelTopic = it->getChannelTopic();
+			if (channelTopic.empty())
+			{
+				std::string noTopic = ":ircserver 331 " + client.getNickname() + " " + channelName + " :No topic is set\r\n";
+            	send(clientSocket, noTopic.c_str(), noTopic.size(), 0);
+				break;
+			}
+            std::string topicMsg = ":ircserver 332 " + client.getNickname() + " " + channelName + " :" + channelTopic + "\r\n";
+            send(clientSocket, topicMsg.c_str(), topicMsg.size(), 0);
+            std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->topicSetter + " " + it->topicSetTime + "\r\n";
+            send(clientSocket, topicSetByMsg.c_str(), topicSetByMsg.size(), 0);
+            break;
 		}
 	}
 }

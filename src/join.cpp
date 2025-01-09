@@ -62,6 +62,12 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 	int i = getChannelIndex(channelName, this->channel_names);
 	int OpCount = this->channel_names[i].getOpCount();
 	int totalCount = this->channel_names[i].getTotalCount();
+	std::string topic = this->channel_names[i].getChannelTopic();
+	if (!topic.empty())
+	{
+		std::cout << "debug: there is topic" << std::endl; //debug
+		topicPrint(channelName, client.getSocket(), client);
+	}
 	std::string joinMsg;
 	joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
 	send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);

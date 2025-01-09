@@ -64,6 +64,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else if  (msg.command == "TOPIC")
 	{
+		std::cout << "in topic command" << std::endl;
 		topicCommand(msg, clientSocket, client);
 	}
 	else if  (msg.command == "MODE")

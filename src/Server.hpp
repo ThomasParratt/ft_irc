@@ -67,7 +67,7 @@ class Server {
 		Channel* getChannel(std::string channelName);
 
 		int     topicCommand(Msg msg, int clientSocket, Client &client);
-		void	topicPrint(Msg msg, int clientSocket, Client &client);
+		void	topicPrint(std::string channelName, int clientSocket, Client &client);
 		int		partCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
 		int     createChannel(Msg msg, int clientSocket, Client &client);
