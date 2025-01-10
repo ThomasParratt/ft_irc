@@ -61,23 +61,15 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 								else
 								{
 									//std::cout << "KICKEE DOESN'T EXIST" << std::endl;
-									std::string notice = ":ircserv NOTICE " + channel.getChannelName() + " :" + msg.parameters[1] + " is not on this channel\r\n";
-									send(clientSocket, notice.c_str(), notice.size(), 0);
-									// std::string priv = ":ircserv PRIVMSG " + channel.name + " :" + msg.parameters[1] + " is not on this channel\r\n";
-									// send(clientSocket, priv.c_str(), priv.size(), 0);
-									// std::string message_441 = ":ircserv 441 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :They aren't on that channel\r\n";
-									// send(clientSocket, message_441.c_str(), message_441.size(), 0); //THIS WILL EXIT THE CHANNEL WINDOW
+									std::string message_441 = ":ircserv 441 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :They aren't on that channel\r\n";
+									send(clientSocket, message_441.c_str(), message_441.size(), 0);
 								}
 							}
 							else
 							{
 								//std::cout << "USER IS NOT AN OPERATOR" << std::endl;
-								std::string notice = ":ircserv NOTICE " + client.getNickname() + " :You're not channel operator for " + channel.name + "\r\n";
-								send(clientSocket, notice.c_str(), notice.size(), 0);
-								std::string priv = ":ircserv PRIVMSG " + channel.getChannelName() + " :You're not channel operator\r\n";
-								send(clientSocket, priv.c_str(), priv.size(), 0);
-								// std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.name + " :You're not channel operator\r\n";
-								// send(clientSocket, message_482.c_str(), message_482.size(), 0); //THIS WILL EXIT THE CHANNEL WINDOW
+								std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.name + " :You're not a channel operator\r\n";
+								send(clientSocket, message_482.c_str(), message_482.size(), 0);
 							}
 						}
 					}
