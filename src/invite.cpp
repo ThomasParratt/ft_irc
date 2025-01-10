@@ -20,7 +20,7 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 					{
 						if (inviter.operator_permissions)
 						{
-							if (!userExists(msg.parameters[0], msg.parameters[1])) // what if the invitee doesn't exist at all? socket failure?
+							if (!userExists(msg.parameters[0], msg.parameters[1]))
 							{
 								//std::cout << "INVITE" << std::endl;
 								std::string message_341 = ":ircserv 341 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
