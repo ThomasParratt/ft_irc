@@ -22,7 +22,6 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 						{
 							if (!userExists(msg.parameters[0], msg.parameters[1])) // what if the invitee doesn't exist at all? socket failure?
 							{
-								//invite
 								//std::cout << "INVITE" << std::endl;
 								std::string message_341 = ":ircserv 341 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 								int socket = getClientSocket(msg.parameters[0]);
@@ -51,7 +50,7 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 		{
 			//std::cout << "USER DOESN'T EXIST ON CHANNEL" << std::endl;
 			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[1] + " :You're not on that channel\r\n";
-			send(clientSocket, message_442.c_str(), message_442.size(), 0); //HERE
+			send(clientSocket, message_442.c_str(), message_442.size(), 0);
 		}
 	}
 	else
