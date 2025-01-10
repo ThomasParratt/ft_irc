@@ -33,19 +33,15 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 							else
 							{
 								//std::cout << "INVITEE ALREADY ON CHANNEL" << std::endl;
-								std::string notice = ":ircserv NOTICE " + msg.parameters[1] + " :" + msg.parameters[0] + " is already on channel\r\n";
-								send(clientSocket, notice.c_str(), notice.size(), 0);
-								// std::string message_443 = ":ircserv 443 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :is already on channel\r\n";
-								// send(clientSocket, message_443.c_str(), message_443.size(), 0);
+								std::string message_443 = ":ircserv 443 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :is already on channel\r\n";
+								send(clientSocket, message_443.c_str(), message_443.size(), 0);
 							}
 						}
 						else
 						{
 							//std::cout << "USER IS NOT AN OPERATOR" << std::endl;
-							std::string notice = ":ircserv NOTICE " + msg.parameters[1] + " :You're not channel operator\r\n";
-							send(clientSocket, notice.c_str(), notice.size(), 0);
-							// std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[1] + " :You're not channel operator\r\n";
-							// send(clientSocket, message_482.c_str(), message_482.size(), 0);
+							std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[1] + " :You're not a channel operator\r\n";
+							send(clientSocket, message_482.c_str(), message_482.size(), 0);
 						}
 					}
 				}
@@ -55,7 +51,7 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 		{
 			//std::cout << "USER DOESN'T EXIST ON CHANNEL" << std::endl;
 			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[1] + " :You're not on that channel\r\n";
-			send(clientSocket, message_442.c_str(), message_442.size(), 0);
+			send(clientSocket, message_442.c_str(), message_442.size(), 0); //HERE
 		}
 	}
 	else

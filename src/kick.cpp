@@ -30,7 +30,8 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 	return (0);
 }
 
-int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
+// kick multiple users in one command
+int		Server::kickCommand(Msg msg, int clientSocket, Client &client) 
 {
 	//std::cout << "KICK COMMAND" << std::endl;
 	if (channelExists(msg.parameters[0]))
