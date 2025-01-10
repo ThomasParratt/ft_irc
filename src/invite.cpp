@@ -1,8 +1,6 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
-// /invite nick channel
-// invite multiple users in one command?
 int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 {
 	//std::cout << "INVITE COMMAND" << std::endl;
