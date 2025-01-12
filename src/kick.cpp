@@ -10,12 +10,12 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 		{
 			int socket = getClientSocket(channel_names[i].channel_users[j].nickname);
 			channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
-			if (partOrKick == 1)
+			if (partOrKick == 1) //kick
 			{
 				std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
 				send(socket, notice.c_str(), notice.size(), 0);
 			} 
-			else if (partOrKick == 0) 
+			else if (partOrKick == 0) //part
 			{
 				send(socket, message.c_str(), message.size(), 0);
 				std::cout << "Debug: message = " << message << std::endl;

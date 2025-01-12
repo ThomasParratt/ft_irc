@@ -101,6 +101,7 @@ void Server::acceptClient()
 
 void Server::removeFromAll(int i)
 {
+	std::cout << "removeFromAll" << std::endl;
 	for (auto &client : clients) // remove user from all channels
 	{
 		if (client.getSocket() == pollfds[i].fd) 
@@ -111,7 +112,10 @@ void Server::removeFromAll(int i)
 				{
 					if (client.getNickname() == user.nickname)
 					{
+						int j = getChannelIndex(channel.name, channel_names);
 						std::string message = "REMOVE " + user.nickname + " from " + channel.name;
+						std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
+						broadcastToChannel(this->channel_names[j], quitMessage);
 						removeUser(user.nickname, channel.name, message, 2);
 						client.leaveChannel(channel.name);
 					}
@@ -154,12 +158,13 @@ void Server::serverLoop()
 				int bytesRead = recv(pollfds[i].fd, buffer, sizeof(buffer), 0);
 				if (bytesRead <= 0) 
 				{
-					if (bytesRead == 0) 
+					if (bytesRead == 0) {
+						removeFromAll(i);
 						std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
+					}
 					else 
 						std::cerr << "Error reading from socket " << pollfds[i].fd << " " << strerror(errno) << std::endl;
 
-					removeFromAll(i);
 
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
