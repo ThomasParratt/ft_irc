@@ -95,7 +95,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	// need to make sure that we don't send this message to the channels if the user didn't join
 	// std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " [~" + client.getUsername() + "@" + client.getHostIP() + "] has joined " + msg.parameters[0] + "\r\n";
 	std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP() + " JOIN " + msg.parameters[0] + "\r\n";
-	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
+	broadcastToChannel(this->channel_names[i], message, client, 0);//Send sender Fd??
 	joinChannelMessage(msg.parameters[0], client);
 	//WELCOME_MSG - Send message to client who connected to channel
 

@@ -56,13 +56,13 @@ int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 	{
 		tarChannel->invite_only = (msg.parameters[1] == "+i") ? true : false;
 		std::string inviteMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
-		broadcastToChannel(*tarChannel, inviteMsg);
+		broadcastToChannel(*tarChannel, inviteMsg, client, 0);
 	}
 	else if (msg.parameters[1] == "+t" || msg.parameters[1] == "-t")
 	{
 		tarChannel->topic_requires_operator = (msg.parameters[1] == "+t") ? true : false;
 		std::string topicMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
-		broadcastToChannel(*tarChannel, topicMsg);
+		broadcastToChannel(*tarChannel, topicMsg, client, 0);
 	}
 	else if (msg.parameters[1] == "+k" || msg.parameters[1] == "-k")
 	{
@@ -77,7 +77,7 @@ int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 			tarChannel->channel_key = msg.parameters[2];
 			tarChannel->keyRequired = true;
 			std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " +k " + msg.parameters[2] + "\r\n";
-			broadcastToChannel(*tarChannel, keyMsg);
+			broadcastToChannel(*tarChannel, keyMsg, client, 0);
 		}
 		else if (msg.parameters[1] == "-k")
 		{
@@ -85,7 +85,7 @@ int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 			tarChannel->channel_key = "";
 			tarChannel->keyRequired = false;
 			std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " -k *" + "\r\n";
-			broadcastToChannel(*tarChannel, keyMsg);
+			broadcastToChannel(*tarChannel, keyMsg, client, 0);
 		}
 	}
 	else if (msg.parameters[1] == "+o" || msg.parameters[1] == "-o")
@@ -104,7 +104,7 @@ int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 				nickExists = true;
 				tarChannel->channel_users[i].operator_permissions = (msg.parameters[1] == "+o") ? true : false;
 				std::string chMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + " " + msg.parameters[2] + "\r\n";
-				broadcastToChannel(*tarChannel, chMsg);
+				broadcastToChannel(*tarChannel, chMsg, client, 0);
 				break;
 			}
 		}
@@ -135,7 +135,7 @@ int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 		{
 			limitMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 		}
-		broadcastToChannel(*tarChannel, limitMsg);
+		broadcastToChannel(*tarChannel, limitMsg, client, 0);
 	}
 	else
 	{

@@ -75,7 +75,7 @@ class Server {
 		int		channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client);
 
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
-		void	broadcastToChannel(Channel &channel, std::string message);
+		void	broadcastToChannel(Channel &channel, std::string message, Client &client, int check);
 		int		getClientSocket(std::string nickname);
 
 		void	userMessageToChannel(Channel channel, int sender_socket, std::string message);

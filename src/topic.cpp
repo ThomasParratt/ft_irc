@@ -30,7 +30,7 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 		}
 		channel_names[i].setChannelTopic(msg.trailing_msg, client);
 		std::string topicMsg = ":" + client.getNickname() + " TOPIC " + channel_names[i].getChannelName() + " :" + msg.trailing_msg + "\r\n";
-		broadcastToChannel(channel_names[i], topicMsg);
+		broadcastToChannel(channel_names[i], topicMsg, client, 0);
 	}
 	return 0;
 }
