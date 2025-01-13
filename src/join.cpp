@@ -69,9 +69,11 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 	int OpCount = this->channel_names[i].getOpCount();
 	int totalCount = this->channel_names[i].getTotalCount();
 
-	std::string welcome_msg;
-	welcome_msg = ":ircserver PRIVMSG " + channelName + " :Welcome to the Channel " + channelName + "\r\n";	
-	send(client.getSocket(), welcome_msg.c_str(), welcome_msg.size(), 0);
+	std::string topic = this->channel_names[i].getChannelTopic();
+	if (!topic.empty())
+	{
+		topicPrint(channelName, client.getSocket(), client);
+	}
 
 	std::string joinMsg;
 	joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
@@ -100,21 +102,10 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
 	// need to make sure that we don't send this message to the channels if the user didn't join
 	// std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " [~" + client.getUsername() + "@" + client.getHostIP() + "] has joined " + msg.parameters[0] + "\r\n";
-	std::string message = ":" + client.getNickname() + "!" + "~" + client.getUsername() + "@" + client.getHostIP() + " JOIN " + msg.parameters[0] + "\r\n";
 
-
-
-	// >> :localhost 353 mkorpela = #ABC :@mkorpela
-	// >> :localhost 366 mkorpela #ABC :End of /NAMES list
-
-	// >> :mkorpela!~mkorpela@ft_irc JOIN #ABC
-	// >> :ft_irc 353 mkorpela = #ABC :@mkorpela 
-	// >> :ft_irc 366 mkorpela #ABC :End of /NAMES list.
-
-	// >> :mkorpela!~mkorpela@10.12.2.4 JOIN #ABC
-
-
-	broadcastToChannel(this->channel_names[i], message);//Send sender Fd??
+	std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP() + " JOIN " + msg.parameters[0] + "\r\n";
+	broadcastToChannel(this->channel_names[i], message, client, 0);//Send sender Fd??
+  
 	joinChannelMessage(msg.parameters[0], client);
 	//WELCOME_MSG - Send message to client who connected to channel
 

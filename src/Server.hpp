@@ -48,6 +48,8 @@ class Server {
 		void acceptClient();
 		void serverLoop();
 
+		void	removeFromAll(int i);
+
 		int		makeSelectAndRunCommand(std::string buffer, int clientSocket, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
@@ -65,7 +67,7 @@ class Server {
 		Channel* getChannel(std::string channelName);
 
 		int     topicCommand(Msg msg, int clientSocket, Client &client);
-		void	topicPrint(Msg msg, int clientSocket, Client &client);
+		void	topicPrint(std::string channelName, int clientSocket, Client &client);
 		int		partCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
 		int     createChannel(Msg msg, int clientSocket, Client &client);
@@ -73,7 +75,7 @@ class Server {
 		int		channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client);
 
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
-		void	broadcastToChannel(Channel &channel, std::string message);
+		void	broadcastToChannel(Channel &channel, std::string message, Client &client, int check);
 		int		getClientSocket(std::string nickname);
 
 		void	userMessageToChannel(Channel channel, int sender_socket, std::string message);

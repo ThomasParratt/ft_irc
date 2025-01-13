@@ -28,7 +28,7 @@ class Channel
 		int				user_limit;
 		int 			OpCount;
 		int				totalCount;
-		bool			keyRequired; // maybe we don't need this?
+		bool			keyRequired; // I added this as an extra safe for the channel
 		bool			invite_only;
 		bool			topic_requires_operator;
 

@@ -67,7 +67,7 @@ int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_name
 /*
 	Sends a message to everyone in a specific channel
 */
-void	Server::broadcastToChannel(Channel &channel, std::string message)
+void	Server::broadcastToChannel(Channel &channel, std::string message, Client &client, int check)
 {
 	std::vector<User> users;
 	int socket;
@@ -76,10 +76,16 @@ void	Server::broadcastToChannel(Channel &channel, std::string message)
 
 	for (int i = 0; i < users.size(); i++)
 	{
-		socket = getClientSocket(users[i].nickname);
-		if (socket != -2)
-		{
-			send(socket, message.c_str(), message.size(), 0);
-		}
+			socket = getClientSocket(users[i].nickname);
+			if (socket != -2)
+			{
+				if (check == 1)
+				{
+					if (client.getSocket() != socket)
+						send(socket, message.c_str(), message.size(), 0);
+				}
+				else
+					send(socket, message.c_str(), message.size(), 0);
+			}
 	}
 }

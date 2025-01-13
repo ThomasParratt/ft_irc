@@ -14,7 +14,7 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 	return (0);
 }
 
-int Server::nickClash(const std::string& nickname, int socket)
+int		Server::nickClash(const std::string& nickname, int socket)
 {
     // Check if any other client has the same nickname
     for (auto &client : clients) 
@@ -31,19 +31,13 @@ int Server::nickClash(const std::string& nickname, int socket)
 int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 {
 	if (!client.getWelcomeSent() && client.getNickname().empty())
-	{
 		client.setNickname(msg.parameters[0]);
-	}
-	else if (msg.parameters[0].empty()) //ERR_NONICKNAMEGIVEN (431)
+	else if (msg.parameters[0].empty())
 	{
 		std::string message_431 = ":ircserv 431 " + client.getNickname() + " :No nickname given\r\n";
 		send(clientSocket, message_431.c_str(), message_431.size(), 0);
 	}
-	// else if ()
-	// {
-	// 	//ERR_ERRONEUSNICKNAME (432)
-	// }
-	else if (this->nickClash(msg.parameters[0], clientSocket)) //ERR_NICKNAMEINUSE (433)
+	else if (this->nickClash(msg.parameters[0], clientSocket))
 	{
 		std::string message_433 = ":ircserv 433 " + msg.parameters[0] + " :" + msg.parameters[0] + "\r\n";
 		send(clientSocket, message_433.c_str(), message_433.size(), 0);
@@ -56,7 +50,6 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 		std::string new_nick = client.getNickname();
 		std::string nick_message = ":" + old_nick + " NICK " + new_nick + "\r\n";
 		send(clientSocket, nick_message.c_str(), nick_message.size(), 0);
-
 		//change channel users name to new nick
 		for (auto &channel : channel_names) 
 		{

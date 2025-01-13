@@ -98,6 +98,7 @@ int		Server::channelChecks(Msg msg, Client &client)
 		return (1);
 	}
 	if (msg.parameters[0][0] != '#')
+
 	{
 		/*
 			Check if not a Channel
@@ -115,18 +116,21 @@ int		Server::channelChecks(Msg msg, Client &client)
 		std::string messages = ":ircserv 324 " + client.getNickname() +  " " + msg.parameters[0] + " +n\r\n";//User can send message to channel, only if they are in the channel.
 		send(client.getSocket(), messages.c_str(), messages.size(), 0);
 		return (1);
+
 	}
 	if (channelExists(msg.parameters[0]) == 0)
 	{
 		std::string errMsg = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[0] + " :Channel doesn't exist\r\n";
 		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
 		return (1);
+
 	}
 	if (clientStatus(msg, client) == 0)	//Check if not a channel operator
 	{
 		std::string errMsg = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
 		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
 		return (1);
+
 	}
 	return (0);
 }

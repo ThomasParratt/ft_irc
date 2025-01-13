@@ -100,6 +100,32 @@ void Server::acceptClient()
 	std::cout << "New client connected, socket " << clientSocket << std::endl;
 }
 
+void Server::removeFromAll(int i)
+{
+	std::cout << "removeFromAll" << std::endl;
+	for (auto &client : clients) // remove user from all channels
+	{
+		if (client.getSocket() == pollfds[i].fd) 
+		{
+			for (auto &channel : channel_names)
+			{
+				for (auto &user : channel.channel_users)
+				{
+					if (client.getNickname() == user.nickname)
+					{
+						int j = getChannelIndex(channel.name, channel_names);
+						std::string message = "REMOVE " + user.nickname + " from " + channel.name;
+						std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
+						broadcastToChannel(this->channel_names[j], quitMessage, client, 1);
+						removeUser(user.nickname, channel.name, message, 2);
+						client.leaveChannel(channel.name);
+					}
+				}
+			}
+		}
+	}
+}
+
 void Server::serverLoop() 
 {
 	// set serverPollfd
@@ -133,16 +159,20 @@ void Server::serverLoop()
 				int bytesRead = recv(pollfds[i].fd, buffer, sizeof(buffer), 0);
 				if (bytesRead <= 0) 
 				{
-					if (bytesRead == 0) 
+					if (bytesRead == 0) {
+						removeFromAll(i);
 						std::cout << "Client disconnected, socket " << pollfds[i].fd << std::endl;
+					}
 					else 
 						std::cerr << "Error reading from socket " << pollfds[i].fd << " " << strerror(errno) << std::endl;
+
+
 					close(pollfds[i].fd);
 					pollfds.erase(pollfds.begin() + i);
 					clients.erase(clients.begin() + (i - 1));
 					clientBuffers.erase(pollfds[i].fd);
 					i--;
-					continue;
+					continue ;
 				}
 				// Append received data to the client's buffer
 				clientBuffers[pollfds[i].fd] += std::string(buffer);
@@ -171,7 +201,7 @@ void Server::serverLoop()
 								clientBuffers.erase(pollfds[i].fd);
 								i--;
 								clientDisconnected = true;
-								break;
+								break ;
 							}
 						}
 					}
