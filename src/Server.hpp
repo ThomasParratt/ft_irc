@@ -83,7 +83,14 @@ class Server {
 		void	joinChannelMessage(std::string channelName, Client &client);
 
 		int		modeCommand(Msg msg, int clientSocket, Client &client);
-		int		userLimitMode(Msg msg, Client &client, Channel *tarChannel);	
+		int		channelChecks(Msg msg, Client &client);
+		void	topicMode(Msg msg, Client &client, Channel* tarChannel);
+		int		keyMode(Msg msg, Client &client, Channel* tarChannel);
+		void	inviteMode(Msg msg, Client &client, Channel* tarChannel);
+		int		operatorMode(Msg msg, Client &client, Channel* tarChannel);
+
+		int		userLimitMode(Msg msg, Client &client, Channel *tarChannel);
+	
 
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
