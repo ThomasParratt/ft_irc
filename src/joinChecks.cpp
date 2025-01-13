@@ -76,33 +76,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 		return (1) ;
 	}
 
-	if (channel.isChannelInviteOnly() == true)
-	{
-		/*
-			a. If Invited
-				-> OK
-
-			b. If not Invited
-				-> Send message
-		*/
-
-		for (auto &it : channel.invited)
-		{
-			if (it == client.getNickname())
-			{
-				return (0);				//User was Invited
-			}
-		}
-
-		message  = ":ircserv 473 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+i) - you must be invited\r\n";
-		send(clientSocket, message.c_str(), message.size(), 0);
-
-		//example << JOIN #BANNNANAss
-		//example >> :lithium.libera.chat 473 gravity123 #BANNNANAss :Cannot join channel (+i) - you must be invited
-		return (1);						//User was NOT Invited
-	}
-	
- 	if (channel.doesChannelHavePassword() == true)
+	if (channel.doesChannelHavePassword() == true)
 	{
 		if (msg.parameters.size() <= 1)						 //No password parameter passed.
 		{
@@ -138,5 +112,32 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 			return (1);
 		}
 	}
+
+	if (channel.isChannelInviteOnly() == true)
+	{
+		/*
+			a. If Invited
+				-> OK
+
+			b. If not Invited
+				-> Send message
+		*/
+
+		for (auto &it : channel.invited)
+		{
+			if (it == client.getNickname())
+			{
+				return (0);				//User was Invited
+			}
+		}
+
+		message  = ":ircserv 473 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+i) - you must be invited\r\n";
+		send(clientSocket, message.c_str(), message.size(), 0);
+
+		//example << JOIN #BANNNANAss
+		//example >> :lithium.libera.chat 473 gravity123 #BANNNANAss :Cannot join channel (+i) - you must be invited
+		return (1);						//User was NOT Invited
+	}
+
 	return (0);
 }
