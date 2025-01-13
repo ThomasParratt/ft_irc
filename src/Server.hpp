@@ -80,9 +80,10 @@ class Server {
 		int		privmsgCommand(Msg msg, int clientSocket, Client &client);
 		void	channelMessage(Msg msg, int clientSocket, Client &client);		
 		void	directMessage(Msg msg, int clientSocket, Client &client);
-		void   joinChannelMessage(std::string channelName, Client &client);
+		void	joinChannelMessage(std::string channelName, Client &client);
 
 		int		modeCommand(Msg msg, int clientSocket, Client &client);
+		int		userLimitMode(Msg msg, Client &client, Channel *tarChannel);	
 
 		void	printChannels();
 		void	printChannelUsers(Channel channel);
