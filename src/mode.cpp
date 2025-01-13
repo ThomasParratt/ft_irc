@@ -86,7 +86,7 @@ int		Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 			}
 		}
 
-		broadcastToChannel(*tarChannel, limitMsg);
+		broadcastToChannel(*tarChannel, limitMsg, client, 0);
 		return (0);
 }
 
@@ -159,7 +159,7 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 			tarChannel->channel_key = msg.parameters[2];
 			tarChannel->keyRequired = true;
 			std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " +k " + msg.parameters[2] + "\r\n";
-			broadcastToChannel(*tarChannel, keyMsg);
+			broadcastToChannel(*tarChannel, keyMsg, client, 0);
 			return (0);
 		}
 	}
@@ -169,7 +169,7 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 		tarChannel->channel_key = "";
 		tarChannel->keyRequired = false;
 		std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " -k *" + "\r\n";
-		broadcastToChannel(*tarChannel, keyMsg);
+		broadcastToChannel(*tarChannel, keyMsg, client, 0);
 		return (0);
 	}
 	return (0);
@@ -180,7 +180,7 @@ void	Server::topicMode(Msg msg, Client &client, Channel* tarChannel)
 	tarChannel->topic_requires_operator = (msg.parameters[1] == "+t") ? true : false;
 	std::cout << "+t/-t" << std::endl; //debug
 	std::string topicMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
-	broadcastToChannel(*tarChannel, topicMsg);
+	broadcastToChannel(*tarChannel, topicMsg, client, 0);
 }
 
 void	Server::inviteMode(Msg msg, Client &client, Channel* tarChannel)
@@ -188,7 +188,7 @@ void	Server::inviteMode(Msg msg, Client &client, Channel* tarChannel)
 	std::cout << "+i/-i" << std::endl; //debug
 	tarChannel->invite_only = (msg.parameters[1] == "+i") ? true : false;
 	std::string inviteMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
-	broadcastToChannel(*tarChannel, inviteMsg);
+	broadcastToChannel(*tarChannel, inviteMsg, client, 0);
 }
 
 int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
@@ -214,7 +214,7 @@ int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 			tarChannel->channel_users[i].operator_permissions = (msg.parameters[1] == "+o") ? true : false;
 			std::cout << tarChannel->channel_users[i].operator_permissions << std::endl; //debug
 			std::string chMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + " " + msg.parameters[2] + "\r\n";
-			broadcastToChannel(*tarChannel, chMsg);
+			broadcastToChannel(*tarChannel, chMsg, client, 0);
 			break;
 		}
 	}
