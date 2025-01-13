@@ -51,6 +51,11 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 									broadcastToChannel(channel_names[i], kick);
 									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from", 1);
 									client.leaveChannel(msg.parameters[0]);
+									for (int i = 0; i < sizeof(channel.invited); i++)
+									{
+										if (msg.parameters[1] == channel.invited[i])
+											channel.invited.erase(channel.invited.begin() + i);
+									}
 								}
 								else
 								{
