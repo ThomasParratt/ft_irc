@@ -82,9 +82,17 @@ class Server {
 		int		privmsgCommand(Msg msg, int clientSocket, Client &client);
 		void	channelMessage(Msg msg, int clientSocket, Client &client);		
 		void	directMessage(Msg msg, int clientSocket, Client &client);
-		void   joinChannelMessage(std::string channelName, Client &client);
+		void	joinChannelMessage(std::string channelName, Client &client);
 
 		int		modeCommand(Msg msg, int clientSocket, Client &client);
+		int		channelChecks(Msg msg, Client &client);
+		void	topicMode(Msg msg, Client &client, Channel* tarChannel);
+		int		keyMode(Msg msg, Client &client, Channel* tarChannel);
+		void	inviteMode(Msg msg, Client &client, Channel* tarChannel);
+		int		operatorMode(Msg msg, Client &client, Channel* tarChannel);
+
+		int		userLimitMode(Msg msg, Client &client, Channel *tarChannel);
+	
 
 		void	printChannels();
 		void	printChannelUsers(Channel channel);

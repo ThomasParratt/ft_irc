@@ -13,7 +13,8 @@ Server::~Server()
 	// close all the clientSockets
 }
 
-int Server::serverInit() {
+int Server::serverInit() 
+{
 	// create server socket
 	// _serverSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0); // SOCK_NONBLOCK is not supported on macOS
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -56,31 +57,31 @@ int Server::serverInit() {
 
 int Server::setServHostName()
 {
-    char hostname[MAX_LEN_HOSTNAME];
-    if (gethostname(hostname, MAX_LEN_HOSTNAME) == -1)
-    {
-        std::cerr << "Error getting hostname" << std::endl;
-        return -1;
-    }
-    // Ensure the hostname is null-terminated, if not, it means the hostname was too long and was truncated
-    if (hostname[MAX_LEN_HOSTNAME - 1] != '\0')
-    {
-        std::cerr << "Hostname is too long, using host address instead" << std::endl;
-        // Use the server address to get the host address
-        char host_ip[INET_ADDRSTRLEN];
-        if (inet_ntop(AF_INET, &(_serverAddr.sin_addr), host_ip, INET_ADDRSTRLEN) == nullptr)
-        {
-            std::cerr << "Error converting host address to string: " << strerror(errno) << std::endl;
-            return -1;
-        }
-        _servHostName = host_ip;
-    }
-    else
-    {
-        _servHostName = hostname;
-    }
+	char hostname[MAX_LEN_HOSTNAME];
+	if (gethostname(hostname, MAX_LEN_HOSTNAME) == -1)
+	{
+		std::cerr << "Error getting hostname" << std::endl;
+		return -1;
+	}
+	// Ensure the hostname is null-terminated, if not, it means the hostname was too long and was truncated
+	if (hostname[MAX_LEN_HOSTNAME - 1] != '\0')
+	{
+		std::cerr << "Hostname is too long, using host address instead" << std::endl;
+		// Use the server address to get the host address
+		char host_ip[INET_ADDRSTRLEN];
+		if (inet_ntop(AF_INET, &(_serverAddr.sin_addr), host_ip, INET_ADDRSTRLEN) == nullptr)
+		{
+			std::cerr << "Error converting host address to string: " << strerror(errno) << std::endl;
+			return -1;
+		}
+		_servHostName = host_ip;
+	}
+	else
+	{
+		_servHostName = hostname;
+	}
 	std::cout << "Server hostname set to " << _servHostName << std::endl;
-    return 1;
+	return 1;
 }
 
 void Server::acceptClient()
@@ -183,7 +184,6 @@ void Server::serverLoop()
 				{
 					// Extract the complete message
 					std::string message = clientBuffer.substr(0, pos);
-					std::cout << message << std::endl;
 					clientBuffer.erase(0, pos + 1); // Remove the processed message
 
 					std::cout << "Message received from socket " << pollfds[i].fd << ": " << message << std::endl;

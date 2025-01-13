@@ -63,6 +63,7 @@ int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_name
 	}
 	return (-1);
 }
+
 /*
 	Sends a message to everyone in a specific channel
 */

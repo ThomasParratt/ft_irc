@@ -89,7 +89,7 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else
 	{
-		std::string response = "ft_irc: Command not found: " + msg.command + "\r\n";
+		std::string response = "ircserv: Command not found: " + msg.command + "\r\n"; //Ignore commands that are not found??
 		send(clientSocket, response.c_str(), response.size(), 0);
 	}
 	return (0);
@@ -99,8 +99,8 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 int    Server::makeSelectAndRunCommand(std::string messages, int clientSocket, Client &client)
 {
 	std::vector<Msg>     msgs;
-    
-    this -> makeMessages(msgs, messages);
+
+	this -> makeMessages(msgs, messages);
 
 	for (int i = 0; i < msgs.size(); i++)
 	{
