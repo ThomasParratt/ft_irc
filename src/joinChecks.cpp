@@ -103,7 +103,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 		}
 		else 												//Password Incorrect
 		{
-			message = ":ircserv 475 " + client.getNickname() + " " + password + " :Cannot join channel (+k) - password incorrect\r\n"; // Trailing messages don't print
+			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - password incorrect\r\n"; // Trailing messages don't print
 			send(clientSocket, message.c_str(), message.size(), 0);
 
 			// << JOIN #ABC1234 lol
