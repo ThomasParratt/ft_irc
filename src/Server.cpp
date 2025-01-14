@@ -107,6 +107,7 @@ void Server::removeFromAll(int i)
 	{
 		if (client.getSocket() == _pollfds[i].fd) 
 		{
+			std::string userPrefix = client.getPrefix();
 			for (auto &channel : _channel_names)
 			{
 				for (auto &user : channel.getChannelUsers())
@@ -115,7 +116,8 @@ void Server::removeFromAll(int i)
 					{
 						int j = getChannelIndex(channel.getChannelName(), _channel_names);
 						std::string message = "REMOVE " + user.nickname + " from " + channel.getChannelName();
-						std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
+						std::string quitMessage = ":" + userPrefix + " QUIT " + ":Client has quit\r\n";
+						// std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
 						broadcastToChannel(this->_channel_names[j], quitMessage, client, 1);
 						removeUser(user.nickname, channel.getChannelName(), message, 2);
 						client.leaveChannel(channel.getChannelName());
