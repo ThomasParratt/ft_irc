@@ -17,7 +17,6 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 	//Add into channel Users
 	channel.addUserIntoChannelUsers(new_user);
 	client.joinChannel(channel.getChannelName());
-
 }
 
 int		Server::createChannel(Msg msg, int clientSocket, Client &client)
@@ -29,8 +28,6 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 
 	//Add User into Channel
 	addChannelUser(new_channel, client, true);
-
-	
 
 	//Update Channel vector
 	this->channel_names.push_back(new_channel);
@@ -100,10 +97,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 		
 	}
 	i = getChannelIndex(msg.parameters[0], this->channel_names);
-	// need to make sure that we don't send this message to the channels if the user didn't join
-	// std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " [~" + client.getUsername() + "@" + client.getHostIP() + "] has joined " + msg.parameters[0] + "\r\n";
-
-	std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP() + " JOIN " + msg.parameters[0] + "\r\n";
+	std::string message = ":" + client.getPrefix() + " JOIN " + msg.parameters[0] + "\r\n";
 	broadcastToChannel(this->channel_names[i], message, client, 0);//Send sender Fd??
   
 	joinChannelMessage(msg.parameters[0], client);

@@ -116,6 +116,7 @@ void Server::removeFromAll(int i)
 						int j = getChannelIndex(channel.name, channel_names);
 						std::string message = "REMOVE " + user.nickname + " from " + channel.name;
 						std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
+						// user.nickname will only be client's nickname
 						broadcastToChannel(this->channel_names[j], quitMessage, client, 1);
 						removeUser(user.nickname, channel.name, message, 2);
 						client.leaveChannel(channel.name);
@@ -228,7 +229,7 @@ std::string getCurrentTime()
 	time_t now = time(0);
 	char timeStr[100];
     struct tm *localTime = localtime(&now);
-    strftime(timeStr, sizeof(timeStr), "%A, %Y-%m-%d %H:%M:%S", localTime);
+    strftime(timeStr, sizeof(timeStr), "%a %b %d %H:%M:%S %Y", localTime);
     return std::string(timeStr);
 }
 

@@ -31,9 +31,10 @@ int		Channel::getTotalCount()
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
 	topic = new_topic;
-	std::string setterString = client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP();
-	topicSetter = setterString;
+	topicSetter = client.getPrefix();
 	topicSetTime = getCurrentTime();
+	std::cout << "Topic set by: " << topicSetter << std::endl;
+	std::cout << "Time: " << topicSetTime << std::endl;
 }
 
 void	Channel::addUserIntoChannelUsers(User new_user)

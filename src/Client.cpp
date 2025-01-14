@@ -3,6 +3,7 @@
 Client::Client(int socket, const std::string& password) : _socket(socket), _password(password), _welcomeSent(false), _passwordChecked(false) 
 {
     setHostIP();
+    // setPrefix();
 };
 
 std::string Client::getNickname()
@@ -24,6 +25,12 @@ std::string Client::getHostIP()
 {
     return(_hostIP);
 }
+
+std::string Client::getPrefix()
+{
+    return _prefix;
+}
+
 
 bool        Client::getPasswordChecked()
 {
@@ -95,6 +102,11 @@ void Client::setHostIP()
 
     std::cerr << "Failed to convert address to string" << std::endl;
     freeaddrinfo(res);
+}
+
+void       Client::setPrefix(std::string prefix)
+{
+    _prefix = prefix;
 }
 
 void        Client::setPasswordChecked(bool value)
