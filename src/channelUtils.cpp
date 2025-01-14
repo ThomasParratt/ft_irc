@@ -89,14 +89,4 @@ void	Server::broadcastToChannel(Channel &channel, std::string message, Client &c
 			}
 	}
 }
-
-time_t stringToUnixTimeStamp(std::string time)
-{
-	struct tm tm;
-	if (strptime(time.c_str(), "%a %b %d %H:%M:%S %Y", &tm) == NULL)
-	{
-		std::cout << "Error: strptime" << std::endl;
-		return (-1);
-	}
-	return (mktime(&tm));
-}	
+	

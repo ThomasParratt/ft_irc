@@ -35,9 +35,9 @@ User&	Channel::getChannelUserStruct(int index)
 
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
-	topic = new_topic;
-	topicSetter = client.getPrefix();
-	topicSetTime = getCurrentTime();
+	this->topic = new_topic;
+	this->topicSetter = client.getPrefix();
+	this->topicSetTime = getCurrentTime();
 	std::cout << "Topic set by: " << topicSetter << std::endl;
 	std::cout << "Time: " << topicSetTime << std::endl;
 }

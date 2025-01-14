@@ -222,6 +222,16 @@ void Server::serverLoop()
 	std::cout << "Server stopped" << std::endl;
 }
 
+time_t stringToUnixTimeStamp(std::string time)
+{
+	struct tm tm;
+	if (strptime(time.c_str(), "%a %b %d %H:%M:%S %Y", &tm) == NULL)
+	{
+		std::cout << "Error: strptime" << std::endl;
+		return (-1);
+	}
+	return (mktime(&tm));
+}
 
 std::string getCurrentTime()
 {
