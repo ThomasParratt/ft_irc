@@ -6,9 +6,9 @@ int 	Server::clientStatus(Msg msg, Client &client)
 {
 	for (auto &channel : _channel_names)
 	{
-		if (channel.name == msg.parameters[0])
+		if (channel.getChannelName() == msg.parameters[0])
 		{
-			for (auto &users : channel.channel_users)
+			for (auto &users : channel.getChannelUsers())
 			{
 				if (users.nickname == client.getNickname())
 				{
@@ -25,7 +25,7 @@ Channel* Server::getChannel(std::string channelName)
 {
 	for (auto &channel : _channel_names)
 	{
-		if (channel.name == channelName)
+		if (channel.getChannelName() == channelName)
 			return &channel;
 	}
 	return nullptr;
@@ -40,7 +40,7 @@ int		Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 
 		if (msg.parameters[1] == "-l")
 		{
-			tarChannel -> user_limit = -1;
+			tarChannel->setUserLimit(-1);
 			limitMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 		}
 		else
@@ -77,7 +77,7 @@ int		Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 				}
 				// std::cout << "userLimit (int): " << userLimit << std::endl;
 
-				tarChannel -> user_limit = userLimit;
+				tarChannel -> setUserLimit(userLimit);
 
 				msg.parameters[1] = "+l";
 
@@ -156,8 +156,8 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 		else if (msg.parameters[2] != "")
 		{
 			std::cout << "Setting Channel Key: " << msg.parameters[2] << std::endl; //debug
-			tarChannel->channel_key = msg.parameters[2];
-			tarChannel->keyRequired = true;
+			tarChannel->getChannelKey() = msg.parameters[2];
+			tarChannel->setKeyRequired(true);
 			std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " +k " + msg.parameters[2] + "\r\n";
 			broadcastToChannel(*tarChannel, keyMsg, client, 0);
 			return (0);
@@ -166,8 +166,8 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 	else if (msg.parameters[1] == "-k")
 	{
 		std::cout << "Removing Channel Key" << std::endl; //debug
-		tarChannel->channel_key = "";
-		tarChannel->keyRequired = false;
+		tarChannel->getChannelKey() = "";
+		tarChannel->setKeyRequired(false);
 		std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " -k *" + "\r\n";
 		broadcastToChannel(*tarChannel, keyMsg, client, 0);
 		return (0);
@@ -177,7 +177,8 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 
 void	Server::topicMode(Msg msg, Client &client, Channel* tarChannel)
 {
-	tarChannel->topic_requires_operator = (msg.parameters[1] == "+t") ? true : false;
+	bool	boolean = (msg.parameters[1] == "+t") ? true : false;
+	tarChannel -> setTopicRequiresOperator(boolean);
 	std::cout << "+t/-t" << std::endl; //debug
 	std::string topicMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 	broadcastToChannel(*tarChannel, topicMsg, client, 0);
@@ -186,7 +187,8 @@ void	Server::topicMode(Msg msg, Client &client, Channel* tarChannel)
 void	Server::inviteMode(Msg msg, Client &client, Channel* tarChannel)
 {
 	std::cout << "+i/-i" << std::endl; //debug
-	tarChannel->invite_only = (msg.parameters[1] == "+i") ? true : false;
+	bool	boolean = (msg.parameters[1] == "+i") ? true : false;
+	tarChannel -> setInviteOnly(boolean);
 	std::string inviteMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 	broadcastToChannel(*tarChannel, inviteMsg, client, 0);
 }
@@ -203,16 +205,16 @@ int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 		return (1);
 	}
 	bool nickExists = false;
-	for (int i = 0; i < tarChannel->channel_users.size(); i++)
+	for (int i = 0; i < tarChannel->getChannelUsers().size(); i++)
 	{
-		if (tarChannel->channel_users[i].nickname == msg.parameters[2])
+		if (tarChannel->getChannelUserStruct(i).nickname == msg.parameters[2])
 		{
 			// need to make sure it is not the client itself
 			nickExists = true;
-			std::cout << "found: " << tarChannel->channel_users[i].nickname << std::endl; //debug
-			std::cout << tarChannel->channel_users[i].operator_permissions << std::endl; //debug
-			tarChannel->channel_users[i].operator_permissions = (msg.parameters[1] == "+o") ? true : false;
-			std::cout << tarChannel->channel_users[i].operator_permissions << std::endl; //debug
+			std::cout << "found: " << tarChannel->getChannelUserStruct(i).nickname << std::endl; //debug
+			std::cout << tarChannel->getChannelUserStruct(i).operator_permissions << std::endl; //debug
+			tarChannel->getChannelUserStruct(i).operator_permissions = (msg.parameters[1] == "+o") ? true : false;
+			std::cout << tarChannel->getChannelUserStruct(i).operator_permissions << std::endl; //debug
 			std::string chMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + " " + msg.parameters[2] + "\r\n";
 			broadcastToChannel(*tarChannel, chMsg, client, 0);
 			break;

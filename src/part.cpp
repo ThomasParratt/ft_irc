@@ -42,7 +42,7 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 		bool channelExists = false;
 		for (auto &channel : _channel_names)
 		{
-			if (channel.name == channels[i])
+			if (channel.getChannelName() == channels[i])
 			{
 				channelExists = true;
 				if (userExists(client.getNickname(), channels[i]))
@@ -51,9 +51,9 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 					std::string fullPrefix = client.getNickname() + "!" + "~" + client.getUsername() + "@" + client.getHostIP();
 					std::string part;
 					if (!msg.trailing_msg.empty())
-						part = ":" + fullPrefix + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
+						part = ":" + fullPrefix + " PART " + channel.getChannelName() + " :" + msg.trailing_msg + "\r\n";
 					else
-						part = ":" + fullPrefix + " PART " + channel.name + "\r\n";
+						part = ":" + fullPrefix + " PART " + channel.getChannelName() + "\r\n";
 					// std::cout << "debug part channel before:" << std::endl;
 					// printChannelUsers(channel_names[j]);
 					// std::cout << "removing user: " << client.getNickname() << " from channel: " << channels[i] << std::endl;
@@ -77,11 +77,11 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 	}
 	for ( auto &channel : _channel_names)
 	{
-		if (channel.channel_users.size() == 0)
+		if (channel.getChannelUsers().size() == 0)
 		{
 			//remove channel
 			// std::cout << "Removing: " << channel.name << " :no more users"<<std::endl;
-			int i = getChannelIndex(channel.name, _channel_names);
+			int i = getChannelIndex(channel.getChannelName(), _channel_names);
 			_channel_names.erase(_channel_names.begin() + i);
 		}
 	}

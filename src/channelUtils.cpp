@@ -5,9 +5,9 @@
 */
 void	Server::printChannelUsers(Channel channel)
 {
-	for (int i = 0; i < channel.channel_users.size(); i++)
+	for (int i = 0; i < channel.getChannelUsers().size(); i++)
 	{
-		std::cout << "User[" << i << "]: " <<  channel.channel_users[i].nickname  << " (op = " <<  channel.channel_users[i].operator_permissions << ")" << std::endl;
+		std::cout << "User[" << i << "]: " <<  channel.getChannelUserStruct(i).nickname  << " (op = " <<  channel.getChannelUserStruct(i).operator_permissions << ")" << std::endl;
 	}	
 }
 
@@ -18,7 +18,7 @@ void		Server::printChannels()
 {
 	for (int i = 0; i < this->_channel_names.size(); i++)
 	{
-		std::cout << "Channel[" << i << "]: "<< _channel_names[i].name << std::endl;
+		std::cout << "Channel[" << i << "]: "<< _channel_names[i].getChannelName() << std::endl;
 		printChannelUsers(_channel_names[i]);
 	}
 }
@@ -39,7 +39,7 @@ int		Server::channelExists(std::string channel)
 {
 	for (auto &it : _channel_names)
 	{
-		if (it.name == channel)
+		if (it.getChannelName() == channel)
 			return (1);
 	}
 	return (0);
