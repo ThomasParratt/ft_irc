@@ -5,9 +5,9 @@
 void Server::topicPrint(std::string channelName, int clientSocket, Client &client)
 {
 	bool found = false;
-	for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
+	for (std::vector<Channel>::iterator it = _channel_names.begin(); it != _channel_names.end(); it++)
 	{
-		if (it->name == channelName)
+		if (it->getChannelName() == channelName)
 		{
 			found = true;
             std::string channelTopic = it->getChannelTopic();
@@ -17,13 +17,10 @@ void Server::topicPrint(std::string channelName, int clientSocket, Client &clien
             	send(clientSocket, noTopic.c_str(), noTopic.size(), 0);
 				break;
 			}
-			std::cout << "in Topic Print" << std::endl;
-			std::cout << "Topic set by: " << it->topicSetter << std::endl;
-			std::cout << "Time: " << it->topicSetTime << std::endl;
             std::string topicMsg = ":ircserver 332 " + client.getNickname() + " " + channelName + " :" + channelTopic + "\r\n";
             send(clientSocket, topicMsg.c_str(), topicMsg.size(), 0);
-			time_t rawTime = stringToUnixTimeStamp(it->topicSetTime);
-            std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->topicSetter + " " + std::to_string(rawTime) + "\r\n";
+			time_t rawTime = stringToUnixTimeStamp(it->getTopicSetTime());
+            std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->getTopicSetter() + " " + std::to_string(rawTime) + "\r\n";
             send(clientSocket, topicSetByMsg.c_str(), topicSetByMsg.size(), 0);
             break;
 		}
@@ -68,9 +65,9 @@ int	Server::topicCommand(Msg msg, int clientSocket, Client &client)
 void Server::topicPrint(std::string channelName, int clientSocket, Client &client)
 {
 	bool found = false;
-	for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
+	for (std::vector<Channel>::iterator it = _channel_names.begin(); it != _channel_names.end(); it++)
 	{
-		if (it->name == channelName)
+		if (it->getChannelName() == channelName)
 		{
 			found = true;
             std::string channelTopic = it->getChannelTopic();
@@ -82,7 +79,7 @@ void Server::topicPrint(std::string channelName, int clientSocket, Client &clien
 			}
             std::string topicMsg = ":ircserver 332 " + client.getNickname() + " " + channelName + " :" + channelTopic + "\r\n";
             send(clientSocket, topicMsg.c_str(), topicMsg.size(), 0);
-            std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->topicSetter + " " + it->topicSetTime + "\r\n";
+            std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->getChannelTopic() + " " + it->getTopicSetTime() + "\r\n";
             send(clientSocket, topicSetByMsg.c_str(), topicSetByMsg.size(), 0);
             break;
 		}
