@@ -28,6 +28,11 @@ int		Channel::getTotalCount()
 	return channel_users.size();
 }
 
+User&	Channel::getChannelUserStruct(int index)
+{
+	return (this -> channel_users[index]);
+}
+
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
 	topic = new_topic;
@@ -40,6 +45,64 @@ void	Channel::setChannelTopic(std::string new_topic, Client &client)
 void	Channel::addUserIntoChannelUsers(User new_user)
 {
 	this->channel_users.push_back(new_user);
+}
+
+void	Channel::removeUserFromChannelUsers(int index)
+{
+	if (index < 0)
+	{
+		return ;
+	}
+	this->channel_users.erase(this ->channel_users.begin() + index);
+}
+
+std::string			Channel::getInvitedName(int index)
+{
+	std::string		nickname;
+
+	if (index < 0)
+	{
+		return ("");
+	}
+
+	nickname = this->invited[index];
+
+	return (nickname);
+}
+
+void		Channel::addUserToInviteList(std::string nickname)
+{
+	this -> invited.push_back(nickname);
+}
+
+void	Channel::uninviteUser(int index)
+{
+	if (index < 0)
+	{
+		return ;
+	}
+
+	this->invited.erase(this->invited.begin() + index);
+}
+
+void	Channel::setKeyRequired(bool boolean)
+{
+	this -> keyRequired = boolean;
+}
+
+void	Channel::setInviteOnly(bool boolean)
+{
+	this -> invite_only = boolean;
+}
+
+void	Channel::setUserLimit(int userLimit)
+{
+	this -> user_limit = userLimit;
+}
+
+void	Channel::setTopicRequiresOperator(bool boolean)
+{
+	this -> topic_requires_operator = boolean;
 }
 
 /*

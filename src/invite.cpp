@@ -7,9 +7,9 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 	{
 		if (userExists(client.getNickname(), msg.parameters[1]))
 		{
-			for (auto &channel : channel_names)
+			for (auto &channel : _channel_names)
 			{
-				for (auto &inviter : channel.channel_users)
+				for (auto &inviter : channel.getChannelUsers())
 				{
 					if ((inviter.nickname == client.getNickname()))
 					{
@@ -20,7 +20,7 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 								std::string message_341 = ":ircserv 341 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 								int socket = getClientSocket(msg.parameters[0]);
 								send(socket, message_341.c_str(), message_341.size(), 0);
-								channel.invited.push_back(msg.parameters[0]);
+								channel.addUserToInviteList(msg.parameters[0]);
 							}
 							else
 							{

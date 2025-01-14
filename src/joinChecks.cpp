@@ -123,7 +123,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 				-> Send message
 		*/
 
-		for (auto &it : channel.invited)
+		for (auto &it : channel.getInvitedList())
 		{
 			if (it == client.getNickname())
 			{

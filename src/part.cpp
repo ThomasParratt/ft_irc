@@ -40,26 +40,26 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 	for (int i = 0; i < channels.size(); i++)
 	{
 		bool channelExists = false;
-		for (auto &channel : channel_names)
+		for (auto &channel : _channel_names)
 		{
-			if (channel.name == channels[i])
+			if (channel.getChannelName() == channels[i])
 			{
 				channelExists = true;
 				if (userExists(client.getNickname(), channels[i]))
 				{
-					int j = getChannelIndex(channels[i], channel_names);
+					int j = getChannelIndex(channels[i], _channel_names);
 					std::string fullPrefix = client.getNickname() + "!" + "~" + client.getUsername() + "@" + client.getHostIP();
 					std::string part;
 					if (!msg.trailing_msg.empty())
-						part = ":" + fullPrefix + " PART " + channel.name + " :" + msg.trailing_msg + "\r\n";
+						part = ":" + fullPrefix + " PART " + channel.getChannelName() + " :" + msg.trailing_msg + "\r\n";
 					else
-						part = ":" + fullPrefix + " PART " + channel.name + "\r\n";
+						part = ":" + fullPrefix + " PART " + channel.getChannelName() + "\r\n";
 					// std::cout << "debug part channel before:" << std::endl;
 					// printChannelUsers(channel_names[j]);
 					// std::cout << "removing user: " << client.getNickname() << " from channel: " << channels[i] << std::endl;
 					removeUser(client.getNickname(), channels[i], part, 0);
 					client.leaveChannel(channels[i]);
-					broadcastToChannel(channel_names[j], part, client, 0);
+					broadcastToChannel(_channel_names[j], part, client, 0);
 					// printChannelUsers(channel_names[j]);
 					break;
 				} else {
@@ -75,14 +75,14 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 			send(clientSocket, notice.c_str(), notice.size(), 0);
 		}
 	}
-	for ( auto &channel : channel_names)
+	for ( auto &channel : _channel_names)
 	{
-		if (channel.channel_users.size() == 0)
+		if (channel.getChannelUsers().size() == 0)
 		{
 			//remove channel
 			// std::cout << "Removing: " << channel.name << " :no more users"<<std::endl;
-			int i = getChannelIndex(channel.name, channel_names);
-			channel_names.erase(channel_names.begin() + i);
+			int i = getChannelIndex(channel.getChannelName(), _channel_names);
+			_channel_names.erase(_channel_names.begin() + i);
 		}
 	}
 	return (0);

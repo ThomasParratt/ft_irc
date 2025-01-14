@@ -17,7 +17,7 @@ int		Server::passwordCommand(Msg msg, int clientSocket, Client &client)
 int		Server::nickClash(const std::string& nickname, int socket)
 {
     // Check if any other client has the same nickname
-    for (auto &client : clients) 
+    for (auto &client : _clients) 
     {
 		if (client.getSocket() != socket)
 		{
@@ -54,7 +54,7 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 		client.setPrefix(new_prefix);
 		send(clientSocket, nick_message.c_str(), nick_message.size(), 0);
 		//change channel users name to new nick
-		for (auto &channel : channel_names) 
+		for (auto &channel : _channel_names) 
 		{
 			for (auto &user : channel.getChannelUsers())
 			{

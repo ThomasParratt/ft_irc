@@ -5,9 +5,9 @@
 */
 void	Server::printChannelUsers(Channel channel)
 {
-	for (int i = 0; i < channel.channel_users.size(); i++)
+	for (int i = 0; i < channel.getChannelUsers().size(); i++)
 	{
-		std::cout << "User[" << i << "]: " <<  channel.channel_users[i].nickname  << " (op = " <<  channel.channel_users[i].operator_permissions << ")" << std::endl;
+		std::cout << "User[" << i << "]: " <<  channel.getChannelUserStruct(i).nickname  << " (op = " <<  channel.getChannelUserStruct(i).operator_permissions << ")" << std::endl;
 	}	
 }
 
@@ -16,18 +16,18 @@ void	Server::printChannelUsers(Channel channel)
 */
 void		Server::printChannels()
 {
-	for (int i = 0; i < this->channel_names.size(); i++)
+	for (int i = 0; i < this->_channel_names.size(); i++)
 	{
-		std::cout << "Channel[" << i << "]: "<< channel_names[i].name << std::endl;
-		printChannelUsers(channel_names[i]);
+		std::cout << "Channel[" << i << "]: "<< _channel_names[i].getChannelName() << std::endl;
+		printChannelUsers(_channel_names[i]);
 	}
 }
 
 // checks if a user exists in a channel
 int		Server::userExists(std::string user, std::string channel)
 {
-	int i = getChannelIndex(channel, channel_names);
-	for (auto &userToCheck : channel_names[i].getChannelUsers())
+	int i = getChannelIndex(channel, _channel_names);
+	for (auto &userToCheck : _channel_names[i].getChannelUsers())
 	{
 		if (userToCheck.nickname == user)
 			return (1);
@@ -37,9 +37,9 @@ int		Server::userExists(std::string user, std::string channel)
 
 int		Server::channelExists(std::string channel)
 {
-	for (auto &it : channel_names)
+	for (auto &it : _channel_names)
 	{
-		if (it.name == channel)
+		if (it.getChannelName() == channel)
 			return (1);
 	}
 	return (0);
