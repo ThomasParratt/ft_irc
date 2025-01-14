@@ -19,10 +19,6 @@ class Channel
 {
 	public:
 
-
-
-		std::vector<User>	channel_users;
-
 		Channel(std::string name);
 		~Channel(){};
 
@@ -49,6 +45,7 @@ class Channel
 		bool				getTopicRequiresOperator(){return topic_requires_operator;}
 		std::vector<std::string>&	getInvitedList(){return invited;};
 		std::vector<User>&	getChannelUsers(){return channel_users;}
+		User&				getChannelUserStruct(int index);
 
 		std::string			getInvitedName(int index);
 		void				addUserToInviteList(std::string nickname);
@@ -60,6 +57,8 @@ class Channel
 		void				setTopicRequiresOperator(bool boolean);
 		
 		void				addUserIntoChannelUsers(User new_user);
+		void				removeUserFromChannelUsers(int index);
+		
 
 	private:
 		std::string		name;
@@ -77,6 +76,7 @@ class Channel
 		bool			topic_requires_operator;
 
 		std::vector<std::string>	invited;
+		std::vector<User>			channel_users;
 
 
 

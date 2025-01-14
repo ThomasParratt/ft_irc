@@ -9,7 +9,7 @@ int		Server::inviteCommand(Msg msg, int clientSocket, Client &client)
 		{
 			for (auto &channel : channel_names)
 			{
-				for (auto &inviter : channel.channel_users)
+				for (auto &inviter : channel.getChannelUsers())
 				{
 					if ((inviter.nickname == client.getNickname()))
 					{

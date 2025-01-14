@@ -28,6 +28,11 @@ int		Channel::getTotalCount()
 	return channel_users.size();
 }
 
+User&	Channel::getChannelUserStruct(int index)
+{
+	return (this -> channel_users[index]);
+}
+
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
 	topic = new_topic;
@@ -39,6 +44,15 @@ void	Channel::setChannelTopic(std::string new_topic, Client &client)
 void	Channel::addUserIntoChannelUsers(User new_user)
 {
 	this->channel_users.push_back(new_user);
+}
+
+void	Channel::removeUserFromChannelUsers(int index)
+{
+	if (index < 0)
+	{
+		return ;
+	}
+	this->channel_users.erase(this ->channel_users.begin() + index);
 }
 
 std::string			Channel::getInvitedName(int index)

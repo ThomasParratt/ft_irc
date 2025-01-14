@@ -4,12 +4,15 @@
 int		Server::removeUser(std::string user, std::string channel, std::string message, int partOrKick)
 {
 	int i = getChannelIndex(channel, channel_names);
-	for (int j = 0 ; j < sizeof(channel_names[i].channel_users) ; j++)
+	for (int j = 0 ; j < sizeof(channel_names[i].getChannelUsers()) ; j++)
 	{
-		if (channel_names[i].channel_users[j].nickname == user)
+		//if (channel_names[i].channel_users[j].nickname == user)
+		if (channel_names[i].getChannelUserStruct(j).nickname == user)
 		{
-			int socket = getClientSocket(channel_names[i].channel_users[j].nickname);
-			channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
+			int socket = getClientSocket(channel_names[i].getChannelUserStruct(j).nickname);
+			//channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
+			channel_names[i].removeUserFromChannelUsers(i);
+			// channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
 			if (partOrKick == 1) //kick
 			{
 				std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
@@ -38,7 +41,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 			{
 				if (channel.getChannelName() == msg.parameters[0])
 				{
-					for (auto &kicker : channel.channel_users)
+					for (auto &kicker : channel.getChannelUsers())
 					{
 						if ((kicker.nickname == client.getNickname()))
 						{

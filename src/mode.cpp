@@ -8,7 +8,7 @@ int 	Server::clientStatus(Msg msg, Client &client)
 	{
 		if (channel.getChannelName() == msg.parameters[0])
 		{
-			for (auto &users : channel.channel_users)
+			for (auto &users : channel.getChannelUsers())
 			{
 				if (users.nickname == client.getNickname())
 				{
@@ -205,16 +205,16 @@ int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 		return (1);
 	}
 	bool nickExists = false;
-	for (int i = 0; i < tarChannel->channel_users.size(); i++)
+	for (int i = 0; i < tarChannel->getChannelUsers().size(); i++)
 	{
-		if (tarChannel->channel_users[i].nickname == msg.parameters[2])
+		if (tarChannel->getChannelUserStruct(i).nickname == msg.parameters[2])
 		{
 			// need to make sure it is not the client itself
 			nickExists = true;
-			std::cout << "found: " << tarChannel->channel_users[i].nickname << std::endl; //debug
-			std::cout << tarChannel->channel_users[i].operator_permissions << std::endl; //debug
-			tarChannel->channel_users[i].operator_permissions = (msg.parameters[1] == "+o") ? true : false;
-			std::cout << tarChannel->channel_users[i].operator_permissions << std::endl; //debug
+			std::cout << "found: " << tarChannel->getChannelUserStruct(i).nickname << std::endl; //debug
+			std::cout << tarChannel->getChannelUserStruct(i).operator_permissions << std::endl; //debug
+			tarChannel->getChannelUserStruct(i).operator_permissions = (msg.parameters[1] == "+o") ? true : false;
+			std::cout << tarChannel->getChannelUserStruct(i).operator_permissions << std::endl; //debug
 			std::string chMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + " " + msg.parameters[2] + "\r\n";
 			broadcastToChannel(*tarChannel, chMsg, client, 0);
 			break;

@@ -77,7 +77,7 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 	}
 	for ( auto &channel : channel_names)
 	{
-		if (channel.channel_users.size() == 0)
+		if (channel.getChannelUsers().size() == 0)
 		{
 			//remove channel
 			// std::cout << "Removing: " << channel.name << " :no more users"<<std::endl;

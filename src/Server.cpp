@@ -109,7 +109,7 @@ void Server::removeFromAll(int i)
 		{
 			for (auto &channel : channel_names)
 			{
-				for (auto &user : channel.channel_users)
+				for (auto &user : channel.getChannelUsers())
 				{
 					if (client.getNickname() == user.nickname)
 					{

@@ -5,9 +5,9 @@
 */
 void	Server::printChannelUsers(Channel channel)
 {
-	for (int i = 0; i < channel.channel_users.size(); i++)
+	for (int i = 0; i < channel.getChannelUsers().size(); i++)
 	{
-		std::cout << "User[" << i << "]: " <<  channel.channel_users[i].nickname  << " (op = " <<  channel.channel_users[i].operator_permissions << ")" << std::endl;
+		std::cout << "User[" << i << "]: " <<  channel.getChannelUserStruct(i).nickname  << " (op = " <<  channel.getChannelUserStruct(i).operator_permissions << ")" << std::endl;
 	}	
 }
 
