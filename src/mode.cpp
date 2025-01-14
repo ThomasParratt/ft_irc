@@ -4,7 +4,7 @@
 
 int 	Server::clientStatus(Msg msg, Client &client)
 {
-	for (auto &channel : channel_names)
+	for (auto &channel : _channel_names)
 	{
 		if (channel.name == msg.parameters[0])
 		{
@@ -23,7 +23,7 @@ int 	Server::clientStatus(Msg msg, Client &client)
 
 Channel* Server::getChannel(std::string channelName)
 {
-	for (auto &channel : channel_names)
+	for (auto &channel : _channel_names)
 	{
 		if (channel.name == channelName)
 			return &channel;

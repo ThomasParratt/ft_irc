@@ -1,8 +1,6 @@
+#pragma once
 
-#ifndef CHANNEL_HPP
-# define CHANNEL_HPP
-
-#include <iostream>//Where should this header go?
+#include <iostream>
 #include <vector>
 #include "Client.hpp"
 
@@ -69,5 +67,3 @@ class Channel
 
 
 };
-
-#endif
