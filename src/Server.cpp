@@ -113,12 +113,12 @@ void Server::removeFromAll(int i)
 				{
 					if (client.getNickname() == user.nickname)
 					{
-						int j = getChannelIndex(channel.name, channel_names);
-						std::string message = "REMOVE " + user.nickname + " from " + channel.name;
+						int j = getChannelIndex(channel.getChannelName(), channel_names);
+						std::string message = "REMOVE " + user.nickname + " from " + channel.getChannelName();
 						std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
 						broadcastToChannel(this->channel_names[j], quitMessage, client, 1);
-						removeUser(user.nickname, channel.name, message, 2);
-						client.leaveChannel(channel.name);
+						removeUser(user.nickname, channel.getChannelName(), message, 2);
+						client.leaveChannel(channel.getChannelName());
 					}
 				}
 			}

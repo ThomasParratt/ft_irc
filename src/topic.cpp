@@ -40,7 +40,7 @@ void Server::topicPrint(std::string channelName, int clientSocket, Client &clien
 	bool found = false;
 	for (std::vector<Channel>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
 	{
-		if (it->name == channelName)
+		if (it -> getChannelName() == channelName)
 		{
 			found = true;
             std::string channelTopic = it->getChannelTopic();
@@ -52,7 +52,7 @@ void Server::topicPrint(std::string channelName, int clientSocket, Client &clien
 			}
             std::string topicMsg = ":ircserver 332 " + client.getNickname() + " " + channelName + " :" + channelTopic + "\r\n";
             send(clientSocket, topicMsg.c_str(), topicMsg.size(), 0);
-            std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->topicSetter + " " + it->topicSetTime + "\r\n";
+            std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->getTopicSetter() + " " + it->getTopicSetTime() + "\r\n";
             send(clientSocket, topicSetByMsg.c_str(), topicSetByMsg.size(), 0);
             break;
 		}

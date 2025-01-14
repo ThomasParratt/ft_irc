@@ -18,7 +18,7 @@ void		Server::printChannels()
 {
 	for (int i = 0; i < this->channel_names.size(); i++)
 	{
-		std::cout << "Channel[" << i << "]: "<< channel_names[i].name << std::endl;
+		std::cout << "Channel[" << i << "]: "<< channel_names[i].getChannelName() << std::endl;
 		printChannelUsers(channel_names[i]);
 	}
 }
@@ -39,7 +39,7 @@ int		Server::channelExists(std::string channel)
 {
 	for (auto &it : channel_names)
 	{
-		if (it.name == channel)
+		if (it.getChannelName() == channel)
 			return (1);
 	}
 	return (0);

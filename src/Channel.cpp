@@ -41,6 +41,55 @@ void	Channel::addUserIntoChannelUsers(User new_user)
 	this->channel_users.push_back(new_user);
 }
 
+std::string			Channel::getInvitedName(int index)
+{
+	std::string		nickname;
+
+	if (index < 0)
+	{
+		return ("");
+	}
+
+	nickname = this->invited[index];
+
+	return (nickname);
+}
+
+void		Channel::addUserToInviteList(std::string nickname)
+{
+	this -> invited.push_back(nickname);
+}
+
+void	Channel::uninviteUser(int index)
+{
+	if (index < 0)
+	{
+		return ;
+	}
+
+	this->invited.erase(this->invited.begin() + index);
+}
+
+void	Channel::setKeyRequired(bool boolean)
+{
+	this -> keyRequired = boolean;
+}
+
+void	Channel::setInviteOnly(bool boolean)
+{
+	this -> invite_only = boolean;
+}
+
+void	Channel::setUserLimit(int userLimit)
+{
+	this -> user_limit = userLimit;
+}
+
+void	Channel::setTopicRequiresOperator(bool boolean)
+{
+	this -> topic_requires_operator = boolean;
+}
+
 /*
 	14:27 -!- mkorpela [~mkorpela@194.136.126.51] has joined #ChanForChanny
 	14:27 -!- ServerMode/#ChanForChanny [+Cnst] by iridium.libera.chat
