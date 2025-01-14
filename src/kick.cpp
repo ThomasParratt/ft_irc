@@ -3,15 +3,15 @@
 
 int		Server::removeUser(std::string user, std::string channel, std::string message, int partOrKick)
 {
-	int i = getChannelIndex(channel, channel_names);
-	for (int j = 0 ; j < sizeof(channel_names[i].getChannelUsers()) ; j++)
+	int i = getChannelIndex(channel, _channel_names);
+	for (int j = 0 ; j < sizeof(_channel_names[i].getChannelUsers()) ; j++)
 	{
 		//if (channel_names[i].channel_users[j].nickname == user)
 		if (channel_names[i].getChannelUserStruct(j).nickname == user)
 		{
-			int socket = getClientSocket(channel_names[i].getChannelUserStruct(j).nickname);
+			int socket = getClientSocket(_channel_names[i].getChannelUserStruct(j).nickname);
 			//channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
-			channel_names[i].removeUserFromChannelUsers(i);
+			_channel_names[i].removeUserFromChannelUsers(i);
 			// channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
 			if (partOrKick == 1) //kick
 			{
@@ -37,7 +37,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 	{
 		if (userExists(client.getNickname(), msg.parameters[0]))
 		{
-			for (auto &channel : channel_names)
+			for (auto &channel : _channel_names)
 			{
 				if (channel.getChannelName() == msg.parameters[0])
 				{
@@ -49,9 +49,9 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 							{
 								if (userExists(msg.parameters[1], msg.parameters[0]))
 								{
-									int i = getChannelIndex(msg.parameters[0], channel_names);
+									int i = getChannelIndex(msg.parameters[0], _channel_names);
 									std::string kick = ":" + kicker.nickname + " KICK " + channel.getChannelName() + " " + msg.parameters[1] + " " + msg.trailing_msg + "\r\n";
-									broadcastToChannel(channel_names[i], kick, client, 0);
+									broadcastToChannel(_channel_names[i], kick, client, 0);
 									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from", 1);
 									client.leaveChannel(msg.parameters[0]);
 									// if (!channel.invited.empty())//channel.getInvitedList()

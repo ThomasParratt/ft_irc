@@ -20,12 +20,12 @@ void	Server::userMessageToChannel(Channel channel, int sender_socket, std::strin
 
 void		Server::channelMessage(Msg msg, int clientSocket, Client &client)
 {
-	int i = getChannelIndex(msg.parameters[0], channel_names);
+	int i = getChannelIndex(msg.parameters[0], _channel_names);
 	if (i != -1)
 	{
 		//FORMAT -> :UserA!user@host PRIVMSG #general :Hello, world!
 		std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_servHostName + " " + msg.command + " " + msg.parameters[0] + " "  + ":" +  msg.trailing_msg + "\r\n";
-		userMessageToChannel(channel_names[i], clientSocket, message);			
+		userMessageToChannel(_channel_names[i], clientSocket, message);			
 	}
 	else
 	{
