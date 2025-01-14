@@ -36,9 +36,9 @@ class Server {
 		time_t		_startTime;
 		std::string _startTimeStr;
 
-		std::vector<Client> clients;
-		std::vector<Channel> channel_names;
-		std::vector<pollfd> pollfds;
+		std::vector<Client> _clients;
+		std::vector<Channel> _channel_names;
+		std::vector<pollfd> _pollfds;
 
 	public:
 		Server(std::string password, int port);
