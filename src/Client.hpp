@@ -3,8 +3,6 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <string.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h> 
 #include <unistd.h>

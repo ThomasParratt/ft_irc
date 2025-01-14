@@ -1,18 +1,12 @@
 #pragma once
 
 #include <iostream>
-#include <ctime>
-#include <string>
+#include <string.h>
 #include <vector>
 #include <map>
 #include <poll.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <mutex>
-
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Msg.hpp"
@@ -20,8 +14,6 @@
 #define MAX_LEN_HOSTNAME 64
 
 extern bool servRunning;
-
-class Msg;
 
 class Server {
 	private:
