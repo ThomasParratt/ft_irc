@@ -17,7 +17,6 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 	//Add into channel Users
 	channel.addUserIntoChannelUsers(new_user);
 	client.joinChannel(channel.getChannelName());
-
 }
 
 int		Server::createChannel(Msg msg, int clientSocket, Client &client)
@@ -30,17 +29,15 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 	//Add User into Channel
 	addChannelUser(new_channel, client, true);
 
-	
-
 	//Update Channel vector
 	this->_channel_names.push_back(new_channel);
 
 	std::string message;
-	message = ":ircserver 353 " + client.getNickname() + " = " + msg.parameters[0] + " :@" + client.getNickname() + "\r\n";
+	message = ":ircserver 353 " + client.getPrefix() + "\r\n";
 	send(clientSocket, message.c_str(), message.size(), 0);
 
 	std::string message1;
-	message1 = ":ircserver 366 " + client.getNickname() + " " + msg.parameters[0] + " :End of /NAMES list" + "\r\n";//
+	message1 = ":ircserver 366 " + client.getPrefix() + " " + msg.parameters[0] + " :End of /NAMES list" + "\r\n";//
 	send(clientSocket, message1.c_str(), message1.size(), 0);
 
 	/*

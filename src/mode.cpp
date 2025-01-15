@@ -156,7 +156,7 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 		else if (msg.parameters[2] != "")
 		{
 			std::cout << "Setting Channel Key: " << msg.parameters[2] << std::endl; //debug
-			tarChannel->getChannelKey() = msg.parameters[2];
+			tarChannel->setChannelKey(msg.parameters[2]);
 			tarChannel->setKeyRequired(true);
 			std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " +k " + msg.parameters[2] + "\r\n";
 			broadcastToChannel(*tarChannel, keyMsg, client, 0);

@@ -107,6 +107,7 @@ void Server::removeFromAll(int i)
 	{
 		if (client.getSocket() == _pollfds[i].fd) 
 		{
+			std::string userPrefix = client.getPrefix();
 			for (auto &channel : _channel_names)
 			{
 				for (auto &user : channel.getChannelUsers())
@@ -115,7 +116,8 @@ void Server::removeFromAll(int i)
 					{
 						int j = getChannelIndex(channel.getChannelName(), _channel_names);
 						std::string message = "REMOVE " + user.nickname + " from " + channel.getChannelName();
-						std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
+						std::string quitMessage = ":" + userPrefix + " QUIT " + ":Client has quit\r\n";
+						// std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
 						broadcastToChannel(this->_channel_names[j], quitMessage, client, 1);
 						removeUser(user.nickname, channel.getChannelName(), message, 2);
 						client.leaveChannel(channel.getChannelName());
@@ -222,13 +224,23 @@ void Server::serverLoop()
 	std::cout << "Server stopped" << std::endl;
 }
 
+time_t stringToUnixTimeStamp(std::string time)
+{
+	struct tm tm;
+	if (strptime(time.c_str(), "%a %b %d %H:%M:%S %Y", &tm) == NULL)
+	{
+		std::cout << "Error: strptime" << std::endl;
+		return (-1);
+	}
+	return (mktime(&tm));
+}
 
 std::string getCurrentTime()
 {
 	time_t now = time(0);
 	char timeStr[100];
     struct tm *localTime = localtime(&now);
-    strftime(timeStr, sizeof(timeStr), "%A, %Y-%m-%d %H:%M:%S", localTime);
+    strftime(timeStr, sizeof(timeStr), "%a %b %d %H:%M:%S %Y", localTime);
     return std::string(timeStr);
 }
 

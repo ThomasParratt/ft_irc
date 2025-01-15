@@ -11,7 +11,7 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 		{
 			int socket = getClientSocket(_channel_names[i].getChannelUserStruct(j).nickname);
 			//channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
-			_channel_names[i].removeUserFromChannelUsers(i);
+			_channel_names[i].removeUserFromChannelUsers(j);
 			// channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
 			if (partOrKick == 1) //kick
 			{

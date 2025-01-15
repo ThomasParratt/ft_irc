@@ -15,6 +15,7 @@ class Client
         std::string _hostIP;
         std::string _realname;
         std::string _password;
+        std::string _prefix;
 
         std::vector<std::string> _channelsNames;
         bool        _passwordChecked;
@@ -34,9 +35,11 @@ class Client
         bool        getOperatorStatus();
         int         getSocket();
         std::string getHostIP();
+        std::string getPrefix();
 
         void        setNickname(std::string str);
         void        setUsername(std::string str);
+        void        setPrefix(std::string str);
         void        setHostIP();
         void        setPasswordChecked(bool value);
         void        setWelcomeSent(bool value);
