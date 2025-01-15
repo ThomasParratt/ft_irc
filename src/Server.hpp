@@ -59,7 +59,7 @@ class Server {
 		void	topicPrint(std::string channelName, int clientSocket, Client &client);
 		int		partCommand(Msg msg, int clientSocket, Client &client);
 		int		joinCommand(Msg msg, int clientSocket, Client &client);
-		int     createChannel(Msg msg, int clientSocket, Client &client);
+		int     createChannel(Msg msg, Client &client);
 		int		joinChannel(Msg msg, int clientSocket, Client &client, int index);
 		int		channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client);
 

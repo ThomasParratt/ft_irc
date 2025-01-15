@@ -11,7 +11,10 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 {
 	//Make new Channel User
 	User	new_user;
-	new_user.nickname = client.getNickname();
+	if (operator_permissions)
+		new_user.nickname = "@" + client.getNickname();
+	else
+		new_user.nickname = client.getNickname();
 	new_user.operator_permissions = operator_permissions;
 
 	//Add into channel Users
@@ -19,7 +22,7 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 	client.joinChannel(channel.getChannelName());
 }
 
-int		Server::createChannel(Msg msg, int clientSocket, Client &client)
+int		Server::createChannel(Msg msg, Client &client)
 {
 	std::string 	name = msg.parameters[0];
 
@@ -32,13 +35,11 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 	//Update Channel vector
 	this->_channel_names.push_back(new_channel);
 
-	std::string message;
-	message = ":ircserver 353 " + client.getPrefix() + " = " + msg.parameters[0] + " " + "@" + client.getNickname() + "\r\n";
-	send(clientSocket, message.c_str(), message.size(), 0);
+	//std::string message;
+	//message = ":ircserver 353 " + client.getPrefix() + " = " + msg.parameters[0] + " " + "@" + client.getNickname() + "\r\n";
+	//send(clientSocket, message.c_str(), message.size(), 0);
 
-	std::string message1;
-	message1 = ":ircserver 366 " + client.getPrefix() + " " + msg.parameters[0] + " :End of /NAMES list" + "\r\n";//
-	send(clientSocket, message1.c_str(), message1.size(), 0);
+	
 
 	/*
 		TODO: Send more messages to Irssi f.ex. tell Irssi who is operator -> Check Manual
@@ -62,8 +63,8 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client, int index)
 void Server::joinChannelMessage(std::string channelName, Client &client)
 {
 	int i = getChannelIndex(channelName, this->_channel_names);
-	int OpCount = this->_channel_names[i].getOpCount();
-	int totalCount = this->_channel_names[i].getTotalCount();
+	//int OpCount = this->_channel_names[i].getOpCount();
+	//int totalCount = this->_channel_names[i].getTotalCount();
 
 	std::string topic = this->_channel_names[i].getChannelTopic();
 	if (!topic.empty())
@@ -71,8 +72,7 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 		topicPrint(channelName, client.getSocket(), client);
 	}
 
-	//this needs to be finished
-	/*std::string result;
+	std::string result;
     const std::vector<User>& channel_users = _channel_names[i].getChannelUsers();  // Using the getter to access the users list
 
     for (size_t i = 0; i < channel_users.size(); i++) 
@@ -83,13 +83,17 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
     }
 
 	std::string message;
-	message = ":ircserver 353 " + client.getPrefix() + " = " + channelName + " :" + "@" + result + "\r\n";
-	send(client.getSocket(), message.c_str(), message.size(), 0);*/
+	message = ":ircserver 353 " + client.getPrefix() + " = " + channelName + " " + result + "\r\n";
+	send(client.getSocket(), message.c_str(), message.size(), 0);
+
+	std::string message1;
+	message1 = ":ircserver 366 " + client.getPrefix() + " " + channelName + " :End of /NAMES list" + "\r\n";//
+	send(client.getSocket(), message1.c_str(), message1.size(), 0);
 
 	//need to remove this eventually
-	std::string joinMsg;
-	joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
-	send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
+	//std::string joinMsg;
+	//joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
+	//send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
 
 	std::string channelCreated;
 	channelCreated = ":ircserver 329 " + client.getNickname() + " " + channelName + " " + this->_channel_names[i].getChannelTime() + "\r\n";
@@ -102,7 +106,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	if (i == -1)	//No channel found
 	{
 		// std::cout << "No Existing Channel Found" << std::endl;
-		createChannel(msg, clientSocket, client);
+		createChannel(msg, client);
 	}
 	else			//Channel found
 	{ 
@@ -116,7 +120,7 @@ int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
 	// std::string message = ":ircserver PRIVMSG " + msg.parameters[0] + " :" + client.getNickname() + " [~" + client.getUsername() + "@" + client.getHostIP() + "] has joined " + msg.parameters[0] + "\r\n";
 
 	std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP() + " JOIN " + msg.parameters[0] + "\r\n";
-	broadcastToChannel(this->_channel_names[i], message, client, 0);//Send sender Fd??
+	broadcastToChannel(this->_channel_names[i], message, client, 1);//Send sender Fd??
   
 	joinChannelMessage(msg.parameters[0], client);
 	//WELCOME_MSG - Send message to client who connected to channel

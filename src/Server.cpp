@@ -257,6 +257,12 @@ int		Server::getClientSocket(std::string nickname)
 {
 	int socket;
 
+	// If the nickname starts with "@", remove the first character
+    if (!nickname.empty() && nickname[0] == '@')
+	{
+        nickname = nickname.substr(1);
+	}
+
 	for (size_t i = 0; i < this->_clients.size(); i++)
 	{
 		if (nickname == _clients[i].getNickname())
