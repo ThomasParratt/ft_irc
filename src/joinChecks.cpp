@@ -28,6 +28,18 @@ int		Channel::getNumberOfChannelUsers()
 	return (num_of_channel_users);
 }
 
+bool		Channel::doesChannelHavePassword()
+{
+	if (_channel_key == "")
+	{
+		return (false);
+	}
+	else
+	{
+		return (true);
+	}
+}
+
 /*
 	Returns true, if Number of Channel Users equals or exceeds Channel User Limit.
 	Returns false,
@@ -40,18 +52,6 @@ bool		Channel::isChannelFull()
 	int	num_of_channel_users 	= this -> getNumberOfChannelUsers();
 
 	if (user_limit == -1 || user_limit > num_of_channel_users)
-	{
-		return (false);
-	}
-	else
-	{
-		return (true);
-	}
-}
-
-bool		Channel::doesChannelHavePassword()
-{
-	if (channel_key == "")
 	{
 		return (false);
 	}
