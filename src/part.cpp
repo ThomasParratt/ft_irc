@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "Msg.hpp"
 
 // added split because I realized if we input /part #chn3,#chn4 it will not work
 //para[0] = #chn3,#chn4 instead of para[0] = #chn3 & para[1] = #chn4
@@ -8,7 +7,7 @@ std::vector<std::string> split(std::string str, std::string token)
 	std::vector<std::string>result;
 	while (str.size())
 	{
-		int index = str.find(token);
+		size_t index = str.find(token);
 		if (index != std::string::npos)
 		{
 			result.push_back(str.substr(0, index));
@@ -37,7 +36,7 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 		send(clientSocket, notice.c_str(), notice.size(), 0);
 		return (1);
 	}
-	for (int i = 0; i < channels.size(); i++)
+	for (size_t i = 0; i < channels.size(); i++)
 	{
 		bool channelExists = false;
 		for (auto &channel : _channel_names)

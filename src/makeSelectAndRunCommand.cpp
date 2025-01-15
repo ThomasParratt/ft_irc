@@ -1,7 +1,5 @@
-#include <netinet/in.h>
-
-
 #include "Server.hpp"
+
 
 int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 {
@@ -84,7 +82,7 @@ int    Server::makeSelectAndRunCommand(std::string messages, int clientSocket, C
 
 	this -> makeMessages(msgs, messages);
 
-	for (int i = 0; i < msgs.size(); i++)
+	for (size_t i = 0; i < msgs.size(); i++)
 	{
 		if (this->commandSelector(msgs[i], clientSocket, client) == 1)
 		{
