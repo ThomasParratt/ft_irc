@@ -116,6 +116,7 @@ void Server::removeFromAll(int i)
 					{
 						int j = getChannelIndex(channel.getChannelName(), _channel_names);
 						std::string message = "REMOVE " + user.nickname + " from " + channel.getChannelName();
+						std::cout << "This user being removed: " << userPrefix << std::endl;
 						std::string quitMessage = ":" + userPrefix + " QUIT " + ":Client has quit\r\n";
 						// std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
 						broadcastToChannel(this->_channel_names[j], quitMessage, client, 1);

@@ -165,7 +165,7 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 	else if (msg.parameters[1] == "-k")
 	{
 		std::cout << "Removing Channel Key" << std::endl; //debug
-		tarChannel->getChannelKey() = "";
+		tarChannel->setChannelKey("");
 		tarChannel->setKeyRequired(false);
 		std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " -k *" + "\r\n";
 		broadcastToChannel(*tarChannel, keyMsg, client, 0);

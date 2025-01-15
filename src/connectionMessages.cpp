@@ -57,20 +57,21 @@ int		Server::nicknameCommand(Msg msg, int clientSocket, Client &client)
 		//change channel users name to new nick
 		for (auto &channel : _channel_names) 
 		{
-			// bool userFound = false;
+			bool userFound = false;
 			for (auto &user : channel.getChannelUsers())
 			{
 				if (user.nickname == old_nick)
 				{
 					user.nickname = new_nick;
-					// userFound = true;
+					userFound = true;
 				}
 			}
-			// if (userFound)
-			// {
-			// 	std::string message = ":" + old_prefix + " NICK :" + new_nick + "\r\n";
-			// 	broadcastToChannel(channel, message, client, 0);
-			// }
+			if (userFound)
+			{
+				std::string message = ":" + old_prefix + " NICK :" + new_nick + "\r\n";
+				broadcastToChannel(channel, message, client, 1);
+				break;
+			}
 			printChannelUsers(channel);
 		}
 	}

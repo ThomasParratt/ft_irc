@@ -23,7 +23,9 @@ OBJ			=	$(SRC:.cpp=.o)
 
 CC			=	c++
 
-CFLAGS		=	-Wextra -Wall -Werror 
+# CFLAGS		=	-Wextra -Wall -Werror
+# mac 
+CFLAGS		=	-Wextra -Wall -Werror -std=c++11 
 
 RM			=	rm -f
 
