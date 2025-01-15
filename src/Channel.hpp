@@ -50,6 +50,7 @@ class Channel
 		void				addUserToInviteList(std::string nickname);
 		void				uninviteUser(int index);
 
+		void				setChannelKey(std::string key);
 		void				setUserLimit(int userLimit);
 		void				setKeyRequired(bool boolean);
 		void				setInviteOnly(bool boolean);

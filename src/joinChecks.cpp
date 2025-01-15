@@ -90,7 +90,8 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 		}
 
 		std::string 	password = msg.parameters[1];
-
+		std::cout << "Password: " << password << std::endl;
+		std::cout << "Channel Key: " << channel.getChannelKey() << std::endl;
 		if (channel.getChannelKey() == password) 			//Password Correct
 		{
 
@@ -138,6 +139,5 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 		//example >> :lithium.libera.chat 473 gravity123 #BANNNANAss :Cannot join channel (+i) - you must be invited
 		return (1);						//User was NOT Invited
 	}
-
 	return (0);
 }

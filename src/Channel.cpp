@@ -33,6 +33,11 @@ User&	Channel::getChannelUserStruct(int index)
 	return (this -> channel_users[index]);
 }
 
+void Channel::setChannelKey(std::string key)
+{
+	this->channel_key = key;
+}
+
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
 	this->topic = new_topic;
@@ -56,18 +61,28 @@ void	Channel::removeUserFromChannelUsers(int index)
 	this->channel_users.erase(this ->channel_users.begin() + index);
 }
 
-std::string			Channel::getInvitedName(int index)
+// std::string			Channel::getInvitedName(int index)
+// {
+// 	std::string		nickname;
+
+// 	if (index < 0)
+// 	{
+// 		return ("");
+// 	}
+
+// 	nickname = this->invited[index];
+
+// 	return (nickname);
+// }
+
+std::string Channel::getInvitedName(int index)
 {
-	std::string		nickname;
+    if (index < 0 || index >= this->invited.size())
+    {
+        return "";
+    }
 
-	if (index < 0)
-	{
-		return ("");
-	}
-
-	nickname = this->invited[index];
-
-	return (nickname);
+    return this->invited[index];
 }
 
 void		Channel::addUserToInviteList(std::string nickname)
@@ -81,7 +96,7 @@ void	Channel::uninviteUser(int index)
 	{
 		return ;
 	}
-
+	std::cout << "Uninviting user 2" << std::endl;
 	this->invited.erase(this->invited.begin() + index);
 }
 
