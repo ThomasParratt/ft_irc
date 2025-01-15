@@ -7,6 +7,8 @@
 #include <poll.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <csignal> // signal, SIGINT
+
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Msg.hpp"
