@@ -61,8 +61,6 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 										{
 											if (msg.parameters[1] == channel.getInvitedName(i))
 											{
-												std::cout << "user found" << std::endl;
-
 												channel.uninviteUser(i);
 												break ;
 											}
