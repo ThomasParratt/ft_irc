@@ -7,7 +7,6 @@
 struct User
 {
 	std::string nickname;
-	// std::string prefix;
 	bool		operator_permissions;
 	bool		topicSetter;
 	bool	    invited;
@@ -22,7 +21,7 @@ class Channel
 		~Channel(){};
 
 		bool				isChannelFull();
-		bool				isChannelInviteOnly() {return invite_only; };
+		bool				isChannelInviteOnly() {return _invite_only; };
 		bool				doesChannelHavePassword();
 
 		void 				setChannelTopic(std::string new_topic, Client &client);	
@@ -30,20 +29,19 @@ class Channel
 		int					getNumberOfChannelOperators();
 	
 		//Getters
-		std::string			getChannelName(){return name;}
-		std::string			getChannelKey(){return channel_key;}
-		std::string 		getChannelTopic(){return topic;}
-		std::string 		getTopicSetter(){return topicSetter;}
-		std::string 		getTopicSetTime(){return topicSetTime;}
-		std::string			getChannelTime(){return creationTime;}			//This getter isn't being used.
+		std::string			getChannelName(){return _name;}
+		std::string			getChannelKey(){return _channel_key;}
+		std::string 		getChannelTopic(){return _topic;}
+		std::string 		getTopicSetter(){return _topicSetter;}
+		std::string 		getTopicSetTime(){return _topicSetTime;}
+		std::string			getChannelTime(){return _creationTime;}
 
-		int					getUserLimit(){return user_limit;}
+		int					getUserLimit(){return _user_limit;}
 		int					getOpCount();
 		int					getTotalCount();
-		bool				getInviteOnly(){return invite_only;}
-		bool				getTopicRequiresOperator(){return topic_requires_operator;}
-		std::vector<std::string>&	getInvitedList(){return invited;};
-		std::vector<User>&	getChannelUsers(){return channel_users;}
+		bool				getTopicRequiresOperator(){return _topic_requires_operator;}
+		std::vector<std::string>&	getInvitedList(){return _invited;};
+		std::vector<User>&	getChannelUsers(){return _channel_users;}
 		User&				getChannelUserStruct(int index);
 
 		std::string			getInvitedName(int index);
@@ -61,22 +59,22 @@ class Channel
 		
 
 	private:
-		std::string		name;
-		std::string		channel_key;
-		std::string 	topic;
-		std::string		topicSetter;
-		std::string 	topicSetTime;
-		std::string		creationTime;
+		std::string		_name;
+		std::string		_channel_key;
+		std::string 	_topic;
+		std::string		_topicSetter;
+		std::string 	_topicSetTime;
+		std::string		_creationTime;
 
-		int				user_limit;
-		int 			OpCount;
-		int				totalCount;
-		bool			keyRequired; // I added this as an extra safe for the channel
-		bool			invite_only;
-		bool			topic_requires_operator;
+		int				_user_limit;
+		int 			_OpCount;
+		int				_totalCount;
+		bool			_keyRequired; // I added this as an extra safe for the channel
+		bool			_invite_only;
+		bool			_topic_requires_operator;
 
-		std::vector<std::string>	invited;
-		std::vector<User>			channel_users;
+		std::vector<std::string>	_invited;
+		std::vector<User>			_channel_users;
 
 
 

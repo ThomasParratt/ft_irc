@@ -3,19 +3,19 @@
 #include "Server.hpp"
 
 Channel::Channel(std::string name) : 
-		name					(name),
-		user_limit				(-1),
-		invite_only				(false),//TODO. Confirm this is default setting
-		keyRequired				(false),
-		topic_requires_operator	(true)	//TODO. Confirm this is default setting
+		_name						(name),
+		_user_limit					(-1),
+		_invite_only				(false),//TODO. Confirm this is default setting
+		_keyRequired				(false),
+		_topic_requires_operator	(true)	//TODO. Confirm this is default setting
 {
-	creationTime = getCurrentTime();
+	_creationTime = getCurrentTime();
 }
 
 int	Channel::getOpCount()
 {
 	int count = 0;
-	for (std::vector<User>::iterator it = channel_users.begin(); it != channel_users.end(); it++)
+	for (std::vector<User>::iterator it = _channel_users.begin(); it != _channel_users.end(); it++)
 	{
 		if (it->operator_permissions)
 			count++;
@@ -25,31 +25,31 @@ int	Channel::getOpCount()
 
 int		Channel::getTotalCount()
 {
-	return channel_users.size();
+	return _channel_users.size();
 }
 
 User&	Channel::getChannelUserStruct(int index)
 {
-	return (this -> channel_users[index]);
+	return (this -> _channel_users[index]);
 }
 
 void Channel::setChannelKey(std::string key)
 {
-	this->channel_key = key;
+	this->_channel_key = key;
 }
 
 void	Channel::setChannelTopic(std::string new_topic, Client &client)
 {
-	this->topic = new_topic;
-	this->topicSetter = client.getPrefix();
-	this->topicSetTime = getCurrentTime();
-	std::cout << "Topic set by: " << topicSetter << std::endl;
-	std::cout << "Time: " << topicSetTime << std::endl;
+	this->_topic = new_topic;
+	this->_topicSetter = client.getPrefix();
+	this->_topicSetTime = getCurrentTime();
+	std::cout << "Topic set by: " << _topicSetter << std::endl;
+	std::cout << "Time: " << _topicSetTime << std::endl;
 }
 
 void	Channel::addUserIntoChannelUsers(User new_user)
 {
-	this->channel_users.push_back(new_user);
+	this->_channel_users.push_back(new_user);
 }
 
 void	Channel::removeUserFromChannelUsers(int index)
@@ -58,7 +58,7 @@ void	Channel::removeUserFromChannelUsers(int index)
 	{
 		return ;
 	}
-	this->channel_users.erase(this ->channel_users.begin() + index);
+	this->_channel_users.erase(this ->_channel_users.begin() + index);
 }
 
 // std::string			Channel::getInvitedName(int index)
@@ -77,17 +77,17 @@ void	Channel::removeUserFromChannelUsers(int index)
 
 std::string Channel::getInvitedName(int index)
 {
-    if (index < 0 || index >= this->invited.size())
+    if (index < 0 || index >= this->_invited.size())
     {
         return "";
     }
 
-    return this->invited[index];
+    return this->_invited[index];
 }
 
 void		Channel::addUserToInviteList(std::string nickname)
 {
-	this -> invited.push_back(nickname);
+	this -> _invited.push_back(nickname);
 }
 
 void	Channel::uninviteUser(int index)
@@ -97,27 +97,27 @@ void	Channel::uninviteUser(int index)
 		return ;
 	}
 	std::cout << "Uninviting user 2" << std::endl;
-	this->invited.erase(this->invited.begin() + index);
+	this->_invited.erase(this->_invited.begin() + index);
 }
 
 void	Channel::setKeyRequired(bool boolean)
 {
-	this -> keyRequired = boolean;
+	this -> _keyRequired = boolean;
 }
 
 void	Channel::setInviteOnly(bool boolean)
 {
-	this -> invite_only = boolean;
+	this -> _invite_only = boolean;
 }
 
 void	Channel::setUserLimit(int userLimit)
 {
-	this -> user_limit = userLimit;
+	this -> _user_limit = userLimit;
 }
 
 void	Channel::setTopicRequiresOperator(bool boolean)
 {
-	this -> topic_requires_operator = boolean;
+	this -> _topic_requires_operator = boolean;
 }
 
 /*
