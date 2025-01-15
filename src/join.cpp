@@ -33,7 +33,7 @@ int		Server::createChannel(Msg msg, int clientSocket, Client &client)
 	this->_channel_names.push_back(new_channel);
 
 	std::string message;
-	message = ":ircserver 353 " + client.getPrefix() + "\r\n";
+	message = ":ircserver 353 " + client.getPrefix() + " = " + msg.parameters[0] + " " + "@" + client.getNickname() + "\r\n";
 	send(clientSocket, message.c_str(), message.size(), 0);
 
 	std::string message1;
@@ -72,12 +72,12 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 		topicPrint(channelName, client.getSocket(), client);
 	}
 
-	std::string joinMsg;
-	joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
-	send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
+	//std::string joinMsg;
+	//joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
+	//send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
 	
 	std::string channelCreated;
-	channelCreated = ":ircserver PRIVMSG " + channelName + " :Channel " + channelName + " create " + this->_channel_names[i].getChannelTime() + "\r\n";
+	channelCreated = ":ircserver PRIVMSG " + channelName + " :Channel " + channelName + " created " + this->_channel_names[i].getChannelTime() + "\r\n";
 	send(client.getSocket(), channelCreated.c_str(), channelCreated.size(), 0);
 }
 int		Server::joinCommand(Msg msg, int clientSocket, Client &client)
