@@ -63,8 +63,8 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client, int index)
 void Server::joinChannelMessage(std::string channelName, Client &client)
 {
 	int i = getChannelIndex(channelName, this->_channel_names);
-	//int OpCount = this->_channel_names[i].getOpCount();
-	//int totalCount = this->_channel_names[i].getTotalCount();
+	int OpCount = this->_channel_names[i].getOpCount();
+	int totalCount = this->_channel_names[i].getTotalCount();
 
 	std::string topic = this->_channel_names[i].getChannelTopic();
 	if (!topic.empty())
@@ -72,9 +72,9 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 		topicPrint(channelName, client.getSocket(), client);
 	}
 
-	//std::string joinMsg;
-	//joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
-	//send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
+	std::string joinMsg;
+	joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
+	send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
 	
 	std::string channelCreated;
 	channelCreated = ":ircserver PRIVMSG " + channelName + " :Channel " + channelName + " created " + this->_channel_names[i].getChannelTime() + "\r\n";
