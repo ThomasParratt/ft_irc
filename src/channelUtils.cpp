@@ -5,7 +5,7 @@
 */
 void	Server::printChannelUsers(Channel channel)
 {
-	for (int i = 0; i < channel.getChannelUsers().size(); i++)
+	for (size_t i = 0; i < channel.getChannelUsers().size(); i++)
 	{
 		std::cout << "User[" << i << "]: " <<  channel.getChannelUserStruct(i).nickname  << " (op = " <<  channel.getChannelUserStruct(i).operator_permissions << ")" << std::endl;
 	}	
@@ -16,7 +16,7 @@ void	Server::printChannelUsers(Channel channel)
 */
 void		Server::printChannels()
 {
-	for (int i = 0; i < this->_channel_names.size(); i++)
+	for (size_t i = 0; i < this->_channel_names.size(); i++)
 	{
 		std::cout << "Channel[" << i << "]: "<< _channel_names[i].getChannelName() << std::endl;
 		printChannelUsers(_channel_names[i]);
@@ -52,7 +52,7 @@ int		Server::channelExists(std::string channel)
 */
 int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names)
 {
-	int i;
+	size_t i;
 
 	for (i = 0; i < channel_names.size(); i++)
 	{
@@ -74,7 +74,7 @@ void	Server::broadcastToChannel(Channel &channel, std::string message, Client &c
 
 	users = channel.getChannelUsers();
 
-	for (int i = 0; i < users.size(); i++)
+	for (size_t i = 0; i < users.size(); i++)
 	{
 			socket = getClientSocket(users[i].nickname);
 			std::cout << "broadcastToChannel: socket = " << socket << std::endl;

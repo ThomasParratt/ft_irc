@@ -10,7 +10,7 @@ std::vector<std::string>	getParameters(std::vector<std::string> array)
 {
 	std::vector<std::string> parameters;
 
-	for (int i = 1; i < array.size(); i++)
+	for (size_t i = 1; i < array.size(); i++)
 	{
 		if (array[i][0] != ':')
 		{

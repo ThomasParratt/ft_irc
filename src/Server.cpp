@@ -4,7 +4,7 @@
 
 bool servRunning = false;
 
-Server::Server(std::string password, int port) : _password(password), _port(port), _welcomeSent(false)
+Server::Server(std::string password, int port) : _password(password), _welcomeSent(false), _port(port)
 {}
 
 Server::~Server()
@@ -152,7 +152,7 @@ void Server::serverLoop()
 		{
 			acceptClient();
 		}
-		for (int i = 1; i < _pollfds.size(); i++)
+		for (size_t i = 1; i < _pollfds.size(); i++)
 		{
 			bool clientDisconnected = false;
 			if (_pollfds[i].revents & POLLIN)
@@ -251,7 +251,7 @@ int		Server::getClientSocket(std::string nickname)
 {
 	int socket;
 
-	for (int i = 0; i < this->_clients.size(); i++)
+	for (size_t i = 0; i < this->_clients.size(); i++)
 	{
 		if (nickname == _clients[i].getNickname())
 		{

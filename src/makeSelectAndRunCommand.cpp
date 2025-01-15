@@ -1,27 +1,11 @@
-//libraries
-#include <iostream>
-#include <vector>
-#include <map>
-#include <poll.h>
-#include <sys/socket.h>//send
-#include <netinet/in.h>
-#include <unistd.h>
-#include <string.h>
-
-//header files
-#include "Msg.hpp"
-#include "Channel.hpp"
 #include "Server.hpp"
+
 
 int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 {
 	// std::cout << "Command Selector: " << msg.command <<  std::endl;
 	
-	if (msg.command == "CAP")
-	{
-		
-	}
-	else if (msg.command == "PASS")
+	if (msg.command == "PASS")
 	{
 		if (Server::passwordCommand(msg, clientSocket, client) != 0)// To Do: If password incorrect...
 		{
@@ -37,10 +21,6 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 		if (Server::userCommand(msg, clientSocket, client) != 0)
 			return (1);
 	}
-	// else if (msg.command == "OPER")
-	// {
-	// 	Server::operCommand(msg, clientSocket, client);
-	// }
 	else if  (msg.command == "PING")
 	{
 		std::string response = "PONG " + msg.parameters[0] + "\r\n";
@@ -89,8 +69,8 @@ int		Server::commandSelector(Msg msg, int clientSocket, Client &client)
 	}
 	else
 	{
-		std::string response = "ircserv: Command not found: " + msg.command + "\r\n"; //Ignore commands that are not found??
-		send(clientSocket, response.c_str(), response.size(), 0);
+		// std::string response = "ircserv: Command not found: " + msg.command + "\r\n"; //Ignore commands that are not found??
+		// send(clientSocket, response.c_str(), response.size(), 0);
 	}
 	return (0);
 }
@@ -102,7 +82,7 @@ int    Server::makeSelectAndRunCommand(std::string messages, int clientSocket, C
 
 	this -> makeMessages(msgs, messages);
 
-	for (int i = 0; i < msgs.size(); i++)
+	for (size_t i = 0; i < msgs.size(); i++)
 	{
 		if (this->commandSelector(msgs[i], clientSocket, client) == 1)
 		{
