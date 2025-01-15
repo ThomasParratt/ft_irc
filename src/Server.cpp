@@ -244,6 +244,12 @@ std::string getCurrentTime()
     return std::string(timeStr);
 }
 
+std::string getCurrentEpochTime()
+{
+    time_t now = time(0);
+    return std::to_string(now);
+}
+
 /*
 	Uses the client's nickname to find and return its socket.
 */

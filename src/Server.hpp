@@ -98,6 +98,7 @@ class Server {
 };
 
 	std::string getCurrentTime();
+	std::string getCurrentEpochTime();
 	time_t	stringToUnixTimeStamp(std::string time);
 	int		getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);
 	void	initializeMsg(Msg &msg, std::vector<std::string> array);
