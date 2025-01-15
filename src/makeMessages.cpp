@@ -4,7 +4,7 @@
 void	printMsg(Msg msg)									//Debug function
 {
 	std::cout << "Command: " << msg.command << std::endl;
-	for (int i = 0;  i < msg.parameters.size();  i++)
+	for (size_t i = 0;  i < msg.parameters.size();  i++)
 	{
 		std::cout  << "Parameter[" << i << "]: " << msg.parameters[i] << std::endl;
 	}

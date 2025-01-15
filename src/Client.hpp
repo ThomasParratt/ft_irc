@@ -1,11 +1,11 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <arpa/inet.h>
-#include <netdb.h> 
-#include <unistd.h>
+#include <vector>			//std::vector
+#include <algorithm>		//std::find()
+#include <arpa/inet.h>		//inet_ntop()
+#include <netdb.h>			//getaddrinfo()
+#include <unistd.h>			//gethostname()
 
 class Client
 {
@@ -18,13 +18,15 @@ class Client
         std::string _prefix;
 
         std::vector<std::string> _channelsNames;
+
         bool        _passwordChecked;
         bool        _welcomeSent;
         bool        _operatorStatus;
         int         _socket;
+
+
     public:
         Client(int socket, const std::string& password);
-        //Add Destructor
 
         std::string getNickname();
         std::string getUsername();

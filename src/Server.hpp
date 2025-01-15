@@ -1,13 +1,10 @@
 #pragma once
 
-#include <iostream>
-#include <string.h>
-#include <vector>
-#include <map>
-#include <poll.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include "Client.hpp"
+#include <string.h>		//strerror()
+#include <map>			//std::map()
+#include <poll.h>		// pollfd
+#include <csignal>		// signal(), SIGINT
+
 #include "Channel.hpp"
 #include "Msg.hpp"
 
@@ -28,17 +25,17 @@ class Server {
 		time_t		_startTime;
 		std::string _startTimeStr;
 
-		std::vector<Client> _clients;
-		std::vector<Channel> _channel_names;
-		std::vector<pollfd> _pollfds;
+		std::vector<Client>		_clients;
+		std::vector<Channel>	_channel_names;
+		std::vector<pollfd>		_pollfds;
 
 	public:
 		Server(std::string password, int port);
 		~Server();
-		int serverInit();
-		int setServHostName();
-		void acceptClient();
-		void serverLoop();
+		int		serverInit();
+		int		setServHostName();
+		void	acceptClient();
+		void	serverLoop();
 
 		void	removeFromAll(int i);
 
@@ -93,8 +90,8 @@ class Server {
 		
 
 		//Getter
-		int	getServerSocket() { return _serverSocket; }
-		bool getWelcomeSent() { return _welcomeSent; }
+		int			getServerSocket() { return _serverSocket; }
+		bool		getWelcomeSent() { return _welcomeSent; }
 		std::string getPassword() { return _password; }
 		std::string getServHostName() { return _servHostName; }
 		std::string getStartTimeStr() { return _startTimeStr; }

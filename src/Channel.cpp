@@ -1,12 +1,12 @@
 
-#include "Channel.hpp"
 #include "Server.hpp"
+
 
 Channel::Channel(std::string name) : 
 		_name						(name),
 		_user_limit					(-1),
-		_invite_only				(false),//TODO. Confirm this is default setting
 		_keyRequired				(false),
+		_invite_only				(false),//TODO. Confirm this is default setting
 		_topic_requires_operator	(true)	//TODO. Confirm this is default setting
 {
 	_creationTime = getCurrentTime();
@@ -20,12 +20,12 @@ int	Channel::getOpCount()
 		if (it->operator_permissions)
 			count++;
 	}
-	return count;
+	return (count);
 }
 
 int		Channel::getTotalCount()
 {
-	return _channel_users.size();
+	return (_channel_users.size());
 }
 
 User&	Channel::getChannelUserStruct(int index)
@@ -77,7 +77,9 @@ void	Channel::removeUserFromChannelUsers(int index)
 
 std::string Channel::getInvitedName(int index)
 {
-    if (index < 0 || index >= this->_invited.size())
+    int		invite_list_length = static_cast<int>(this->_invited.size());
+
+	if (index < 0 || index >= invite_list_length)
     {
         return "";
     }

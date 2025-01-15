@@ -1,16 +1,15 @@
-
 #include "Server.hpp"
 
 void	Server::userMessageToChannel(Channel channel, int sender_socket, std::string message)
 {
-	std::vector<User> users;
-	int socket;
+	std::vector<User>	users;
+	int					socket;
 
 	users = channel.getChannelUsers();
 	// printChannels();
-	for (int i = 0; i < users.size(); i++)
+	for (size_t i = 0; i < users.size(); i++)
 	{
-		int socket = getClientSocket(users[i].nickname);
+		socket = getClientSocket(users[i].nickname);
 		if (socket != -2 && socket != sender_socket)
 		{
 			send(socket, message.c_str(), message.size(), 0);

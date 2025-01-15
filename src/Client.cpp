@@ -1,6 +1,7 @@
 #include "Client.hpp"
 
-Client::Client(int socket, const std::string& password) : _socket(socket), _password(password), _welcomeSent(false), _passwordChecked(false) 
+
+Client::Client(int socket, const std::string& password) : _password(password), _passwordChecked(false), _welcomeSent(false), _socket(socket)
 {
     setHostIP();
     // setPrefix();

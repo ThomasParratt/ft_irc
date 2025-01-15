@@ -7,7 +7,7 @@ int		Channel::getNumberOfChannelOperators()			// Delete? - function not used any
 
 	int num_of_channel_operators = 0;
 
-	for (int i = 0; i < channel_users.size(); i++)
+	for (size_t i = 0; i < channel_users.size(); i++)
 	{
 		if (channel_users[i].operator_permissions == true)
 		{

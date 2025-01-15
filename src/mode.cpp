@@ -1,4 +1,3 @@
-
 #include "Server.hpp"
 
 
@@ -205,7 +204,7 @@ int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 		return (1);
 	}
 	bool nickExists = false;
-	for (int i = 0; i < tarChannel->getChannelUsers().size(); i++)
+	for (size_t i = 0; i < tarChannel->getChannelUsers().size(); i++)
 	{
 		if (tarChannel->getChannelUserStruct(i).nickname == msg.parameters[2])
 		{

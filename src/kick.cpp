@@ -4,7 +4,7 @@
 int		Server::removeUser(std::string user, std::string channel, std::string message, int partOrKick)
 {
 	int i = getChannelIndex(channel, _channel_names);
-	for (int j = 0 ; j < sizeof(_channel_names[i].getChannelUsers()) ; j++)
+	for (size_t j = 0 ; j < sizeof(_channel_names[i].getChannelUsers()) ; j++)
 	{
 		//if (channel_names[i].channel_users[j].nickname == user)
 		if (_channel_names[i].getChannelUserStruct(j).nickname == user)
@@ -57,7 +57,7 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 									// if (!channel.invited.empty())//channel.getInvitedList()
 									if (sizeof(channel.getInvitedList()) > 0)
 									{
-										for (int i = 0; i < sizeof(channel.getInvitedList()); i++)
+										for (size_t i = 0; i < sizeof(channel.getInvitedList()); i++)
 										{
 											if (msg.parameters[1] == channel.getInvitedName(i))
 											{

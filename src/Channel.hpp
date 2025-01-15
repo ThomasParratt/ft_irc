@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
 #include "Client.hpp"
 
 struct User
@@ -15,6 +13,25 @@ struct User
 
 class Channel
 {
+	private:
+		std::string		_name;
+		std::string		_channel_key;
+		std::string 	_topic;
+		std::string		_topicSetter;
+		std::string 	_topicSetTime;
+		std::string		_creationTime;
+
+		int				_user_limit;
+		int 			_OpCount;
+		int				_totalCount;
+		bool			_keyRequired; // I added this as an extra safe for the channel
+		bool			_invite_only;
+		bool			_topic_requires_operator;
+
+		std::vector<std::string>	_invited;
+		std::vector<User>			_channel_users;
+
+
 	public:
 
 		Channel(std::string name);
@@ -58,23 +75,7 @@ class Channel
 		void				removeUserFromChannelUsers(int index);
 		
 
-	private:
-		std::string		_name;
-		std::string		_channel_key;
-		std::string 	_topic;
-		std::string		_topicSetter;
-		std::string 	_topicSetTime;
-		std::string		_creationTime;
 
-		int				_user_limit;
-		int 			_OpCount;
-		int				_totalCount;
-		bool			_keyRequired; // I added this as an extra safe for the channel
-		bool			_invite_only;
-		bool			_topic_requires_operator;
-
-		std::vector<std::string>	_invited;
-		std::vector<User>			_channel_users;
 
 
 
