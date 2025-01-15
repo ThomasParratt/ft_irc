@@ -77,7 +77,7 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 	send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
 	
 	std::string channelCreated;
-	channelCreated = ":ircserver PRIVMSG " + channelName + " :Channel " + channelName + " created " + this->_channel_names[i].getChannelTime() + "\r\n";
+	channelCreated = ":ircserver 329 " + client.getNickname() + " " + channelName + " " + this->_channel_names[i].getChannelTime() + "\r\n";
 	send(client.getSocket(), channelCreated.c_str(), channelCreated.size(), 0);
 }
 int		Server::joinCommand(Msg msg, int clientSocket, Client &client)

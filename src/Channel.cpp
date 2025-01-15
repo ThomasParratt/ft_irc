@@ -9,7 +9,7 @@ Channel::Channel(std::string name) :
 		_invite_only				(false),//TODO. Confirm this is default setting
 		_topic_requires_operator	(true)	//TODO. Confirm this is default setting
 {
-	_creationTime = getCurrentTime();
+	_creationTime = getCurrentEpochTime();
 }
 
 int	Channel::getOpCount()
