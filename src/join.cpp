@@ -58,7 +58,6 @@ int		Server::joinChannel(Msg msg, int clientSocket, Client &client, int index)
 
 	return (0);
 }
-//maybe we can use privmsg to send this message to the client in the channel
 
 void Server::joinChannelMessage(std::string channelName, Client &client)
 {
@@ -72,10 +71,26 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 		topicPrint(channelName, client.getSocket(), client);
 	}
 
+	//this needs to be finished
+	/*std::string result;
+    const std::vector<User>& channel_users = _channel_names[i].getChannelUsers();  // Using the getter to access the users list
+
+    for (size_t i = 0; i < channel_users.size(); i++) 
+	{
+        result += channel_users[i].nickname;
+        if (i != channel_users.size() - 1) 
+            result += " ";  // Add a space between names
+    }
+
+	std::string message;
+	message = ":ircserver 353 " + client.getPrefix() + " = " + channelName + " :" + "@" + result + "\r\n";
+	send(client.getSocket(), message.c_str(), message.size(), 0);*/
+
+	//need to remove this eventually
 	std::string joinMsg;
 	joinMsg = ":ircserver PRIVMSG " + channelName + " :Total of " + std::to_string(totalCount) + " nicks [" + std::to_string(OpCount) + " ops, " + std::to_string(totalCount - OpCount) + " normal]\r\n";
 	send(client.getSocket(), joinMsg.c_str(), joinMsg.size(), 0);
-	
+
 	std::string channelCreated;
 	channelCreated = ":ircserver 329 " + client.getNickname() + " " + channelName + " " + this->_channel_names[i].getChannelTime() + "\r\n";
 	send(client.getSocket(), channelCreated.c_str(), channelCreated.size(), 0);
