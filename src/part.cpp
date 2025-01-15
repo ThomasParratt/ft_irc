@@ -57,8 +57,8 @@ int		Server::partCommand(Msg msg, int clientSocket, Client &client)
 					// printChannelUsers(channel_names[j]);
 					// std::cout << "removing user: " << client.getNickname() << " from channel: " << channels[i] << std::endl;
 					broadcastToChannel(_channel_names[j], part, client, 1);
-					removeUser(client.getNickname(), channels[i], part, 0);
-					client.leaveChannel(channels[i]);
+					removeUser(client.getNickname(), channel.getChannelName(), part, 0);
+					client.leaveChannel(channel.getChannelName());
 					// printChannelUsers(channel_names[j]);
 					break;
 				} else {

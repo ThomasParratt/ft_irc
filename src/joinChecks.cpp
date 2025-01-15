@@ -28,9 +28,22 @@ int		Channel::getNumberOfChannelUsers()
 	return (num_of_channel_users);
 }
 
+// bool		Channel::doesChannelHavePassword()
+// {
+// 	if (_channel_key == "")
+// 	{
+// 		return (false);
+// 	}
+// 	else
+// 	{
+// 		return (true);
+// 	}
+// }
+
+// Maybe we should just check key with _keyRequired, because what if the key is empty, although it shouldn't happen.
 bool		Channel::doesChannelHavePassword()
 {
-	if (_channel_key == "")
+	if (this->_keyRequired == false)
 	{
 		return (false);
 	}
