@@ -79,21 +79,18 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 
     for (size_t i = 0; i < channel_users.size(); ++i) 
 	{
-		result += channel_users[i].nickname;
+		if (channel_users[i].operator_permissions)
+			result += "@" + channel_users[i].nickname;
+		else
+			result += channel_users[i].nickname;
 	
 		if (i != channel_users.size() - 1) 
 			result += " ";  // Add a space between names besides the last one
     }
-    // for (size_t i = 0; i < channel_users.size(); ++i) 
-	// {
-    //     result += channel_users[i].nickname;
-    //     if (i != channel_users.size() - 1) 
-    //         result += " ";  // Add a space between names
-    // }
-
+    
 	std::string message;
 	std::cout << "353 result: " << result << std::endl;
-	message = ":ircserver 353 " + client.getNickname() + " @ " + channelName + " :@" + result + "\r\n";
+	message = ":ircserver 353 " + client.getNickname() + " @ " + channelName + " :" + result + "\r\n";
 	send(client.getSocket(), message.c_str(), message.size(), 0);
 
 	std::string message1;
