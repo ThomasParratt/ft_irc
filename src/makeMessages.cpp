@@ -32,7 +32,8 @@ size_t	skipSpaces(std::string string, size_t index)
 }
 
 /*
-	Splits a String separated by Spaces to an Array.
+	Splits a String separated by Spaces to an Array. 
+	(However trailing message spaces are not removed.)
 	std::string ---> std::vector<std::string>
 */
 void	stringToArray(std::string string, std::vector<std::string> &array)
@@ -45,15 +46,14 @@ void	stringToArray(std::string string, std::vector<std::string> &array)
 	start = skipSpaces(string, start);
 	while (true)
 	{
-		//Find index of next space
-		end = string.find(' ', start);
-		if (end == std::string::npos || string[start] == ':')	//Extract last word, if a. space character IS NOT found or b. if trailing message IS found
+		end = string.find(' ', start);							//Find index of next space
+		if (end == std::string::npos || string[start] == ':')	//i. Extract last word, if a. space character IS NOT found or b. if trailing message IS found
 		{
 			word = string.substr(start);
 			array.push_back(word);
 			break ;
 		}
-		else							//otherwise calculate length of word and extract
+		else													//ii. otherwise calculate length of word and extract
 		{
 			length = end - start;
 
@@ -71,18 +71,17 @@ void	makeMsgfromString(Msg &msg, std::string message)
 {
     std::vector<std::string>	message_array;
 
-	// std::cout << "message: " << message << std::endl;
-
-	//Array gets rid of spaces between Words (except for spaces within trailing msg)
+	
 	stringToArray(message, message_array);
-	// printArray(message_array);
 
     initializeMsg(msg, message_array);
-	// printMsg(msg);
-
 	return ;
 }
 
+/*
+	Makes Msg Object received from Irssi
+	(Can make multiple Msg objects)
+*/
 void	Server::makeMessages(std::vector<Msg> &msgs, std::string buffer)
 {
 	Msg				msg;
@@ -92,27 +91,23 @@ void	Server::makeMessages(std::vector<Msg> &msgs, std::string buffer)
 	size_t			end = 0;
 	size_t			length = 0;
 
- 	if (buffer.find("\r") != std::string::npos)
+ 	if (buffer.find("\r") != std::string::npos)		//the usual case (i.e. Irssi)
 	{
 		while ((end = buffer.find("\r", start)) != std::string::npos)
 		{
 			length = end - start;
 			single_msg = buffer.substr(start, length);
-			// std::cout << "single_msg: " << single_msg << std::endl;
-
 			makeMsgfromString(msg, single_msg);
 			msgs.push_back(msg);
 			start = end + 2;
 		}
 	}
-	else		//handles case when there is no '\r' return but there is '\n'
+	else		//handles case when there is no '\r' return but there is '\n' (i.e. NetCat)
 	{
 		while ((end = buffer.find("\n", start)) != std::string::npos)
 		{
 			length = end - start;
 			single_msg = buffer.substr(start, length);
-			// std::cout << "single_msg: " << single_msg << std::endl;
-
 			makeMsgfromString(msg, single_msg);
 			msgs.push_back(msg);
 			start = end + 1;

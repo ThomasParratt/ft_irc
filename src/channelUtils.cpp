@@ -23,7 +23,12 @@ void		Server::printChannels()
 	}
 }
 
-// checks if a user exists in a channel
+/*
+	Checks if a user exists in a channel.
+	Returns
+		1, if exists.
+		0, if doesn't.
+*/
 int		Server::userExists(std::string user, std::string channel)
 {
 	int i = getChannelIndex(channel, _channel_names);

@@ -263,7 +263,7 @@ void	Server::modeCommand(Msg msg, Client &client)
 	}
 	else if (msg.parameters[1] == "+l" || msg.parameters[1] == "-l" || (msg.parameters[1][0] == '+' && msg.parameters[1][1] == 'l'))
 	{
-		userLimitMode(msg, client, tarChannel);//Note to self - check for error?
+		userLimitMode(msg, client, tarChannel);
 	}
 	else
 	{
@@ -271,6 +271,5 @@ void	Server::modeCommand(Msg msg, Client &client)
 			Unknown Mode Command
 				-> ignore
 		*/
-		// std::cout << "MODE: unknown command" << std::endl; //debug
 	}
 }
