@@ -59,8 +59,7 @@ class Server {
 		void	topicPrint(std::string channelName, Client &client);
 		void	partCommand(Msg msg, Client &client);
 		void	joinCommand(Msg msg, Client &client);
-		int     createChannel(Msg msg, Client &client);
-		int		joinChannel(Msg msg, Client &client, int index);
+		void    createChannel(Msg msg, Client &client);
 		int		channelJoinChecks(Channel channel, Msg msg, Client &client);
 
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
