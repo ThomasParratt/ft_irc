@@ -52,6 +52,10 @@ int		Server::commandSelector(Msg msg, Client &client)
 	{
 		joinCommand(msg, client);
 	}
+	else if (msg.command == "WHO")
+	{
+		whoCommand(msg, client);
+	}
 	else if (msg.command[0] == ':')
 	{
 		std::string response = "Please no Prefixes in Commands. Server No like.\r\n";

@@ -7,7 +7,7 @@ Client::Client(int socket, const std::string& password) :
 					_welcomeSent		(false),
 					_socket				(socket)
 {
-	setHostIP();
+	//setHostIP();
 	// setPrefix();
 };
 
@@ -26,9 +26,24 @@ std::string Client::getPassword()
     return(_password);
 }
 
-std::string Client::getHostIP()
+/*std::string Client::getHostIP()
 {
     return(_hostIP);
+}*/
+
+std::string Client::getHost()
+{
+    return(_host);
+}
+
+std::string Client::getRealname()
+{
+    return(_realname);
+}
+
+std::string Client::getHostname()
+{
+    return(_hostname);
 }
 
 std::string Client::getPrefix()
@@ -72,6 +87,21 @@ void        Client::setUsername(std::string str)
     _username = str;
 }
 
+void        Client::setHost(std::string str)
+{
+    _host = str;
+}
+
+void        Client::setHostname(std::string str)
+{
+    _hostname = str;
+}
+
+void        Client::setRealname(std::string str)
+{
+    _realname = str;
+}
+
 void       Client::setPrefix(std::string prefix)
 {
     _prefix = prefix;
@@ -92,7 +122,7 @@ void        Client::setOperatorStatus(bool value)
     _operatorStatus = value;
 }
 
-void Client::setHostIP()
+/*void Client::setHostIP()
 {
     char hostname[NI_MAXHOST];
     if (gethostname(hostname, sizeof(hostname)) != 0)
@@ -127,7 +157,7 @@ void Client::setHostIP()
 
     std::cerr << "Failed to convert address to string" << std::endl;
     freeaddrinfo(res);
-}
+}*/
 
 void        Client::joinChannel(std::string channelName)
 {

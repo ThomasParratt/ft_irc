@@ -47,8 +47,8 @@ int		Server::nicknameCommand(Msg msg, Client &client)
 		std::string old_nick = client.getNickname();
 		client.setNickname(msg.parameters[0]);
 		std::string new_nick = client.getNickname();
-		std::string old_prefix = old_nick + "!" + client.getUsername() + "@" + client.getHostIP();
-		std::string new_prefix = new_nick + "!" + client.getUsername() + "@" + client.getHostIP();
+		std::string old_prefix = old_nick + "!" + client.getUsername() + "@" + client.getHost();
+		std::string new_prefix = new_nick + "!" + client.getUsername() + "@" + client.getHost();
 		client.setPrefix(new_prefix);
 		std::string nick_message = ":" + old_prefix + " NICK :" + new_nick + "\r\n";
 		// std::string nick_message = " NICK :" + new_nick + "\r\n";
@@ -83,7 +83,10 @@ int		Server::userCommand(Msg msg, Client &client)
 	if (client.getPasswordChecked())
 	{
 		client.setUsername(msg.parameters[0]);
-		std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP() + "\r\n";
+		client.setHostname(msg.parameters[1]);
+		client.setHost(msg.parameters[2]);
+		client.setRealname(msg.trailing_msg);
+		std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + "\r\n";
 		send(client.getSocket(), message_001.c_str(), message_001.size(), 0);
 		std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host is ircserv, running version 1.0\r\n";
 		send(client.getSocket(), message_002.c_str(), message_002.size(), 0);
@@ -102,7 +105,7 @@ int		Server::userCommand(Msg msg, Client &client)
 			send(client.getSocket(), nick_message.c_str(), nick_message.size(), 0);
 		}
 		// set client prefix
-		std::string setPrefix = client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP();
+		std::string setPrefix = client.getNickname() + "!" + client.getUsername() + "@" + client.getHost();
 		client.setPrefix(setPrefix);
 		client.setWelcomeSent(true);
 		return (0);

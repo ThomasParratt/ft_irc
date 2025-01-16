@@ -29,7 +29,7 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 {
 	int i = getChannelIndex(channelName, this->_channel_names);
 
-	std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostIP() + " JOIN " + channelName + "\r\n";
+	std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + " JOIN " + channelName + "\r\n";
 	broadcastToChannel(this->_channel_names[i], message, client, 0);
 
 	std::string topic = this->_channel_names[i].getChannelTopic();

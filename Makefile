@@ -18,6 +18,7 @@ SRC			=	src/main.cpp \
 				src/privmsg.cpp \
 				src/Server.cpp \
 				src/topic.cpp \
+				src/who.cpp \
 
 OBJ			=	$(SRC:.cpp=.o)
 
