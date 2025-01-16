@@ -1,10 +1,14 @@
 #include "Client.hpp"
 
 
-Client::Client(int socket, const std::string& password) : _password(password), _passwordChecked(false), _welcomeSent(false), _socket(socket)
+Client::Client(int socket, const std::string& password) : 
+					_password			(password),
+					_passwordChecked	(false),
+					_welcomeSent		(false),
+					_socket				(socket)
 {
-    setHostIP();
-    // setPrefix();
+	setHostIP();
+	// setPrefix();
 };
 
 std::string Client::getNickname()
@@ -14,7 +18,7 @@ std::string Client::getNickname()
 
 std::string Client::getUsername()
 {
-    return(_username);
+	return(_username);
 }
 
 std::string Client::getPassword()
@@ -68,6 +72,26 @@ void        Client::setUsername(std::string str)
     _username = str;
 }
 
+void       Client::setPrefix(std::string prefix)
+{
+    _prefix = prefix;
+}
+
+void        Client::setPasswordChecked(bool value)
+{
+    _passwordChecked = value;
+}
+
+void        Client::setWelcomeSent(bool value)
+{
+    _welcomeSent = value;
+}
+
+void        Client::setOperatorStatus(bool value)
+{
+    _operatorStatus = value;
+}
+
 void Client::setHostIP()
 {
     char hostname[NI_MAXHOST];
@@ -103,26 +127,6 @@ void Client::setHostIP()
 
     std::cerr << "Failed to convert address to string" << std::endl;
     freeaddrinfo(res);
-}
-
-void       Client::setPrefix(std::string prefix)
-{
-    _prefix = prefix;
-}
-
-void        Client::setPasswordChecked(bool value)
-{
-    _passwordChecked = value;
-}
-
-void        Client::setWelcomeSent(bool value)
-{
-    _welcomeSent = value;
-}
-
-void        Client::setOperatorStatus(bool value)
-{
-    _operatorStatus = value;
 }
 
 void        Client::joinChannel(std::string channelName)

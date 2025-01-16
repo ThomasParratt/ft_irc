@@ -3,7 +3,7 @@
 
 std::string		getCommand(std::vector<std::string> array)
 {
-	return (array[0]);
+	return (array[0]);	//First word is always the command.
 }
 
 std::vector<std::string>	getParameters(std::vector<std::string> array)
@@ -12,9 +12,8 @@ std::vector<std::string>	getParameters(std::vector<std::string> array)
 
 	for (size_t i = 1; i < array.size(); i++)
 	{
-		if (array[i][0] != ':')
+		if (array[i][0] != ':')					//Everything is a parameter, that doesn't start with ':'
 		{
-			// std::cout << "Params[" << i << "]: " << array[i] << std::endl;
 			parameters.push_back(array[i]);
 		}
     }
@@ -25,59 +24,24 @@ std::string		getTrailingMessage(std::vector<std::string> array)
 {
 	size_t last_string = array.size() - 1;
 
-	if (array[last_string][0] == ':')
+	if (array[last_string][0] == ':')			//Checks if trailing string
 	{
-		// std::cout << "Trailing Message: " << &(array[last_string][1]) << std::endl;		
-		return (&(array[last_string][1]));			//the '1' skips the ':' character
+		return (&(array[last_string][1]));		//the '1' parses out the ':' character
 	}
 	else
 	{
 		return ("");
 	}
 }
-
+/*
+	Initializes Msg Object.
+	-Command
+	-Parameter[s]
+	-Trailing message [if exists]
+*/
 void	initializeMsg(Msg &msg, std::vector<std::string> array)
 {	
 	msg.command = getCommand(array);
 	msg.parameters = getParameters(array);
 	msg.trailing_msg = getTrailingMessage(array);
-}
-
-
-int     count_msgs(std::string buffer)		//Function not used anywhere - delete?
-{
-    int count = 0;
-
-    size_t		start = 0;
-	size_t		end = 0;
-
-	while ((end = buffer.find("\r\n", start)) != std::string::npos)
-	{
-		start = end + 2;
-        count++;								
-    }    
-    return (count);
-}
-
-int	count_words(std::string buffer)		//Function not used anywhere - delete?
-{
-	int	count = 0;
-
-	int i = 0;
-	while (buffer[i])
-	{
-		if (buffer[i] == ' ')
-		{
-			i++;
-		}
-		else
-		{
-			count++;
-			while(buffer[i] != ' ' && buffer[i] != '\0')
-			{
-				i++;
-			}
-		}
-	}
-	return (count);
 }
