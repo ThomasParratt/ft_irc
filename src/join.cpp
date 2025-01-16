@@ -65,7 +65,8 @@ void		Server::joinCommand(Msg msg, Client &client)
 		createChannel(msg, client);
 	else //Join channel
 	{
-		channelJoinChecks(this ->_channel_names[i], msg, client);
+		if (channelJoinChecks(this ->_channel_names[i], msg, client))
+			return ;
 		addChannelUser(this->_channel_names[i], client, false);
 	}
 	joinChannelMessage(msg.parameters[0], client);
