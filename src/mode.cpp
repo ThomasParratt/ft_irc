@@ -30,7 +30,7 @@ Channel* Server::getChannel(std::string channelName)
 	return nullptr;
 }
 
-int		Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
+void	Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 {
 		std::string 	user_limit_string;
 		std::string 	limitMsg;
@@ -48,7 +48,7 @@ int		Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 			{
 				// No Limit given
 				std::cout << "No Limit Given" << std::endl;//debug
-				return (1);
+				return ;
 			}
 			else
 			{
@@ -65,14 +65,14 @@ int		Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 				{
 					//Not an integer
 					// std::cerr << "Error: " << e.what() << '\n';
-					return (1);
+					return ;
 				}
 				// std::cout << "userLimit: " << userLimit << std::endl;
 				if (userLimit <= 0)
 				{
 					//If Limit is zero or below
 					// std::cout << "Limit is an unacceptable value: " << userLimit << std::endl;
-					return (1);
+					return ;
 				}
 				// std::cout << "userLimit (int): " << userLimit << std::endl;
 
@@ -86,7 +86,6 @@ int		Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 		}
 
 		broadcastToChannel(*tarChannel, limitMsg, client, 0);
-		return (0);
 }
 
 int		Server::channelChecks(Msg msg, Client &client)
@@ -134,23 +133,23 @@ int		Server::channelChecks(Msg msg, Client &client)
 	return (0);
 }
 
-int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
+void	Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 {
-	std::cout << msg.parameters[1] << std::endl; //debug
+	// std::cout << msg.parameters[1] << std::endl; //debug
 	if (msg.parameters[1] == "+k")
 	{
 		if (msg.parameters.size() == 2)
 		{
 			//No key given
-			return (1);
+			return ;
 		}
 		else if(msg.parameters[2] == "")//Empty string for a key - not allowed
 		{
-			std::cout << "+k/-k" << std::endl;
-			std::cout << "Key is empty" << std::endl; //debug
+			std::cout << "+k/-k" << std::endl;			//debug
+			std::cout << "Key is empty" << std::endl;	//debug
 			std::string errMsg = ":ircserver 525" + client.getNickname() + " " + msg.parameters[0] + " :Key is not well-formed\r\n";
 			send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
-			return (1);
+			return ;
 		}
 		else if (msg.parameters[2] != "")
 		{
@@ -159,7 +158,7 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 			tarChannel->setKeyRequired(true);
 			std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " +k " + msg.parameters[2] + "\r\n";
 			broadcastToChannel(*tarChannel, keyMsg, client, 0);
-			return (0);
+			return ;
 		}
 	}
 	else if (msg.parameters[1] == "-k")
@@ -169,9 +168,8 @@ int		Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 		tarChannel->setKeyRequired(false);
 		std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " -k *" + "\r\n";
 		broadcastToChannel(*tarChannel, keyMsg, client, 0);
-		return (0);
+		return ;
 	}
-	return (0);
 }
 
 void	Server::topicMode(Msg msg, Client &client, Channel* tarChannel)
@@ -192,7 +190,7 @@ void	Server::inviteMode(Msg msg, Client &client, Channel* tarChannel)
 	broadcastToChannel(*tarChannel, inviteMsg, client, 0);
 }
 
-int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
+void	Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 {
 	std::cout << "o" << std::endl; //debug
 	//TODO: Give/take channel operator privilege
@@ -201,7 +199,7 @@ int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 	{
 		std::string errMsg = ":ircserver 461 " + client.getNickname() + " MODE :Not enough parameters\r\n";
 		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
-		return (1);
+		return ;
 	}
 	bool nickExists = false;
 	for (size_t i = 0; i < tarChannel->getChannelUsers().size(); i++)
@@ -223,33 +221,29 @@ int		Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 	{
 		std::string errMsg = ":ircserver 441 " + client.getNickname() + " " + msg.parameters[2] + " " + msg.parameters[0] + " :They aren't on that channel\r\n";
 		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
-		return (1);
+		return ;
 	}
-	return (0);
+	return ;
 }
 
-int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
+void	Server::modeCommand(Msg msg, Client &client)
 {
-	//Figure out edge case - MODE mkorpela +i -> the below error message will print - edge case must be ignored -> check for #...
-	std::cout << "MODE command" << std::endl;
 
 	if (channelChecks(msg, client) != 0)
 	{
-		return (1);
+		return ;
 	}
 
-	printMsg(msg); //debug
-	std::cout << "1" << std::endl;
+	// printMsg(msg); //debug
 
 	//find the current channel to apply the mode + flag
 	Channel* tarChannel = getChannel(msg.parameters[0]);
 	if (tarChannel == nullptr)
 	{
 		std::string message = ":" + msg.parameters[0] + " :No such channel\r\n";
-		send(clientSocket, message.c_str(), message.size(), 0);
-		return (1);
+		send(client.getSocket(), message.c_str(), message.size(), 0);
+		return ;
 	}
-	std::cout << "2" << std::endl;	
 
 	if (msg.parameters[1] == "+i" || msg.parameters[1] == "-i")
 	{
@@ -277,8 +271,6 @@ int		Server::modeCommand(Msg msg, int clientSocket, Client &client)
 			Unknown Mode Command
 				-> ignore
 		*/
-		std::cout << "MODE: unknown command" << std::endl; //debug
-		return (1);
+		// std::cout << "MODE: unknown command" << std::endl; //debug
 	}
-	return (0);
 }

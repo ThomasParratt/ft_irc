@@ -3,8 +3,8 @@ NAME		=	ircserv
 SRC			=	src/main.cpp \
 				src/Channel.cpp \
 				src/channelUtils.cpp \
-				src/connectionMessages.cpp \
 				src/Client.cpp \
+				src/connectionMessages.cpp \
 				src/handleUserInput.cpp \
 				src/initializeMsg.cpp \
 				src/invite.cpp \
@@ -23,9 +23,10 @@ OBJ			=	$(SRC:.cpp=.o)
 
 CC			=	c++
 
-# CFLAGS		=	-Wextra -Wall -Werror
-# mac 
-CFLAGS		=	-Wextra -Wall -Werror -std=c++11 
+CFLAGS		=	-Wextra -Wall -Werror
+
+# for mac 
+# CFLAGS		=	-Wextra -Wall -Werror -std=c++11 
 
 RM			=	rm -f
 

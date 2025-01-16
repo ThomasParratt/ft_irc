@@ -31,7 +31,7 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 	return (0);
 }
 
-int		Server::kickCommand(Msg msg, int clientSocket, Client &client) 
+void		Server::kickCommand(Msg msg, Client &client) 
 {
 	if (channelExists(msg.parameters[0]))
 	{
@@ -70,13 +70,13 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 								else
 								{
 									std::string message_441 = ":ircserv 441 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :They aren't on that channel\r\n";
-									send(clientSocket, message_441.c_str(), message_441.size(), 0);
+									send(client.getSocket(), message_441.c_str(), message_441.size(), 0);
 								}
 							}
 							else
 							{
 								std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.getChannelName() + " :You're not a channel operator\r\n";
-								send(clientSocket, message_482.c_str(), message_482.size(), 0);
+								send(client.getSocket(), message_482.c_str(), message_482.size(), 0);
 							}
 						}
 					}
@@ -86,13 +86,12 @@ int		Server::kickCommand(Msg msg, int clientSocket, Client &client)
 		else
 		{
 			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[0] + " :You're not on that channel\r\n";
-			send(clientSocket, message_442.c_str(), message_442.size(), 0);
+			send(client.getSocket(), message_442.c_str(), message_442.size(), 0);
 		}
 	}
 	else
 	{
 		std::string message_403 = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
-		send(clientSocket, message_403.c_str(), message_403.size(), 0);
+		send(client.getSocket(), message_403.c_str(), message_403.size(), 0);
 	}
-	return (0);
 }
