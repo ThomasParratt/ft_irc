@@ -28,19 +28,6 @@ int		Channel::getNumberOfChannelUsers()
 	return (num_of_channel_users);
 }
 
-// bool		Channel::doesChannelHavePassword()
-// {
-// 	if (_channel_key == "")
-// 	{
-// 		return (false);
-// 	}
-// 	else
-// 	{
-// 		return (true);
-// 	}
-// }
-
-// Maybe we should just check key with _keyRequired, because what if the key is empty, although it shouldn't happen.
 bool		Channel::doesChannelHavePassword()
 {
 	if (this->_keyRequired == false)
@@ -74,18 +61,17 @@ bool		Channel::isChannelFull()
 	}
 }
 
-int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client)
+int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 {
 	std::string message;
 	
+	// checkIfChannelFull()
+
 	if (channel.isChannelFull() == true)
 	{
 		message = ":ircserv 471 " + client.getNickname() +  " " + msg.parameters[0] + " :Cannot join channel (+l) - channel is full, try again later\r\n";
 		
-		send(clientSocket, message.c_str(), message.size(), 0);
-
-		//Example - 14:13 -!- Cannot join to channel #ABC456 (Channel is full)
-		//Example - :copper.libera.chat 471 mkorpela_ #ABC567 :Cannot join channel (+l) - channel is full, try again later		
+		send(client.getSocket(), message.c_str(), message.size(), 0);
 		return (1) ;
 	}
 
@@ -93,49 +79,28 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 	{
 		if (msg.parameters.size() <= 1)						 //No password parameter passed.
 		{
-			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - no password entered\r\n"; // Trailing messages don't print
-			send(clientSocket, message.c_str(), message.size(), 0);
-
-			// << JOIN #ABC1234
-			// >> :molybdenum.libera.chat 475 apppleess #ABC1234 :Cannot join channel (+k) - bad key
-
+			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - no password entered\r\n";
+			send(client.getSocket(), message.c_str(), message.size(), 0);
 			return (1);
 		}
 
 		std::string 	password = msg.parameters[1];
-		std::cout << "Password: " << password << std::endl;
-		std::cout << "Channel Key: " << channel.getChannelKey() << std::endl;
+		// std::cout << "Password: " << password << std::endl;						//debug
+		// std::cout << "Channel Key: " << channel.getChannelKey() << std::endl;	//debug
 		if (channel.getChannelKey() == password) 			//Password Correct
 		{
 
-			// message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->getServHostName() + " JOIN " + msg.parameters[0] + "\r\n";
-			// std::cout << "message: " << message;
-			// send(clientSocket, message.c_str(), message.size(), 0); //Send MESSAGE here if needed... I'll think about it later. :)
-
-			// << JOIN #ABC1234 123456
-			// >> :apppleess!~mkorpela@194.136.126.52 JOIN #ABC1234
 		}
 		else 												//Password Incorrect
 		{
-			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - password incorrect\r\n"; // Trailing messages don't print
-			send(clientSocket, message.c_str(), message.size(), 0);
-
-			// << JOIN #ABC1234 lol
-			// >> :molybdenum.libera.chat 475 apppleess #ABC1234 :Cannot join channel (+k) - bad key
-
+			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - password incorrect\r\n";
+			send(client.getSocket(), message.c_str(), message.size(), 0);
 			return (1);
 		}
 	}
 
 	if (channel.isChannelInviteOnly() == true)
 	{
-		/*
-			a. If Invited
-				-> OK
-
-			b. If not Invited
-				-> Send message
-		*/
 
 		for (auto &it : channel.getInvitedList())
 		{
@@ -146,10 +111,8 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, int clientSocket, Clien
 		}
 
 		message  = ":ircserv 473 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+i) - you must be invited\r\n";
-		send(clientSocket, message.c_str(), message.size(), 0);
+		send(client.getSocket(), message.c_str(), message.size(), 0);
 
-		//example << JOIN #BANNNANAss
-		//example >> :lithium.libera.chat 473 gravity123 #BANNNANAss :Cannot join channel (+i) - you must be invited
 		return (1);						//User was NOT Invited
 	}
 	return (0);

@@ -195,9 +195,9 @@ void Server::serverLoop()
 					{
 						if (client.getSocket() == _pollfds[i].fd) 
 						{
-							if (this->makeSelectAndRunCommand(message.c_str(), _pollfds[i].fd, client) == 1)
+							if (this->makeSelectAndRunCommand(message.c_str(), client) == 1)
 							{
-								std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;
+								std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;		//Note: This part has potential to be made into it's own function.
 								close(_pollfds[i].fd);
 								_pollfds.erase(_pollfds.begin() + i);
 								_clients.erase(_clients.begin() + (i - 1));

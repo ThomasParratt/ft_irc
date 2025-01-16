@@ -39,15 +39,15 @@ class Server {
 
 		void	removeFromAll(int i);
 
-		int		makeSelectAndRunCommand(std::string buffer, int clientSocket, Client &client);
+		int		makeSelectAndRunCommand(std::string buffer, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
 
-		int		commandSelector(Msg msg, int clientSocket, Client &client);
-		int		passwordCommand(Msg msg, int clientSocket, Client &client);
-		int		nicknameCommand(Msg msg, int clientSocket, Client &client);
-		int		userCommand(Msg msg, int clientSocket, Client &client);
-		int		kickCommand(Msg msg, int clientSocket, Client &client);
-		int		inviteCommand(Msg msg, int clientSocket, Client &client);
+		int		commandSelector(Msg msg, Client &client);
+		int		passwordCommand(Msg msg, Client &client);
+		int		nicknameCommand(Msg msg, Client &client);
+		int		userCommand(Msg msg, Client &client);
+		void	kickCommand(Msg msg, Client &client);
+		void	inviteCommand(Msg msg, Client &client);
 
 		int		userExists(std::string user, std::string channel);
 		int		channelExists(std::string channel);
@@ -55,32 +55,32 @@ class Server {
 		int		clientStatus(Msg msg, Client &client);
 		Channel* getChannel(std::string channelName);
 
-		int     topicCommand(Msg msg, int clientSocket, Client &client);
-		void	topicPrint(std::string channelName, int clientSocket, Client &client);
-		int		partCommand(Msg msg, int clientSocket, Client &client);
-		int		joinCommand(Msg msg, int clientSocket, Client &client);
-		int     createChannel(Msg msg, int clientSocket, Client &client);
-		int		joinChannel(Msg msg, int clientSocket, Client &client, int index);
-		int		channelJoinChecks(Channel channel, Msg msg, int clientSocket, Client &client);
+		int     topicCommand(Msg msg, Client &client);
+		void	topicPrint(std::string channelName, Client &client);
+		void	partCommand(Msg msg, Client &client);
+		void	joinCommand(Msg msg, Client &client);
+		int     createChannel(Msg msg, Client &client);
+		int		joinChannel(Msg msg, Client &client, int index);
+		int		channelJoinChecks(Channel channel, Msg msg, Client &client);
 
 		void	addChannelUser(Channel &new_channel, Client &client, bool operator_permissions);
 		void	broadcastToChannel(Channel &channel, std::string message, Client &client, int check);
 		int		getClientSocket(std::string nickname);
 
 		void	userMessageToChannel(Channel channel, int sender_socket, std::string message);
-		int		privmsgCommand(Msg msg, int clientSocket, Client &client);
-		void	channelMessage(Msg msg, int clientSocket, Client &client);		
-		void	directMessage(Msg msg, int clientSocket, Client &client);
+		void	privmsgCommand(Msg msg, Client &client);
+		void	channelMessage(Msg msg, Client &client);		
+		void	directMessage(Msg msg, Client &client);
 		void	joinChannelMessage(std::string channelName, Client &client);
 
-		int		modeCommand(Msg msg, int clientSocket, Client &client);
+		void	modeCommand(Msg msg, Client &client);
 		int		channelChecks(Msg msg, Client &client);
 		void	topicMode(Msg msg, Client &client, Channel* tarChannel);
-		int		keyMode(Msg msg, Client &client, Channel* tarChannel);
+		void	keyMode(Msg msg, Client &client, Channel* tarChannel);
 		void	inviteMode(Msg msg, Client &client, Channel* tarChannel);
-		int		operatorMode(Msg msg, Client &client, Channel* tarChannel);
+		void	operatorMode(Msg msg, Client &client, Channel* tarChannel);
 
-		int		userLimitMode(Msg msg, Client &client, Channel *tarChannel);
+		void	userLimitMode(Msg msg, Client &client, Channel *tarChannel);
 	
 
 		void	printChannels();
