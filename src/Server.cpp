@@ -100,7 +100,16 @@ void Server::acceptClient()
 	std::cout << "New client connected, socket " << clientSocket << std::endl;
 }
 
-void Server::removeFromAll(int i)
+void	Server::disconnectClient(size_t& i, std::map<int, std::string> &clientBuffers)
+{
+	close(_pollfds[i].fd);
+	_pollfds.erase(_pollfds.begin() + i);
+	_clients.erase(_clients.begin() + (i - 1));
+	clientBuffers.erase(_pollfds[i].fd);
+	i--;
+}
+
+void Server::removeUserFromAllChannels(int i)
 {
 	std::cout << "removeFromAll" << std::endl;
 	for (auto &client : _clients) // remove user from all channels
@@ -129,100 +138,133 @@ void Server::removeFromAll(int i)
 	}
 }
 
+/*
+	Checks if Client is requests to connect to server, and then accepts client.
+*/
+void	Server::checkServerSocket()
+{
+	if (_pollfds[0].revents & POLLIN)	//Check for clients trying to connect
+	{
+		acceptClient();
+	}
+}
+
+void		Server::printErrorBytesRead(int	bytesRead, int i)
+{
+	if (bytesRead == 0)
+	{
+		std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;
+	}
+	else 
+		std::cerr << "Error reading from socket " << _pollfds[i].fd << " " << strerror(errno) << std::endl;
+}
+
+void	Server::removeClient(int bytesRead, size_t i, std::map<int, std::string> &clientBuffers)
+{
+	printErrorBytesRead(bytesRead, i);
+	removeUserFromAllChannels(i);
+	disconnectClient(i, clientBuffers);
+}
+
+void	Server::processClientBuffer(size_t i, std::map<int, std::string> &clientBuffers)
+{
+	std::string &clientBuffer = clientBuffers[_pollfds[i].fd];	// Check for complete messages (assuming '\n' as a delimiter)
+
+	size_t		pos;
+	bool		clientDisconnected = false;
+
+	while ((pos = clientBuffer.find('\n')) != std::string::npos)
+	{
+		std::string message = clientBuffer.substr(0, pos);				// Extract the complete message
+		clientBuffer.erase(0, pos + 1);									// Remove the processed message
+
+		std::cout << "Message received from socket " << _pollfds[i].fd << ": " << message << std::endl;
+
+		for (auto &client : _clients)
+		{
+			if (client.getSocket() == _pollfds[i].fd) 
+			{
+				if (this->makeSelectAndRunCommand(message.c_str(), client) == 1)
+				{
+					std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;
+					disconnectClient(i, clientBuffers);//get rid of Client struct??
+					clientDisconnected = true;
+					break ;
+				}
+			}
+		}
+		if (clientDisconnected)
+			break ;
+	}
+}
+
+
+void	Server::checkClientSockets(std::map<int, std::string> &clientBuffers)
+{
+	for (size_t i = 1; i < _pollfds.size(); i++)		//Loop through all Client sockets
+	{
+		if (_pollfds[i].revents & POLLIN)		//If Event occurred in socket
+		{
+			char buffer[1024] = {0};
+			int bytesRead = recv(_pollfds[i].fd, buffer, sizeof(buffer), 0);
+			if (bytesRead <= 0) 
+			{
+				removeClient(bytesRead, i, clientBuffers);
+				continue ;
+			}
+			clientBuffers[_pollfds[i].fd] += std::string(buffer); 	//Append received data to the client's buffer
+
+			processClientBuffer(i, clientBuffers);
+		}
+	}
+}
+
+void	Server::setUpServerPollfd()
+{
+	pollfd			serverPollfd;
+
+	serverPollfd.fd = _serverSocket;
+	serverPollfd.events = POLLIN | POLLERR;		//Server configured to incoming events and error.
+
+	_pollfds.push_back(serverPollfd);
+}
+/*
+	Closes file descriptors (Fds) found in pollfds.
+*/
+void	Server::closeFDs()
+{
+	std::cout << "Closing File Descriptors" << std::endl;
+	for (pollfd &pollfd : _pollfds) 
+	{
+		close(pollfd.fd);
+	}
+}
+
 void Server::serverLoop() 
 {
-	// set serverPollfd
-	pollfd serverPollfd;
-	serverPollfd.fd = _serverSocket;
-	serverPollfd.events = POLLIN | POLLERR;
-	// push serverPollfd to pollfds
-	_pollfds.push_back(serverPollfd);
 	std::cout << "Server loop started" << std::endl;
 
-	// Map to store partial messages for each client
-	std::map<int, std::string> clientBuffers;
+	std::map<int, std::string> clientBuffers;	// Map to store partial messages for each client
+
+
+	setUpServerPollfd();
 
 	while (servRunning) 
 	{
-		if (poll(_pollfds.data(), _pollfds.size(), -1) == -1) 
+		if (poll(_pollfds.data(), _pollfds.size(), -1) == -1)		//Check file descriptors
 		{
 			std::cerr << "Error polling sockets " << strerror(errno) << std::endl;
 			break;
 		}
-		if (_pollfds[0].revents & POLLIN)
-		{
-			acceptClient();
-		}
-		for (size_t i = 1; i < _pollfds.size(); i++)
-		{
-			bool clientDisconnected = false;
-			if (_pollfds[i].revents & POLLIN)
-			{
-				char buffer[1024] = {0};
-				int bytesRead = recv(_pollfds[i].fd, buffer, sizeof(buffer), 0);
-				if (bytesRead <= 0) 
-				{
-					if (bytesRead == 0) {
-						removeFromAll(i);
-						std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;
-					}
-					else 
-						std::cerr << "Error reading from socket " << _pollfds[i].fd << " " << strerror(errno) << std::endl;
+		checkServerSocket();
 
-
-					close(_pollfds[i].fd);
-					_pollfds.erase(_pollfds.begin() + i);
-					_clients.erase(_clients.begin() + (i - 1));
-					clientBuffers.erase(_pollfds[i].fd);
-					i--;
-					continue ;
-				}
-				// Append received data to the client's buffer
-				clientBuffers[_pollfds[i].fd] += std::string(buffer);
-
-				// Check for complete messages (assuming '\n' as a delimiter)
-				std::string &clientBuffer = clientBuffers[_pollfds[i].fd];
-				size_t pos;
-				while ((pos = clientBuffer.find('\n')) != std::string::npos)
-				{
-					// Extract the complete message
-					std::string message = clientBuffer.substr(0, pos);
-					clientBuffer.erase(0, pos + 1); // Remove the processed message
-
-					std::cout << "Message received from socket " << _pollfds[i].fd << ": " << message << std::endl;
-
-					for (auto &client : _clients)
-					{
-						if (client.getSocket() == _pollfds[i].fd) 
-						{
-							if (this->makeSelectAndRunCommand(message.c_str(), client) == 1)
-							{
-								std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;		//Note: This part has potential to be made into it's own function.
-								close(_pollfds[i].fd);
-								_pollfds.erase(_pollfds.begin() + i);
-								_clients.erase(_clients.begin() + (i - 1));
-								clientBuffers.erase(_pollfds[i].fd);
-								i--;
-								clientDisconnected = true;
-								break ;
-							}
-						}
-					}
-					if (clientDisconnected)
-						break ;
-				}
-			}
-			if (clientDisconnected)
-				continue ;
-		}
+		checkClientSockets(clientBuffers);
 	}
 
-	close(serverPollfd.fd);
-	for (auto &pfd : _pollfds) 
-	{
-		close(pfd.fd);
-	}
+	closeFDs();
+
 	std::cout << "Server stopped" << std::endl;
+	std::cout << "Goodbye" << std::endl;	
 }
 
 time_t stringToUnixTimeStamp(std::string time)

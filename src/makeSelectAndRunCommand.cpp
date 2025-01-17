@@ -25,6 +25,7 @@ int		Server::commandSelector(Msg msg, Client &client)
         send(client.getSocket(), response.c_str(), response.size(), 0);
 	}
 	else if  (msg.command == "PRIVMSG")
+	
 	{
 		privmsgCommand(msg, client);
 	}
