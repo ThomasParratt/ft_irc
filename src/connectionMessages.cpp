@@ -99,7 +99,7 @@ int		Server::userCommand(Msg msg, Client &client)
 		std::string message_003 = ":ircserver 003 " + client.getNickname() + " :This server was created " + this->getStartTimeStr() + "\r\n";
 		send(client.getSocket(), message_003.c_str(), message_003.size(), 0);
 		LOG_SERVER(message_003);
-		std::string message_004 = ":ircserver 004 " + client.getNickname() + " ircserv 1.0 ro itkol\r\n";
+		std::string message_004 = ":ircserver 004 " + client.getNickname() + " ircserver 1.0 ro itkol\r\n";
 		send(client.getSocket(), message_004.c_str(), message_004.size(), 0);
 		LOG_SERVER(message_004);
 		std::string message_005 = ":ircserver 005 " + client.getNickname() + " CHANMODES=i,t,k,o,l :are supported by this server\r\n";
