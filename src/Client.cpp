@@ -7,7 +7,6 @@ Client::Client(int socket, const std::string& password) :
 					_welcomeSent		(false),
 					_socket				(socket)
 {
-	//setHostIP();
 	// setPrefix();
 };
 
@@ -25,11 +24,6 @@ std::string Client::getPassword()
 {
     return(_password);
 }
-
-/*std::string Client::getHostIP()
-{
-    return(_hostIP);
-}*/
 
 std::string Client::getHost()
 {
@@ -121,43 +115,6 @@ void        Client::setOperatorStatus(bool value)
 {
     _operatorStatus = value;
 }
-
-/*void Client::setHostIP()
-{
-    char hostname[NI_MAXHOST];
-    if (gethostname(hostname, sizeof(hostname)) != 0)
-    {
-        std::cerr << "Error getting hostname" << std::endl;
-        return;
-    }
-
-    struct addrinfo hints = {};
-    hints.ai_family = AF_INET; // Use IPv4
-    hints.ai_socktype = SOCK_STREAM;
-
-    struct addrinfo* res;
-    if (getaddrinfo(hostname, nullptr, &hints, &res) != 0)
-    {
-        std::cerr << "Error getting address info" << std::endl;
-        return ;
-    }
-
-    // Iterate through results and convert the first valid address to string
-    for (struct addrinfo* p = res; p != nullptr; p = p->ai_next)
-    {
-        struct sockaddr_in* ipv4 = reinterpret_cast<struct sockaddr_in*>(p->ai_addr);
-        char host_ip[INET_ADDRSTRLEN];
-        if (inet_ntop(AF_INET, &(ipv4->sin_addr), host_ip, sizeof(host_ip)) != nullptr)
-        {
-            _hostIP = host_ip;
-            freeaddrinfo(res); // Clean up
-            return ;
-        }
-    }
-
-    std::cerr << "Failed to convert address to string" << std::endl;
-    freeaddrinfo(res);
-}*/
 
 void        Client::joinChannel(std::string channelName)
 {
