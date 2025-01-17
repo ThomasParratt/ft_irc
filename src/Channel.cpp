@@ -43,8 +43,6 @@ void	Channel::setChannelTopic(std::string new_topic, Client &client)
 	this->_topic = new_topic;
 	this->_topicSetter = client.getPrefix();
 	this->_topicSetTime = getCurrentTime();
-	std::cout << "Topic set by: " << _topicSetter << std::endl;
-	std::cout << "Time: " << _topicSetTime << std::endl;
 }
 
 void	Channel::addUserIntoChannelUsers(User new_user)
@@ -60,20 +58,6 @@ void	Channel::removeUserFromChannelUsers(int index)
 	}
 	this->_channel_users.erase(this ->_channel_users.begin() + index);
 }
-
-// std::string			Channel::getInvitedName(int index)
-// {
-// 	std::string		nickname;
-
-// 	if (index < 0)
-// 	{
-// 		return ("");
-// 	}
-
-// 	nickname = this->invited[index];
-
-// 	return (nickname);
-// }
 
 std::string Channel::getInvitedName(int index)
 {
@@ -98,7 +82,6 @@ void	Channel::uninviteUser(int index)
 	{
 		return ;
 	}
-	std::cout << "Uninviting user 2" << std::endl;
 	this->_invited.erase(this->_invited.begin() + index);
 }
 

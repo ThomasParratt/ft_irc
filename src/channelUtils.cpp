@@ -82,8 +82,6 @@ void	Server::broadcastToChannel(Channel &channel, std::string message, Client &c
 	for (size_t i = 0; i < users.size(); i++)
 	{
 			socket = getClientSocket(users[i].nickname);
-			std::cout << "broadcastToChannel: socket = " << socket << std::endl;
-			std::cout << "Channel Nickname: " << users[i].nickname << std::endl;
 			if (socket != -2)
 			{
 				if (check == 1)
@@ -93,6 +91,7 @@ void	Server::broadcastToChannel(Channel &channel, std::string message, Client &c
 				}
 				else
 					send(socket, message.c_str(), message.size(), 0);
+			LOG_SERVER(message);
 			}
 	}
 }

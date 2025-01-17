@@ -7,6 +7,7 @@
 
 #include "Channel.hpp"
 #include "Msg.hpp"
+#include "log.hpp" // for server logging
 
 #define MAX_LEN_HOSTNAME 64
 

@@ -25,15 +25,12 @@ std::vector<std::string> split(std::string str, std::string token)
 
 void		Server::partCommand(Msg msg, Client &client)
 {
-	// std::cout << "PART Command" << std::endl;
-	// printMsg(msg); //debug
 	std::vector<std::string> channels = split(msg.parameters[0], ",");
-	// std::cout << "printing channel names" << std::endl;
-	// printArray(channels);
 	if (channels.size() == 0)
 	{
-		std::string notice = ":ircserv 461 " + client.getNickname() + " PART :Not enough parameters\r\n";
-		send(client.getSocket(), notice.c_str(), notice.size(), 0);
+		std::string notice_461 = ":ircserv 461 " + client.getNickname() + " PART :Not enough parameters\r\n";
+		send(client.getSocket(), notice_461.c_str(), notice_461.size(), 0);
+		LOG_SERVER(notice_461);
 		return ;
 	}
 	for (size_t i = 0; i < channels.size(); i++)
@@ -47,39 +44,34 @@ void		Server::partCommand(Msg msg, Client &client)
 				if (userExists(client.getNickname(), channels[i]))
 				{
 					int j = getChannelIndex(channels[i], _channel_names);
-					// std::string fullPrefix = client.getNickname() + "!" + "~" + client.getUsername() + "@" + client.getHostIP();
 					std::string part;
 					if (!msg.trailing_msg.empty())
 						part = ":" + client.getPrefix() + " PART " + channel.getChannelName() + " :" + msg.trailing_msg + "\r\n";
 					else
 						part = ":" + client.getPrefix() + " PART " + channel.getChannelName() + "\r\n";
-					// std::cout << "debug part channel before:" << std::endl;
-					// printChannelUsers(channel_names[j]);
-					// std::cout << "removing user: " << client.getNickname() << " from channel: " << channels[i] << std::endl;
 					broadcastToChannel(_channel_names[j], part, client, 1);
 					removeUser(client.getNickname(), channel.getChannelName(), part, 0);
 					client.leaveChannel(channel.getChannelName());
-					// printChannelUsers(channel_names[j]);
 					break;
 				} else {
-					std::string notice = ":ircserv 442 " + client.getNickname() + " " + channels[i] + " :You're not on that channel\r\n";
-					send(client.getSocket(), notice.c_str(), notice.size(), 0);
+					std::string notice_442 = ":ircserv 442 " + client.getNickname() + " " + channels[i] + " :You're not on that channel\r\n";
+					send(client.getSocket(), notice_442.c_str(), notice_442.size(), 0);
+					LOG_SERVER(notice_442);
 				}
 				break;
 			}
 		}
 		if (!channelExists)
 		{
-			std::string notice = ":ircserv 403 " + client.getNickname() + " " + channels[i] + " :No such channel\r\n";
-			send(client.getSocket(), notice.c_str(), notice.size(), 0);
+			std::string notice_403 = ":ircserv 403 " + client.getNickname() + " " + channels[i] + " :No such channel\r\n";
+			send(client.getSocket(), notice_403.c_str(), notice_403.size(), 0);
+			LOG_SERVER(notice_403);
 		}
 	}
-	for ( auto &channel : _channel_names)
+	for (auto &channel : _channel_names)
 	{
 		if (channel.getChannelUsers().size() == 0)
 		{
-			//remove channel
-			// std::cout << "Removing: " << channel.name << " :no more users"<<std::endl;
 			int i = getChannelIndex(channel.getChannelName(), _channel_names);
 			_channel_names.erase(_channel_names.begin() + i);
 		}

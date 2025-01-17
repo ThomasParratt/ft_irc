@@ -47,7 +47,7 @@ void	Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 			if (msg.parameters[1] == "+l")
 			{
 				// No Limit given
-				std::cout << "No Limit Given" << std::endl;//debug
+				// std::cout << "No Limit Given" << std::endl;//debug
 				return ;
 			}
 			else
@@ -55,7 +55,6 @@ void	Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 				// std::cout << "Limit Given" << std::endl;
 				std::string user_limit_string;
 				user_limit_string = msg.parameters[1].substr(2);	//Note: substring gets rid of "+l" and allows us to get limit number
-
 				int userLimit;	
 				try
 				{
@@ -81,6 +80,7 @@ void	Server::userLimitMode(Msg msg, Client &client, Channel *tarChannel)
 				msg.parameters[1] = "+l";
 
 				limitMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + " " + user_limit_string + "\r\n";
+				LOG_SERVER(limitMsg);
 				// std::cout << "limitMsg (+l): " << limitMsg;	
 			}
 		}
@@ -113,6 +113,7 @@ int		Server::channelChecks(Msg msg, Client &client)
 
 		std::string messages = ":ircserv 324 " + client.getNickname() +  " " + msg.parameters[0] + " +n\r\n";//User can send message to channel, only if they are in the channel.
 		send(client.getSocket(), messages.c_str(), messages.size(), 0);
+		LOG_SERVER(messages);
 		return (1);
 
 	}
@@ -120,6 +121,7 @@ int		Server::channelChecks(Msg msg, Client &client)
 	{
 		std::string errMsg = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[0] + " :Channel doesn't exist\r\n";
 		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+		LOG_SERVER(errMsg);
 		return (1);
 
 	}
@@ -127,6 +129,7 @@ int		Server::channelChecks(Msg msg, Client &client)
 	{
 		std::string errMsg = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
 		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+		LOG_SERVER(errMsg);
 		return (1);
 
 	}
@@ -135,7 +138,6 @@ int		Server::channelChecks(Msg msg, Client &client)
 
 void	Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 {
-	// std::cout << msg.parameters[1] << std::endl; //debug
 	if (msg.parameters[1] == "+k")
 	{
 		if (msg.parameters.size() == 2)
@@ -145,15 +147,13 @@ void	Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 		}
 		else if(msg.parameters[2] == "")//Empty string for a key - not allowed
 		{
-			std::cout << "+k/-k" << std::endl;			//debug
-			std::cout << "Key is empty" << std::endl;	//debug
 			std::string errMsg = ":ircserver 525" + client.getNickname() + " " + msg.parameters[0] + " :Key is not well-formed\r\n";
 			send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+			LOG_SERVER(errMsg);
 			return ;
 		}
 		else if (msg.parameters[2] != "")
 		{
-			std::cout << "Setting Channel Key: " << msg.parameters[2] << std::endl; //debug
 			tarChannel->setChannelKey(msg.parameters[2]);
 			tarChannel->setKeyRequired(true);
 			std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " +k " + msg.parameters[2] + "\r\n";
@@ -163,7 +163,6 @@ void	Server::keyMode(Msg msg, Client &client, Channel* tarChannel)
 	}
 	else if (msg.parameters[1] == "-k")
 	{
-		std::cout << "Removing Channel Key" << std::endl; //debug
 		tarChannel->setChannelKey("");
 		tarChannel->setKeyRequired(false);
 		std::string keyMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " -k *" + "\r\n";
@@ -176,14 +175,12 @@ void	Server::topicMode(Msg msg, Client &client, Channel* tarChannel)
 {
 	bool	boolean = (msg.parameters[1] == "+t") ? true : false;
 	tarChannel -> setTopicRequiresOperator(boolean);
-	std::cout << "+t/-t" << std::endl; //debug
 	std::string topicMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
 	broadcastToChannel(*tarChannel, topicMsg, client, 0);
 }
 
 void	Server::inviteMode(Msg msg, Client &client, Channel* tarChannel)
 {
-	std::cout << "+i/-i" << std::endl; //debug
 	bool	boolean = (msg.parameters[1] == "+i") ? true : false;
 	tarChannel -> setInviteOnly(boolean);
 	std::string inviteMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
@@ -192,13 +189,11 @@ void	Server::inviteMode(Msg msg, Client &client, Channel* tarChannel)
 
 void	Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 {
-	std::cout << "o" << std::endl; //debug
-	//TODO: Give/take channel operator privilege
-	// need to check if names is given before
 	if (msg.parameters[2].empty())
 	{
-		std::string errMsg = ":ircserver 461 " + client.getNickname() + " MODE :Not enough parameters\r\n";
-		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+		std::string errMsg_461 = ":ircserver 461 " + client.getNickname() + " MODE :Not enough parameters\r\n";
+		send(client.getSocket(), errMsg_461.c_str(), errMsg_461.size(), 0);
+		LOG_SERVER(errMsg_461);
 		return ;
 	}
 	bool nickExists = false;
@@ -208,10 +203,7 @@ void	Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 		{
 			// need to make sure it is not the client itself
 			nickExists = true;
-			std::cout << "found: " << tarChannel->getChannelUserStruct(i).nickname << std::endl; //debug
-			std::cout << tarChannel->getChannelUserStruct(i).operator_permissions << std::endl; //debug
 			tarChannel->getChannelUserStruct(i).operator_permissions = (msg.parameters[1] == "+o") ? true : false;
-			std::cout << tarChannel->getChannelUserStruct(i).operator_permissions << std::endl; //debug
 			std::string chMsg = ":" + client.getNickname() + " MODE " + msg.parameters[0] + " " + msg.parameters[1] + " " + msg.parameters[2] + "\r\n";
 			broadcastToChannel(*tarChannel, chMsg, client, 0);
 			break;
@@ -219,8 +211,9 @@ void	Server::operatorMode(Msg msg, Client &client, Channel* tarChannel)
 	}
 	if (nickExists == false)
 	{
-		std::string errMsg = ":ircserver 441 " + client.getNickname() + " " + msg.parameters[2] + " " + msg.parameters[0] + " :They aren't on that channel\r\n";
-		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+		std::string errMsg_441 = ":ircserver 441 " + client.getNickname() + " " + msg.parameters[2] + " " + msg.parameters[0] + " :They aren't on that channel\r\n";
+		send(client.getSocket(), errMsg_441.c_str(), errMsg_441.size(), 0);
+		LOG_SERVER(errMsg_441);
 		return ;
 	}
 	return ;
@@ -233,15 +226,12 @@ void	Server::modeCommand(Msg msg, Client &client)
 	{
 		return ;
 	}
-
-	// printMsg(msg); //debug
-
-	//find the current channel to apply the mode + flag
 	Channel* tarChannel = getChannel(msg.parameters[0]);
 	if (tarChannel == nullptr)
 	{
 		std::string message = ":" + msg.parameters[0] + " :No such channel\r\n";
 		send(client.getSocket(), message.c_str(), message.size(), 0);
+		LOG_SERVER(message);
 		return ;
 	}
 

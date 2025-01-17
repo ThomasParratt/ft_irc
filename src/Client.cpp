@@ -8,7 +8,6 @@ Client::Client(int socket, const std::string& password) :
 					_socket				(socket)
 {
 	//setHostIP();
-	// setPrefix();
 };
 
 std::string Client::getNickname()
@@ -159,9 +158,17 @@ void        Client::setOperatorStatus(bool value)
     freeaddrinfo(res);
 }*/
 
+/*
+joinChannel -
+
+the client will loop through their list of channels and check if the channel is already in the list. If it is, it will return. If it is not, it will add the channel to the list.
+
+leaveChannel -
+the client will loop through their list of channels and check if the channel is in the list. If it is, it will remove the channel from the list.
+*/
+
 void        Client::joinChannel(std::string channelName)
 {
-    /* how should we give the operator status? The first client that creates the channel should receive operatorStatus */
     std::vector<std::string>::iterator it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
     if (it != _channelsNames.end())
         return;
@@ -171,52 +178,25 @@ void        Client::joinChannel(std::string channelName)
         _channelsNames.push_back(channelName);
 
     }
-    std::cout << "Remaining channels:" << std::endl;
-    for (const auto& channel : _channelsNames)
-    {
-        std::cout << "Channel: " << channel << std::endl;
-    }
+    // //debug
+    // std::cout << "Remaining channels:" << std::endl;
+    // for (const auto& channel : _channelsNames)
+    // {
+    //     std::cout << "Channel: " << channel << std::endl;
+    // }
 }
 
 void       Client::leaveChannel(std::string channelName)
 {
     std::vector<std::string>::iterator it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
-    //debug
-    std::cout << "Debug: client leaving channel" << std::endl;
     if (it != _channelsNames.end())
     {
         _channelsNames.erase(it);
-        //debug
-        std::cout << "Debug: Client removed channel: " << channelName << std::endl;
     }
     //debug
-    std::cout << "Remaining channels:" << std::endl;
-    for (const auto& channel : _channelsNames)
-    {
-        std::cout << "Channel: " << channel << std::endl;
-    }
-    std::cout << "End of remaining channels" << std::endl;
+    // for (const auto& channel : _channelsNames)
+    // {
+    //     std::cout << "Channel: " << channel << std::endl;
+    // }
+    // std::cout << "End of remaining channels" << std::endl;
 }
-
-// void    Client::leaveChannel(std::string channelName)
-// {
-//     auto it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
-//     std::cout << "Client removing channel: " << channelName << std::endl;
-
-//     if (it != _channelsNames.end())
-//     {
-//         _channelsNames.erase(it);
-//         std::cout << this->getNickname() << "'s channel removed: " << channelName << std::endl;
-//     }
-//     else
-//     {
-//         std::cout << "Channel not found: " << channelName << std::endl;
-//     }
-
-//     std::cout << "Remaining channels:" << std::endl;
-//     for (const auto& channel : _channelsNames)
-//     {
-//         std::cout << "Channel: " << channel << std::endl;
-//     }
-//     std::cout << "End of remaining channels" << std::endl;
-// }
