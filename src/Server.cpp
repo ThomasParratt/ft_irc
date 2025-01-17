@@ -7,7 +7,9 @@ Server::Server(std::string password, int port) : _password(password), _welcomeSe
 
 Server::~Server()
 {
-
+	closeFDs();
+	std::cout << "Closing Server..." << std::endl;
+	std::cout << "Goodbye" << std::endl; 
 }
 
 /*
