@@ -34,10 +34,20 @@ class Server {
 		~Server();
 		int		serverInit();
 		int		setServHostName();
-		void	acceptClient();
-		void	serverLoop();
 
-		void	removeFromAll(int i);
+		void	serverLoop();
+		void	setUpServerPollfd();
+		void	checkServerSocket();
+		void	acceptClient();
+		void	disconnectClient(size_t& i, std::map<int, std::string> &clientBuffers);
+		void	closeFDs();
+
+		void	checkClientSockets(std::map<int, std::string> &clientBuffers);
+		void	printErrorBytesRead(int	bytesRead, int i);
+		void	processClientBuffer(size_t i, std::map<int, std::string> &clientBuffers);
+
+		void	removeClient(int bytesRead, size_t i, std::map<int, std::string> &clientBuffers);
+		void	removeUserFromAllChannels(int i);
 
 		int		makeSelectAndRunCommand(std::string buffer, Client &client);
 		void	makeMessages(std::vector<Msg> &msgs, std::string buffer);
