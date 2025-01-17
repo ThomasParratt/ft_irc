@@ -70,8 +70,8 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 	if (channel.isChannelFull() == true)
 	{
 		message = ":ircserv 471 " + client.getNickname() +  " " + msg.parameters[0] + " :Cannot join channel (+l) - channel is full, try again later\r\n";
-		
 		send(client.getSocket(), message.c_str(), message.size(), 0);
+		LOG_SERVER(message);
 		return (1) ;
 	}
 
@@ -81,6 +81,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 		{
 			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - no password entered\r\n";
 			send(client.getSocket(), message.c_str(), message.size(), 0);
+			LOG_SERVER(message);
 			return (1);
 		}
 
@@ -95,6 +96,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 		{
 			message = ":ircserv 475 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+k) - password incorrect\r\n";
 			send(client.getSocket(), message.c_str(), message.size(), 0);
+			LOG_SERVER(message);
 			return (1);
 		}
 	}
@@ -112,7 +114,7 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 
 		message  = ":ircserv 473 " + client.getNickname() + " " + msg.parameters[0] + " :Cannot join channel (+i) - you must be invited\r\n";
 		send(client.getSocket(), message.c_str(), message.size(), 0);
-
+		LOG_SERVER(message);
 		return (1);						//User was NOT Invited
 	}
 	return (0);

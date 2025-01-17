@@ -17,10 +17,9 @@ void Server::topicPrint(std::string channelName, Client &client)
 			}
             std::string topicMsg = ":ircserver 332 " + client.getNickname() + " " + channelName + " :" + channelTopic + "\r\n";
             send(client.getSocket(), topicMsg.c_str(), topicMsg.size(), 0);
+			LOG_SERVER(topicMsg);
 			time_t rawTime = stringToUnixTimeStamp(it->getTopicSetTime());
 			rawTime += 3600;
-			std::cout << "rawTime: " << rawTime << std::endl;
-			std::cout << "topicSetTime: " << it->getTopicSetTime() << std::endl;
             std::string topicSetByMsg = ":ircserver 333 " + client.getNickname() + " " + channelName + " " + it->getTopicSetter() + " " + std::to_string(rawTime) + "\r\n";
             send(client.getSocket(), topicSetByMsg.c_str(), topicSetByMsg.size(), 0);
             break;
@@ -30,15 +29,14 @@ void Server::topicPrint(std::string channelName, Client &client)
 	{
 		std::string noSuchChannel = ":ircserver 403 " + client.getNickname() + " " + channelName + " :No such channel\r\n";
 		send(client.getSocket(), noSuchChannel.c_str(), noSuchChannel.size(), 0);
+		LOG_SERVER(noSuchChannel);
 	}
 }
 
 int	Server::topicCommand(Msg msg, Client &client)
 {
-	printMsg(msg); // debug
 	if (msg.trailing_msg.size() == 0) 
 	{
-		std::cout << "debug: just /topic" << std::endl;
 		topicPrint(msg.parameters[0], client);
 	}
 	else
@@ -48,12 +46,14 @@ int	Server::topicCommand(Msg msg, Client &client)
 		{
 			std::string notice = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
 			send(client.getSocket(), notice.c_str(), notice.size(), 0);
+			LOG_SERVER(notice);
 			return (1);
 		}
 		if (_channel_names[i].getTopicRequiresOperator() && clientStatus(msg, client) == 0)
 		{
-			std::string errMsg = ":ircserver 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
-			send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+			std::string errMsg_482 = ":ircserver 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
+			send(client.getSocket(), errMsg_482.c_str(), errMsg_482.size(), 0);
+			LOG_SERVER(errMsg_482);
 			return (1);
 		}
 		_channel_names[i].setChannelTopic(msg.trailing_msg, client);

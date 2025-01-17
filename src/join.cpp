@@ -51,10 +51,13 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
     }
 	message = ":ircserver 353 " + client.getNickname() + " @ " + channelName + " :" + result + "\r\n";
 	send(client.getSocket(), message.c_str(), message.size(), 0);
+	LOG_SERVER(message);
 	message = ":ircserver 366 " + client.getPrefix() + " " + channelName + " :End of /NAMES list" + "\r\n";
 	send(client.getSocket(), message.c_str(), message.size(), 0);
+	LOG_SERVER(message);
 	message = ":ircserver 329 " + client.getNickname() + " " + channelName + " " + this->_channel_names[i].getChannelTime() + "\r\n";
 	send(client.getSocket(), message.c_str(), message.size(), 0);
+	LOG_SERVER(message);
 }
 
 void		Server::joinCommand(Msg msg, Client &client)
@@ -70,5 +73,5 @@ void		Server::joinCommand(Msg msg, Client &client)
 		addChannelUser(this->_channel_names[i], client, false);
 	}
 	joinChannelMessage(msg.parameters[0], client);
-	printChannels();
+	// printChannels();
 }

@@ -23,6 +23,7 @@ int		Server::commandSelector(Msg msg, Client &client)
 	{
 		std::string response = "PONG " + msg.parameters[0] + "\r\n";
         send(client.getSocket(), response.c_str(), response.size(), 0);
+		LOG_SERVER(response);
 	}
 	else if  (msg.command == "PRIVMSG")
 	{
@@ -60,6 +61,7 @@ int		Server::commandSelector(Msg msg, Client &client)
 	{
 		std::string response = "Please no Prefixes in Commands. Server No like.\r\n";
         send(client.getSocket(), response.c_str(), response.size(), 0);
+		LOG_SERVER(response);
 	}
 	else
 	{
