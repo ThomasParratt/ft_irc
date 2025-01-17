@@ -15,7 +15,7 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 			// channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
 			if (partOrKick == 1) //kick
 			{
-				std::string notice = ":ircserv NOTICE " + user + " :" + message + " " + channel + " \r\n";
+				std::string notice = ":ircserver NOTICE " + user + " :" + message + " " + channel + " \r\n";
 				send(socket, notice.c_str(), notice.size(), 0);
 				LOG_SERVER(notice);
 			} 
@@ -68,13 +68,13 @@ void		Server::kickCommand(Msg msg, Client &client)
 								}
 								else
 								{
-									std::string message_441 = ":ircserv 441 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :They aren't on that channel\r\n";
+									std::string message_441 = ":ircserver 441 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :They aren't on that channel\r\n";
 									send(client.getSocket(), message_441.c_str(), message_441.size(), 0);
 								}
 							}
 							else
 							{
-								std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + channel.getChannelName() + " :You're not a channel operator\r\n";
+								std::string message_482 = ":ircserver 482 " + client.getNickname() + " " + channel.getChannelName() + " :You're not a channel operator\r\n";
 								send(client.getSocket(), message_482.c_str(), message_482.size(), 0);
 							}
 						}
@@ -84,13 +84,13 @@ void		Server::kickCommand(Msg msg, Client &client)
 		}
 		else
 		{
-			std::string message_442 = ":ircserv 442 " + client.getNickname() + " " + msg.parameters[0] + " :You're not on that channel\r\n";
+			std::string message_442 = ":ircserver 442 " + client.getNickname() + " " + msg.parameters[0] + " :You're not on that channel\r\n";
 			send(client.getSocket(), message_442.c_str(), message_442.size(), 0);
 		}
 	}
 	else
 	{
-		std::string message_403 = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
+		std::string message_403 = ":ircserver 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
 		send(client.getSocket(), message_403.c_str(), message_403.size(), 0);
 	}
 }
