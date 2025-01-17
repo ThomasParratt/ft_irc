@@ -4,6 +4,7 @@ SRC			=	src/main.cpp \
 				src/Channel.cpp \
 				src/channelUtils.cpp \
 				src/Client.cpp \
+				src/clientLoop.cpp \
 				src/connectionMessages.cpp \
 				src/handleUserInput.cpp \
 				src/initializeMsg.cpp \
@@ -17,6 +18,9 @@ SRC			=	src/main.cpp \
 				src/part.cpp \
 				src/privmsg.cpp \
 				src/Server.cpp \
+				src/serverInit.cpp \
+				src/serverLoop.cpp \
+				src/timeUtils.cpp \
 				src/topic.cpp \
 				src/who.cpp \
 

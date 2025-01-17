@@ -73,7 +73,7 @@ int		Server::commandSelector(Msg msg, Client &client)
 
 /*
 	1. Parses Irssi protocol strings to Msg Object
-	2. Runs command through commandSelector
+	2. Runs command (in Msg) through commandSelector
 	(Can handle multiple commands sent at once.)
 */
 int    Server::makeSelectAndRunCommand(std::string messages, Client &client)
