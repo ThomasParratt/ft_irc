@@ -35,7 +35,6 @@ void Server::topicPrint(std::string channelName, Client &client)
 
 int	Server::topicCommand(Msg msg, Client &client)
 {
-	printMsg(msg); // debug
 	if (msg.trailing_msg.size() == 0) 
 	{
 		topicPrint(msg.parameters[0], client);
