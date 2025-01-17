@@ -5,7 +5,7 @@ int		Server::passwordCommand(Msg msg, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())
 	{
-		std::string message_464 = ":ircserv 464 " + client.getPrefix() + " :Password incorrect\r\n";
+		std::string message_464 = ":ircserver 464 " + client.getPrefix() + " :Password incorrect\r\n";
 		send(client.getSocket(), message_464.c_str(), message_464.size(), 0);
 		LOG_SERVER(message_464);
 		return (1);
@@ -34,13 +34,13 @@ int		Server::nicknameCommand(Msg msg, Client &client)
 		client.setNickname(msg.parameters[0]);
 	else if (msg.parameters[0].empty())
 	{
-		std::string message_431 = ":ircserv 431 " + client.getNickname() + " :No nickname given\r\n";
+		std::string message_431 = ":ircserver 431 " + client.getNickname() + " :No nickname given\r\n";
 		send(client.getSocket(), message_431.c_str(), message_431.size(), 0);
 		LOG_SERVER(message_431);
 	}
 	else if (this->nickClash(msg.parameters[0], client.getSocket()))
 	{
-		std::string message_433 = ":ircserv 433 " + msg.parameters[0] + " :" + msg.parameters[0] + "\r\n";
+		std::string message_433 = ":ircserver 433 " + msg.parameters[0] + " :" + msg.parameters[0] + "\r\n";
 		send(client.getSocket(), message_433.c_str(), message_433.size(), 0);
 		LOG_SERVER(message_433);
 	}
@@ -90,19 +90,19 @@ int		Server::userCommand(Msg msg, Client &client)
 		client.setHostname(msg.parameters[1]);
 		client.setHost(msg.parameters[2]);
 		client.setRealname(msg.trailing_msg);
-		std::string message_001 = ":ircserv 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + "\r\n";
+		std::string message_001 = ":ircserver 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + "\r\n";
 		send(client.getSocket(), message_001.c_str(), message_001.size(), 0);
 		LOG_SERVER(message_001);
-		std::string message_002 = ":ircserv 002 " + client.getNickname() + " :Your host is ircserv, running version 1.0\r\n";
+		std::string message_002 = ":ircserver 002 " + client.getNickname() + " :Your host is ircserv, running version 1.0\r\n";
 		send(client.getSocket(), message_002.c_str(), message_002.size(), 0);
 		LOG_SERVER(message_002);
-		std::string message_003 = ":ircserv 003 " + client.getNickname() + " :This server was created " + this->getStartTimeStr() + "\r\n";
+		std::string message_003 = ":ircserver 003 " + client.getNickname() + " :This server was created " + this->getStartTimeStr() + "\r\n";
 		send(client.getSocket(), message_003.c_str(), message_003.size(), 0);
 		LOG_SERVER(message_003);
-		std::string message_004 = ":ircserv 004 " + client.getNickname() + " ircserv 1.0 ro itkol\r\n";
+		std::string message_004 = ":ircserver 004 " + client.getNickname() + " ircserv 1.0 ro itkol\r\n";
 		send(client.getSocket(), message_004.c_str(), message_004.size(), 0);
 		LOG_SERVER(message_004);
-		std::string message_005 = ":ircserv 005 " + client.getNickname() + " CHANMODES=i,t,k,o,l :are supported by this server\r\n";
+		std::string message_005 = ":ircserver 005 " + client.getNickname() + " CHANMODES=i,t,k,o,l :are supported by this server\r\n";
 		send(client.getSocket(), message_005.c_str(), message_005.size(), 0);
 		LOG_SERVER(message_005);
 		if (this->nickClash(client.getNickname(), client.getSocket()))
@@ -122,7 +122,7 @@ int		Server::userCommand(Msg msg, Client &client)
 	}
 	else
 	{
-		std::string message_464 = ":ircserv 464 * :Password needed\r\n";
+		std::string message_464 = ":ircserver 464 * :Password needed\r\n";
 		send(client.getSocket(), message_464.c_str(), message_464.size(), 0);
 		LOG_SERVER(message_464);
 		return (1);

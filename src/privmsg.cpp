@@ -46,9 +46,7 @@ void		Server::directMessage(Msg msg, Client &client)
 	int other_client_socket = getClientSocket(other_client_user_name);
 	if (other_client_socket == -2)
 	{
-		std::string message = "ircserv: Nickname that you wish to DM Doesn't exist.\r\n";//TODO: This should be redirected to the DM window.
-		//14:49 -!- mananananananana: No such nick/channel 
-		//:server.name 401 <your_nickname> <target> :No such nick/channel [from gpt]
+		std::string message = ":ircserv 401 " + client.getNickname() + " " + msg.parameters[0] + " :No such nick/channel\r\n";
 		send(client.getSocket(), message.c_str(), message.size(), 0);
 		LOG_SERVER(message);
 	}
@@ -79,3 +77,4 @@ void		Server::privmsgCommand(Msg msg, Client &client)
 	}
 	return ;
 }
+

@@ -12,7 +12,6 @@ class Client
     private:
         std::string _nickname;
         std::string _username;
-        //std::string _hostIP;
         std::string _host;
         std::string _hostname;
         std::string _realname;
@@ -41,13 +40,11 @@ class Client
         bool        getWelcomeSent();
         bool        getOperatorStatus();
         int         getSocket();
-        //std::string getHostIP();
         std::string getPrefix();
 
         void        setNickname(std::string str);
         void        setUsername(std::string str);
         void        setPrefix(std::string str);
-        //void        setHostIP();
         void        setHost(std::string str);
         void        setRealname(std::string str);
         void        setHostname(std::string str);
