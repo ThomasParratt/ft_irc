@@ -73,10 +73,5 @@ class Channel
 		
 		void				addUserIntoChannelUsers(User new_user);
 		void				removeUserFromChannelUsers(int index);
-		
-
-
-
-
 
 };
