@@ -12,13 +12,15 @@ void	Server::whoCommand(Msg msg, Client &client)
         {
             if (it.getNickname() == channel_users[i].nickname)
             {
-                std::string message = ":ircserver 352 " + client.getNickname() + " " + msg.parameters[0] + " " + it.getUsername() + " " + it.getHostname() + " ircserver " + it.getNickname() + " :" + it.getRealname() + "\r\n";
-                send(client.getSocket(), message.c_str(), message.size(), 0);
+                std::string message_352 = ":ircserver 352 " + client.getNickname() + " " + msg.parameters[0] + " " + it.getUsername() + " " + it.getHostname() + " ircserver " + it.getNickname() + " :" + it.getRealname() + "\r\n";
+                send(client.getSocket(), message_352.c_str(), message_352.size(), 0);
+                LOG_SERVER(message_352);
             }
         }
     }
-    std::string message = ":ircserver 315 " + client.getNickname() + " " + msg.parameters[0] + " :End of /WHO list\r\n";
-    send(client.getSocket(), message.c_str(), message.size(), 0);
+    std::string message315 = ":ircserver 315 " + client.getNickname() + " " + msg.parameters[0] + " :End of /WHO list\r\n";
+    send(client.getSocket(), message315.c_str(), message315.size(), 0);
+    LOG_SERVER(message315);
 }
 
 // username hostname server nickname flags hopCount realName

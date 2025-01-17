@@ -16,6 +16,7 @@ void	Server::userMessageToChannel(Channel channel, int sender_socket, std::strin
 		if (socket != -2 && socket != sender_socket)
 		{
 			send(socket, message.c_str(), message.size(), 0);
+			LOG_SERVER(message);
 		}
 	}
 }
@@ -30,6 +31,7 @@ void		Server::channelMessage(Msg msg, Client &client)
 	}
 	else
 	{
+		// 17_1 so what should we do there? in what scenario would the channel not exist?
 		std::cout << "Channel to send message to not found" << std::endl;	//A thought --- maybe we might want a message for a case where Channel doesn't exist.
 	}
 }
@@ -46,11 +48,13 @@ void		Server::directMessage(Msg msg, Client &client)
 	{
 		std::string message = ":ircserv 401 " + client.getNickname() + " " + msg.parameters[0] + " :No such nick/channel\r\n";
 		send(client.getSocket(), message.c_str(), message.size(), 0);
+		LOG_SERVER(message);
 	}
 	else
 	{
 		std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_servHostName + " " + msg.command + " " + msg.parameters[0] + " "  + ":" +  msg.trailing_msg + "\r\n";
 		send(other_client_socket, message.c_str(), message.size(), 0);
+		LOG_SERVER(message);
 	}
 }
 /*
