@@ -127,11 +127,13 @@ int		Server::channelChecks(Msg msg, Client &client)
 	}
 	if (clientStatus(msg, client) == 0)	//Check if not a channel operator
 	{
-		std::string errMsg = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
-		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
-		LOG_SERVER(errMsg);
-		return (1);
-
+		if (msg.parameters[1] != "b")
+		{
+			std::string errMsg = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
+			send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+			LOG_SERVER(errMsg);
+			return (1);
+		}
 	}
 	return (0);
 }
@@ -226,10 +228,6 @@ void	Server::modeCommand(Msg msg, Client &client)
 	{
 		return ;
 	}
-
-	// printMsg(msg); //debug
-
-	//find the current channel to apply the mode + flag
 	Channel* tarChannel = getChannel(msg.parameters[0]);
 	if (tarChannel == nullptr)
 	{
