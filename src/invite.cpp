@@ -9,29 +9,32 @@ void	Server::inviteCommand(Msg msg, Client &client)
 		{
 			for (auto &channel : _channel_names)
 			{
-				for (auto &inviter : channel.getChannelUsers())
+				if (channel.getChannelName() == msg.parameters[1])
 				{
-					if ((inviter.nickname == client.getNickname()))
+					for (auto &inviter : channel.getChannelUsers())
 					{
-						if (inviter.operator_permissions)
+						if ((inviter.nickname == client.getNickname()))
 						{
-							if (!userExists(msg.parameters[0], msg.parameters[1]))
+							if (inviter.operator_permissions)
 							{
-								std::string message_341 = ":ircserv 341 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
-								int socket = getClientSocket(msg.parameters[0]);
-								send(socket, message_341.c_str(), message_341.size(), 0);
-								channel.addUserToInviteList(msg.parameters[0]);
+								if (!userExists(msg.parameters[0], msg.parameters[1]))
+								{
+									std::string message_341 = ":ircserv 341 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + "\r\n";
+									int socket = getClientSocket(msg.parameters[0]);
+									send(socket, message_341.c_str(), message_341.size(), 0);
+									channel.addUserToInviteList(msg.parameters[0]);
+								}
+								else
+								{
+									std::string message_443 = ":ircserv 443 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :is already on channel\r\n";
+									send(client.getSocket(), message_443.c_str(), message_443.size(), 0);
+								}
 							}
 							else
 							{
-								std::string message_443 = ":ircserv 443 " + client.getNickname() + " " + msg.parameters[0] + " " + msg.parameters[1] + " :is already on channel\r\n";
-								send(client.getSocket(), message_443.c_str(), message_443.size(), 0);
+								std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[1] + " :You're not a channel operator\r\n";
+								send(client.getSocket(), message_482.c_str(), message_482.size(), 0);
 							}
-						}
-						else
-						{
-							std::string message_482 = ":ircserv 482 " + client.getNickname() + " " + msg.parameters[1] + " :You're not a channel operator\r\n";
-							send(client.getSocket(), message_482.c_str(), message_482.size(), 0);
 						}
 					}
 				}
