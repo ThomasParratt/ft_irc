@@ -46,7 +46,7 @@ void		Server::directMessage(Msg msg, Client &client)
 	int other_client_socket = getClientSocket(other_client_user_name);
 	if (other_client_socket == -2)
 	{
-		std::string message = ":ircserv 401 " + client.getNickname() + " " + msg.parameters[0] + " :No such nick/channel\r\n";
+		std::string message = ":ircserver 401 " + client.getNickname() + " " + msg.parameters[0] + " :No such nick/channel\r\n";
 		send(client.getSocket(), message.c_str(), message.size(), 0);
 		LOG_SERVER(message);
 	}
