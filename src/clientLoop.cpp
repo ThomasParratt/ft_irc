@@ -19,7 +19,6 @@ void Server::removeUserFromAllChannels(int i)
 						std::string message = "REMOVE " + user.nickname + " from " + channel.getChannelName();
 						std::cout << "This user being removed: " << userPrefix << std::endl;
 						std::string quitMessage = ":" + userPrefix + " QUIT " + ":Client has quit\r\n";
-						// std::string quitMessage = ":" + user.nickname + " QUIT " + ":Client has quit\r\n";
 						broadcastToChannel(this->_channel_names[j], quitMessage, client, 1);
 						removeUser(user.nickname, channel.getChannelName(), message, 2);
 						client.leaveChannel(channel.getChannelName());
@@ -72,8 +71,8 @@ void	Server::processClientBuffer(size_t i, std::map<int, std::string> &clientBuf
 	{
 		std::string message = clientBuffer.substr(0, pos);				// Extract the complete message
 		clientBuffer.erase(0, pos + 1);									// Remove the processed message
-
-		std::cout << "Message received from socket " << _pollfds[i].fd << ": " << message << std::endl;
+		LOG_CLIENT(message);
+		// std::cout << "Message received from socket " << _pollfds[i].fd << ": " << message << std::endl;
 
 		for (auto &client : _clients)
 		{

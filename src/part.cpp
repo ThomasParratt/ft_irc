@@ -1,7 +1,5 @@
 #include "Server.hpp"
 
-// added split because I realized if we input /part #chn3,#chn4 it will not work
-//para[0] = #chn3,#chn4 instead of para[0] = #chn3 & para[1] = #chn4
 std::vector<std::string> split(std::string str, std::string token)
 {
 	std::vector<std::string>result;
@@ -12,7 +10,8 @@ std::vector<std::string> split(std::string str, std::string token)
 		{
 			result.push_back(str.substr(0, index));
 			str = str.substr(index + token.size());
-			if (str.size() == 0) result.push_back(str);
+			if (str.size() == 0) 
+				result.push_back(str);
 		}
 		else
 		{
