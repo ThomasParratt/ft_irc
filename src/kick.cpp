@@ -1,25 +1,25 @@
 #include "Server.hpp"
 #include "Msg.hpp"
 
+/*
+	Removes user from Channel Users in a specified channel.
+*/
 int		Server::removeUser(std::string user, std::string channel, std::string message, int partOrKick)
 {
 	int i = getChannelIndex(channel, _channel_names);
 	for (size_t j = 0 ; j < sizeof(_channel_names[i].getChannelUsers()) ; j++)
 	{
-		//if (channel_names[i].channel_users[j].nickname == user)
 		if (_channel_names[i].getChannelUserStruct(j).nickname == user)
 		{
 			int socket = getClientSocket(_channel_names[i].getChannelUserStruct(j).nickname);
-			//channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
 			_channel_names[i].removeUserFromChannelUsers(j);
-			// channel_names[i].channel_users.erase(channel_names[i].channel_users.begin() + j);
-			if (partOrKick == 1) //kick
+			if (partOrKick == 1) 												//kick
 			{
 				std::string notice = ":ircserver NOTICE " + user + " :" + message + " " + channel + " \r\n";
 				send(socket, notice.c_str(), notice.size(), 0);
 				LOG_SERVER(notice);
 			} 
-			else if (partOrKick == 0) //part
+			else if (partOrKick == 0) 											//part
 			{
 				send(socket, message.c_str(), message.size(), 0);
 				LOG_SERVER(message);
@@ -30,6 +30,9 @@ int		Server::removeUser(std::string user, std::string channel, std::string messa
 	return (0);
 }
 
+/*
+	Kicks user out of specified channel.
+*/
 void		Server::kickCommand(Msg msg, Client &client) 
 {
 	if (channelExists(msg.parameters[0]))
@@ -53,8 +56,7 @@ void		Server::kickCommand(Msg msg, Client &client)
 									broadcastToChannel(_channel_names[i], kick, client, 0);
 									removeUser(msg.parameters[1], msg.parameters[0], "You have been kicked from", 1);
 									client.leaveChannel(msg.parameters[0]);
-									// if (!channel.invited.empty())//channel.getInvitedList()
-									if (sizeof(channel.getInvitedList()) > 0)
+									if (sizeof(channel.getInvitedList()) > 0)								//Remove from invite list
 									{
 										for (size_t i = 0; i < sizeof(channel.getInvitedList()); i++)
 										{

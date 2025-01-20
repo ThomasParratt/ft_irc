@@ -6,9 +6,6 @@ struct User
 {
 	std::string nickname;
 	bool		operator_permissions;
-	bool		topicSetter;
-	bool	    invited;
-	int 		socket; //user socket -> Is this needed?
 };
 
 class Channel
@@ -22,9 +19,7 @@ class Channel
 		std::string		_creationTime;
 
 		int				_user_limit;
-		int 			_OpCount;
-		int				_totalCount;
-		bool			_keyRequired; // I added this as an extra safe for the channel
+		bool			_keyRequired;
 		bool			_invite_only;
 		bool			_topic_requires_operator;
 
@@ -37,14 +32,6 @@ class Channel
 		Channel(std::string name);
 		~Channel(){};
 
-		bool				isChannelFull();
-		bool				isChannelInviteOnly() {return _invite_only; };
-		bool				doesChannelHavePassword();
-
-		void 				setChannelTopic(std::string new_topic, Client &client);	
-		int					getNumberOfChannelUsers();
-		int					getNumberOfChannelOperators();
-	
 		//Getters
 		std::string			getChannelName(){return _name;}
 		std::string			getChannelKey(){return _channel_key;}
@@ -54,23 +41,35 @@ class Channel
 		std::string			getChannelTime(){return _creationTime;}
 
 		int					getUserLimit(){return _user_limit;}
-		int					getOpCount();
-		int					getTotalCount();
 		bool				getTopicRequiresOperator(){return _topic_requires_operator;}
 		std::vector<std::string>&	getInvitedList(){return _invited;};
 		std::vector<User>&	getChannelUsers(){return _channel_users;}
+
+		//More sophisticated Getters
 		User&				getChannelUserStruct(int index);
+		int					getNumberOfChannelUsers();		
+		int					getOpCount();
+		int					getTotalCount();	
 
-		std::string			getInvitedName(int index);
-		void				addUserToInviteList(std::string nickname);
-		void				uninviteUser(int index);
-
+		//Setters
 		void				setChannelKey(std::string key);
+		void 				setChannelTopic(std::string new_topic, Client &client);	
 		void				setUserLimit(int userLimit);
 		void				setKeyRequired(bool boolean);
 		void				setInviteOnly(bool boolean);
 		void				setTopicRequiresOperator(bool boolean);
-		
+
+		//Channel checks
+		bool				isChannelFull();
+		bool				isChannelInviteOnly() {return _invite_only; };
+		bool				doesChannelHavePassword();
+
+		//Invite methods
+		std::string			getInvitedName(int index);
+		void				addUserToInviteList(std::string nickname);
+		void				uninviteUser(int index);
+
+		//Add / Remove user from Channel		
 		void				addUserIntoChannelUsers(User new_user);
 		void				removeUserFromChannelUsers(int index);
 

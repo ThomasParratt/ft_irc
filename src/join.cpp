@@ -21,6 +21,7 @@ void	Server::addChannelUser(Channel &channel, Client &client, bool operator_perm
 void	Server::createChannel(Msg msg, Client &client)
 {
 	Channel		new_channel(msg.parameters[0]);
+
 	addChannelUser(new_channel, client, true);
 	this->_channel_names.push_back(new_channel);
 }
@@ -31,6 +32,7 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 
 	std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + " JOIN " + channelName + "\r\n";
 	broadcastToChannel(this->_channel_names[i], message, client, 0);
+
 	message = ":ircserver MODE " + channelName + " +t\r\n";
 	send(client.getSocket(), message.c_str(), message.size(), 0);
 
@@ -39,7 +41,7 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 		topicPrint(channelName, client);
 
 	std::string	result;
-    const std::vector<User>& channel_users = _channel_names[i].getChannelUsers();  // Using the getter to access the users list
+    const std::vector<User>& channel_users = _channel_names[i].getChannelUsers();
 
     for (size_t i = 0; i < channel_users.size(); ++i) 
 	{
@@ -49,7 +51,7 @@ void Server::joinChannelMessage(std::string channelName, Client &client)
 			result += channel_users[i].nickname;
 
 		if (i != channel_users.size() - 1) 
-			result += " ";  // Add a space between names besides the last one
+			result += " ";  // Add a space between names except the last one
     }
 	message = ":ircserver 353 " + client.getNickname() + " @ " + channelName + " :" + result + "\r\n";
 	send(client.getSocket(), message.c_str(), message.size(), 0);
@@ -66,14 +68,13 @@ void		Server::joinCommand(Msg msg, Client &client)
 {
 	int i = getChannelIndex(msg.parameters[0], this->_channel_names);
 
-	if (i == -1) //No channel found
+	if (i == -1)	//No channel found
 		createChannel(msg, client);
-	else //Join channel
+	else 			//Join channel
 	{
 		if (channelJoinChecks(this ->_channel_names[i], msg, client))
 			return ;
 		addChannelUser(this->_channel_names[i], client, false);
 	}
 	joinChannelMessage(msg.parameters[0], client);
-	// printChannels();
 }

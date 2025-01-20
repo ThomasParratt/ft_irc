@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "Msg.hpp"
 
 void	Server::inviteCommand(Msg msg, Client &client)
 {
