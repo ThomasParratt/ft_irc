@@ -56,8 +56,9 @@ void Server::serverLoop()
 	{
 		if (poll(_pollfds.data(), _pollfds.size(), -1) == -1)		//Check file descriptors
 		{
-			std::cerr << "Error polling sockets " << strerror(errno) << std::endl;
-			break;
+			if (errno != EINTR) //no signal received
+				std::cerr << "Error polling sockets " << strerror(errno) << std::endl;
+			break ;
 		}
 		checkServerSocket();
 
