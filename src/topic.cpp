@@ -44,7 +44,7 @@ int	Server::topicCommand(Msg msg, Client &client)
 		int i = getChannelIndex(msg.parameters[0], _channel_names);
 		if (i == -1)
 		{
-			std::string notice = ":ircserv 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
+			std::string notice = ":ircserver 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
 			send(client.getSocket(), notice.c_str(), notice.size(), 0);
 			LOG_SERVER(notice);
 			return (1);
