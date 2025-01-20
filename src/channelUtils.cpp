@@ -40,6 +40,12 @@ int		Server::userExists(std::string user, std::string channel)
 	return (0);
 }
 
+/*
+	Checks if channel exists,
+	Returns
+	1 - if exists
+	0 - if it doesn't exist
+*/
 int		Server::channelExists(std::string channel)
 {
 	for (auto &it : _channel_names)

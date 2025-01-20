@@ -1,22 +1,6 @@
 
 #include "Server.hpp"
 
-int		Channel::getNumberOfChannelOperators()			// Delete? - function not used anywhere.
-{
-	std::vector<User> channel_users = this -> getChannelUsers();
-
-	int num_of_channel_operators = 0;
-
-	for (size_t i = 0; i < channel_users.size(); i++)
-	{
-		if (channel_users[i].operator_permissions == true)
-		{
-			num_of_channel_operators++;
-		}
-	}
-	return (num_of_channel_operators);
-}
-
 int		Channel::getNumberOfChannelUsers()
 {
 	std::vector<User>	channel_users;
@@ -61,12 +45,16 @@ bool		Channel::isChannelFull()
 	}
 }
 
+/*
+	Checks if
+	i. Channel is full
+	ii. Channel has password
+	iii. User is invited
+*/
 int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 {
 	std::string message;
 	
-	// checkIfChannelFull()
-
 	if (channel.isChannelFull() == true)
 	{
 		message = ":ircserver 471 " + client.getNickname() +  " " + msg.parameters[0] + " :Cannot join channel (+l) - channel is full, try again later\r\n";
@@ -86,8 +74,6 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 		}
 
 		std::string 	password = msg.parameters[1];
-		// std::cout << "Password: " << password << std::endl;						//debug
-		// std::cout << "Channel Key: " << channel.getChannelKey() << std::endl;	//debug
 		if (channel.getChannelKey() == password) 			//Password Correct
 		{
 
@@ -103,7 +89,6 @@ int		Server::channelJoinChecks(Channel channel, Msg msg, Client &client)
 
 	if (channel.isChannelInviteOnly() == true)
 	{
-
 		for (auto &it : channel.getInvitedList())
 		{
 			if (it == client.getNickname())

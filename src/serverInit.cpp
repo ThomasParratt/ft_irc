@@ -38,7 +38,6 @@ int Server::serverInit()
 		return (-3);
 	}
 
-	_startTime = time(nullptr); 											// saves the Server starting time
 	_startTimeStr = getCurrentTime();
 	std::cout << "Server started at " << _startTimeStr << std::endl;
 

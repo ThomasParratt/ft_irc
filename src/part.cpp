@@ -1,10 +1,8 @@
 #include "Server.hpp"
 
-// added split because I realized if we input /part #chn3,#chn4 it will not work
-//para[0] = #chn3,#chn4 instead of para[0] = #chn3 & para[1] = #chn4
 std::vector<std::string> split(std::string str, std::string token)
 {
-	std::vector<std::string>result;
+	std::vector<std::string> result;
 	while (str.size())
 	{
 		size_t index = str.find(token);
@@ -50,7 +48,7 @@ void		Server::partCommand(Msg msg, Client &client)
 					else
 						part = ":" + client.getPrefix() + " PART " + channel.getChannelName() + "\r\n";
 					broadcastToChannel(_channel_names[j], part, client, 1);
-					removeUser(client.getNickname(), channel.getChannelName(), part, 0);
+					removeUser(client.getNickname(), channel.getChannelName(), part, 0);	//Removes user if it has no users
 					client.leaveChannel(channel.getChannelName());
 					break;
 				} else {
@@ -70,7 +68,7 @@ void		Server::partCommand(Msg msg, Client &client)
 	}
 	for (auto &channel : _channel_names)
 	{
-		if (channel.getChannelUsers().size() == 0)
+		if (channel.getChannelUsers().size() == 0)				//Removes channel if it has no users
 		{
 			int i = getChannelIndex(channel.getChannelName(), _channel_names);
 			_channel_names.erase(_channel_names.begin() + i);

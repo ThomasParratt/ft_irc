@@ -1,6 +1,11 @@
 #include "Server.hpp"
 
-
+/*
+	Check if password correct.
+	Return
+	1 - if incorrect
+	0 - if correct
+*/
 int		Server::passwordCommand(Msg msg, Client &client)
 {
 	if (msg.parameters[0] != client.getPassword())
@@ -14,9 +19,14 @@ int		Server::passwordCommand(Msg msg, Client &client)
 	return (0);
 }
 
+/*
+	Check if nickname is used by another client.
+	Return
+	1 - if taken
+	0 - if nickname available	
+*/
 int		Server::nickClash(const std::string& nickname, int socket)
 {
-    // Check if any other client has the same nickname
     for (auto &client : _clients) 
     {
 		if (client.getSocket() != socket)
@@ -28,63 +38,75 @@ int		Server::nickClash(const std::string& nickname, int socket)
     return (0); // Nickname is available
 }
 
+/*
+	Changes nickname of user.
+*/
 int		Server::nicknameCommand(Msg msg, Client &client)
 {
-	if (!client.getWelcomeSent() && client.getNickname().empty())
+	if (!client.getWelcomeSent() && client.getNickname().empty())				//a. If New User
 		client.setNickname(msg.parameters[0]);
-	else if (msg.parameters[0].empty())
+	else if (msg.parameters[0].empty())											//b. If No nickname specified in command
 	{
 		std::string message_431 = ":ircserver 431 " + client.getNickname() + " :No nickname given\r\n";
 		send(client.getSocket(), message_431.c_str(), message_431.size(), 0);
 		LOG_SERVER(message_431);
 	}
-	else if (this->nickClash(msg.parameters[0], client.getSocket()))
+	else if (this->nickClash(msg.parameters[0], client.getSocket()))			//c. If nickname is already in use by other client
 	{
 		std::string message_433 = ":ircserver 433 " + msg.parameters[0] + " :" + msg.parameters[0] + "\r\n";
 		send(client.getSocket(), message_433.c_str(), message_433.size(), 0);
 		LOG_SERVER(message_433);
 	}
-	else
+	else																		//d. Change nickname
 	{
-		//Change nickname 
 		std::string old_nick = client.getNickname();
-		client.setNickname(msg.parameters[0]);
+		client.setNickname(msg.parameters[0]);														//i. set new nick
+
 		std::string new_nick = client.getNickname();
 		std::string old_prefix = old_nick + "!" + client.getUsername() + "@" + client.getHost();
 		std::string new_prefix = new_nick + "!" + client.getUsername() + "@" + client.getHost();
-		client.setPrefix(new_prefix);
-		std::string nick_message = ":" + old_prefix + " NICK :" + new_nick + "\r\n";
-		// std::string nick_message = " NICK :" + new_nick + "\r\n";
-		//prefix change
+		client.setPrefix(new_prefix);																//ii. set new prefix
+		std::string nick_message = ":" + old_prefix + " NICK :" + new_nick + "\r\n";				//iii. Inform user of nick change
 		send(client.getSocket(), nick_message.c_str(), nick_message.size(), 0);
 		LOG_SERVER(nick_message);
-		//change channel users name to new nick
-		for (auto &channel : _channel_names) 
+	
+		for (auto &channel : _channel_names) 											//iv. a) [in all channels] - change channel users name to new nick 
 		{
 			bool userFound = false;
 			for (auto &user : channel.getChannelUsers())
 			{
 				if (user.nickname == old_nick)
 				{
-					user.nickname = new_nick;
+					user.nickname = new_nick;											//iv. b) Change to new nick
 					userFound = true;
 				}
 			}
 			if (userFound)
 			{
 				std::string message = ":" + old_prefix + " NICK :" + new_nick + "\r\n";
-				broadcastToChannel(channel, message, client, 1);
+				broadcastToChannel(channel, message, client, 1);						//iv. c) Broadcast new nick
 				break;
 			}
-			// printChannelUsers(channel);
 		}
 	}
 	return (0);
 }
 
+/*
+	1. Checks if user is authenticated (i.e. password check).
+
+	2. Sets
+	-Username
+	-Hostname
+	-Host
+	-Real name
+	(- also client prefix)
+	
+	3. Sends welcome messages.
+*/
 int		Server::userCommand(Msg msg, Client &client)
 {
-	if (client.getPasswordChecked())
+	if (client.getPasswordChecked())			//Password is already set
 	{
 		client.setUsername(msg.parameters[0]);
 		client.setHostname(msg.parameters[1]);
@@ -114,13 +136,13 @@ int		Server::userCommand(Msg msg, Client &client)
 			send(client.getSocket(), nick_message.c_str(), nick_message.size(), 0);
 			LOG_SERVER(nick_message);
 		}
-		// set client prefix
-		std::string setPrefix = client.getNickname() + "!" + client.getUsername() + "@" + client.getHost();
+
+		std::string setPrefix = client.getNickname() + "!" + client.getUsername() + "@" + client.getHost(); 		// set client prefix
 		client.setPrefix(setPrefix);
 		client.setWelcomeSent(true);
 		return (0);
 	}
-	else
+	else										//Password is NOT set
 	{
 		std::string message_464 = ":ircserver 464 * :Password needed\r\n";
 		send(client.getSocket(), message_464.c_str(), message_464.size(), 0);

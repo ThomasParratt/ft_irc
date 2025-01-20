@@ -1,6 +1,7 @@
 
 #include "Server.hpp"
 
+
 void	printMsg(Msg msg)									//Debug function
 {
 	std::cout << "Command: " << msg.command << std::endl;

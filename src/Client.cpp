@@ -7,7 +7,7 @@ Client::Client(int socket, const std::string& password) :
 					_welcomeSent		(false),
 					_socket				(socket)
 {
-	// setPrefix();
+
 };
 
 std::string Client::getNickname()
@@ -37,14 +37,13 @@ std::string Client::getRealname()
 
 std::string Client::getHostname()
 {
-    return(_hostname);
+	return(_hostname);
 }
 
 std::string Client::getPrefix()
 {
     return _prefix;
 }
-
 
 bool        Client::getPasswordChecked()
 {
@@ -54,11 +53,6 @@ bool        Client::getPasswordChecked()
 bool        Client::getWelcomeSent()
 {
     return(_welcomeSent);
-}
-
-bool       Client::getOperatorStatus()
-{
-    return(_operatorStatus);
 }
 
 int         Client::getSocket()
@@ -111,41 +105,28 @@ void        Client::setWelcomeSent(bool value)
     _welcomeSent = value;
 }
 
-void        Client::setOperatorStatus(bool value)
-{
-    _operatorStatus = value;
-}
 
 void        Client::joinChannel(std::string channelName)
 {
     std::vector<std::string>::iterator it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
-    if (it != _channelsNames.end())
-        return;
-    else
-    {
-        /* check if channel is invite only, check the channel size, check if channel requires a password*/
-        _channelsNames.push_back(channelName);
 
+    if (it != _channelsNames.end())		//If channel found
+        return;
+    else								//If channel NOT found
+    {
+        _channelsNames.push_back(channelName);
     }
-    // //debug
-    // std::cout << "Remaining channels:" << std::endl;
-    // for (const auto& channel : _channelsNames)
-    // {
-    //     std::cout << "Channel: " << channel << std::endl;
-    // }
 }
 
+/*
+    Removes from a list of channels stored on Client.
+*/
 void       Client::leaveChannel(std::string channelName)
 {
-    std::vector<std::string>::iterator it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
-    if (it != _channelsNames.end())
-    {
-        _channelsNames.erase(it);
-    }
-    //debug
-    // for (const auto& channel : _channelsNames)
-    // {
-    //     std::cout << "Channel: " << channel << std::endl;
-    // }
-    // std::cout << "End of remaining channels" << std::endl;
+	std::vector<std::string>::iterator it = std::find(_channelsNames.begin(), _channelsNames.end(), channelName);
+
+	if (it != _channelsNames.end())		//If channel found
+	{
+		_channelsNames.erase(it);
+	}
 }
