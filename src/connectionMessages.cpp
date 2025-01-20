@@ -93,7 +93,7 @@ int		Server::userCommand(Msg msg, Client &client)
 		std::string message_001 = ":ircserver 001 " + client.getNickname() + " :Welcome to the IRC network " + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + "\r\n";
 		send(client.getSocket(), message_001.c_str(), message_001.size(), 0);
 		LOG_SERVER(message_001);
-		std::string message_002 = ":ircserver 002 " + client.getNickname() + " :Your host is ircserv, running version 1.0\r\n";
+		std::string message_002 = ":ircserver 002 " + client.getNickname() + " :Your host is ircserver, running version 1.0\r\n";
 		send(client.getSocket(), message_002.c_str(), message_002.size(), 0);
 		LOG_SERVER(message_002);
 		std::string message_003 = ":ircserver 003 " + client.getNickname() + " :This server was created " + this->getStartTimeStr() + "\r\n";

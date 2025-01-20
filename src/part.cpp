@@ -27,7 +27,7 @@ void		Server::partCommand(Msg msg, Client &client)
 	std::vector<std::string> channels = split(msg.parameters[0], ",");
 	if (channels.size() == 0)
 	{
-		std::string notice_461 = ":ircserv 461 " + client.getNickname() + " PART :Not enough parameters\r\n";
+		std::string notice_461 = ":ircserver 461 " + client.getNickname() + " PART :Not enough parameters\r\n";
 		send(client.getSocket(), notice_461.c_str(), notice_461.size(), 0);
 		LOG_SERVER(notice_461);
 		return ;
@@ -53,7 +53,7 @@ void		Server::partCommand(Msg msg, Client &client)
 					client.leaveChannel(channel.getChannelName());
 					break;
 				} else {
-					std::string notice_442 = ":ircserv 442 " + client.getNickname() + " " + channels[i] + " :You're not on that channel\r\n";
+					std::string notice_442 = ":ircserver 442 " + client.getNickname() + " " + channels[i] + " :You're not on that channel\r\n";
 					send(client.getSocket(), notice_442.c_str(), notice_442.size(), 0);
 					LOG_SERVER(notice_442);
 				}
@@ -62,7 +62,7 @@ void		Server::partCommand(Msg msg, Client &client)
 		}
 		if (!channelExists)
 		{
-			std::string notice_403 = ":ircserv 403 " + client.getNickname() + " " + channels[i] + " :No such channel\r\n";
+			std::string notice_403 = ":ircserver 403 " + client.getNickname() + " " + channels[i] + " :No such channel\r\n";
 			send(client.getSocket(), notice_403.c_str(), notice_403.size(), 0);
 			LOG_SERVER(notice_403);
 		}
