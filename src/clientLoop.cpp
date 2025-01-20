@@ -68,6 +68,8 @@ void	Server::processClientBuffer(size_t i, std::map<int, std::string> &clientBuf
 	size_t		pos;
 	bool		clientDisconnected = false;
 
+	//std::cout << "clientbuffer = " << clientBuffer << std::endl;
+	
 	while ((pos = clientBuffer.find('\n')) != std::string::npos)
 	{
 		std::string message = clientBuffer.substr(0, pos);				// Extract the complete message

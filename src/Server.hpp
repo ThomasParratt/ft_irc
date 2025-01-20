@@ -16,7 +16,6 @@ extern bool servRunning;
 class Server {
 	private:
 		std::string _password;
-		std::string _servHostName;
 		sockaddr_in _serverAddr;
 
 		int			_port;
@@ -33,7 +32,6 @@ class Server {
 
 		//Server Init
 		int		serverInit();
-		int		setServHostName();
 
 		//Server Getter
 		std::string getStartTimeStr() { return _startTimeStr; }
@@ -111,6 +109,7 @@ class Server {
 
 		//Clean up
 		void	closeFDs();
+
 };
 
 	int			getChannelIndex(std::string channel_name, std::vector<Channel> channel_names);

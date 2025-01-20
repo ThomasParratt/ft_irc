@@ -105,6 +105,7 @@ void	Server::makeMessages(std::vector<Msg> &msgs, std::string buffer)
 	}
 	else		//handles case when there is no '\r' return but there is '\n' (i.e. NetCat)
 	{
+		buffer += "\n"; // because the new line is missing
 		while ((end = buffer.find("\n", start)) != std::string::npos)
 		{
 			length = end - start;
