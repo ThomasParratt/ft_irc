@@ -26,7 +26,7 @@ void		Server::channelMessage(Msg msg, Client &client)
 	int i = getChannelIndex(msg.parameters[0], _channel_names);
 	if (i != -1)
 	{
-		std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_servHostName + " " + msg.command + " " + msg.parameters[0] + " "  + ":" +  msg.trailing_msg + "\r\n";
+		std::string message = ":" + client.getPrefix() + " " + msg.command + " " + msg.parameters[0] + " "  + ":" +  msg.trailing_msg + "\r\n";
 		userMessageToChannel(_channel_names[i], client.getSocket(), message);			
 	}
 	else
@@ -52,7 +52,7 @@ void		Server::directMessage(Msg msg, Client &client)
 	}
 	else
 	{
-		std::string message = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_servHostName + " " + msg.command + " " + msg.parameters[0] + " "  + ":" +  msg.trailing_msg + "\r\n";
+		std::string message = ":" + client.getPrefix() + " " + msg.command + " " + msg.parameters[0] + " "  + ":" +  msg.trailing_msg + "\r\n";
 		send(other_client_socket, message.c_str(), message.size(), 0);
 		LOG_SERVER(message);
 	}

@@ -17,7 +17,6 @@ class Server {
 	private:
 		std::string _password;
 		std::string _nickname;
-		std::string _servHostName;
 		sockaddr_in _serverAddr;
 
 		bool		_welcomeSent;
@@ -34,7 +33,6 @@ class Server {
 		Server(std::string password, int port);
 		~Server();
 		int		serverInit();
-		int		setServHostName();
 
 		void	serverLoop();
 		void	setUpServerPollfd();
@@ -104,7 +102,6 @@ class Server {
 		int			getServerSocket() { return _serverSocket; }
 		bool		getWelcomeSent() { return _welcomeSent; }
 		std::string getPassword() { return _password; }
-		std::string getServHostName() { return _servHostName; }
 		std::string getStartTimeStr() { return _startTimeStr; }
 };
 
