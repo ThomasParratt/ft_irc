@@ -8,7 +8,7 @@ void Server::acceptClient()
 		std::cerr << "Error accepting connection" << strerror(errno) << std::endl;
 		return;
 	}
-	pollfd clientPollfd;
+	pollfd clientPollfd = {};
 	clientPollfd.fd = clientSocket;
 	clientPollfd.events = POLLIN | POLLOUT | POLLERR;
 	_pollfds.push_back(clientPollfd);
