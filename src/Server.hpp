@@ -4,6 +4,7 @@
 #include <map>			//std::map()
 #include <poll.h>		// pollfd
 #include <csignal>		// signal(), SIGINT
+#include <fcntl.h>
 
 #include "Channel.hpp"
 #include "Msg.hpp"
