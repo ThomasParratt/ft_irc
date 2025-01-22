@@ -24,7 +24,8 @@ u_int16_t	getAndCheckPortValue(std::string port_string)
 
 int		passwordCheck(std::string password)
 {
-	if (size_t pos = password.find(' ') != std::string::npos)
+	size_t pos = password.find(' ');
+	if (pos != std::string::npos)
 	{
 		std::cout << "Error: Password can't contain spaces." << std::endl;
 		return (1);
