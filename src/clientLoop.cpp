@@ -122,3 +122,5 @@ void	Server::checkClientSockets(std::map<int, std::string> &clientBuffers)
 		}
 	}
 }
+// Ctrl z with netcat illustrates non-blocking in action. It simulates what would happen if a socket was blocked.
+// Without non-blocking it would wait until the full command has been received without allowing any communication between other clients
