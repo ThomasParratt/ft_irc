@@ -84,7 +84,6 @@ void	Server::processClientBuffer(size_t i, std::map<int, std::string> &clientBuf
 				if (this->makeSelectAndRunCommand(message.c_str(), client) == 1)
 				{
 					std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;
-					//Add RemovefromallChannels ?							 -> I think that would be logical.
 					disconnectClient(i, clientBuffers);
 					clientDisconnected = true;
 					break ;
