@@ -14,8 +14,6 @@ void Server::removeUserFromAllChannels(int i)
 				{
 					if (client.getNickname() == user.nickname)
 					{
-						std::cout << "This user being removed: " << userPrefix << std::endl;
-
 						std::string quitMessage = ":" + userPrefix + " QUIT " + ":Client has quit\r\n";
 						int j = getChannelIndex(channel.getChannelName(), _channel_names);
 						broadcastToChannel(this->_channel_names[j], quitMessage, client, 1);
