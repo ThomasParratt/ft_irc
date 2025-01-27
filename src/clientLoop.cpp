@@ -3,8 +3,7 @@
 
 void Server::removeUserFromAllChannels(int i)
 {
-	std::cout << "removeFromAll" << std::endl;
-	for (auto &client : _clients) // remove user from all channels
+	for (auto &client : _clients)				 				//remove user from all channels
 	{
 		if (client.getSocket() == _pollfds[i].fd) 
 		{
@@ -15,11 +14,13 @@ void Server::removeUserFromAllChannels(int i)
 				{
 					if (client.getNickname() == user.nickname)
 					{
-						int j = getChannelIndex(channel.getChannelName(), _channel_names);
-						std::string message = "REMOVE " + user.nickname + " from " + channel.getChannelName();
 						std::cout << "This user being removed: " << userPrefix << std::endl;
+
 						std::string quitMessage = ":" + userPrefix + " QUIT " + ":Client has quit\r\n";
+						int j = getChannelIndex(channel.getChannelName(), _channel_names);
 						broadcastToChannel(this->_channel_names[j], quitMessage, client, 1);
+
+						std::string message = "REMOVE " + user.nickname + " from " + channel.getChannelName();
 						removeUser(user.nickname, channel.getChannelName(), message, 2);
 						client.leaveChannel(channel.getChannelName());
 					}
@@ -83,7 +84,7 @@ void	Server::processClientBuffer(size_t i, std::map<int, std::string> &clientBuf
 				if (this->makeSelectAndRunCommand(message.c_str(), client) == 1)
 				{
 					std::cout << "Client disconnected, socket " << _pollfds[i].fd << std::endl;
-					disconnectClient(i, clientBuffers);//get rid of Client struct??
+					disconnectClient(i, clientBuffers);
 					clientDisconnected = true;
 					break ;
 				}
@@ -105,7 +106,7 @@ void	Server::checkClientSockets(std::map<int, std::string> &clientBuffers)
 {
 	for (size_t i = 1; i < _pollfds.size(); i++)		//Loop through all Client sockets
 	{
-		if (_pollfds[i].revents & POLLIN)		//If Event occurred in socket
+		if (_pollfds[i].revents & POLLIN)				// The client has sent data to the server
 		{
 			char buffer[1024] = {0};
 			int bytesRead = recv(_pollfds[i].fd, buffer, sizeof(buffer), 0);
@@ -120,3 +121,5 @@ void	Server::checkClientSockets(std::map<int, std::string> &clientBuffers)
 		}
 	}
 }
+// Ctrl z with netcat illustrates non-blocking in action. It simulates what would happen if a socket was blocked.
+// Without non-blocking it would wait until the full command has been received without allowing any communication between other clients

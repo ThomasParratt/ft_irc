@@ -2,7 +2,7 @@
 
 bool servRunning = false;
 
-Server::Server(std::string password, int port) : _password(password), _welcomeSent(false), _port(port)
+Server::Server(std::string password, int port) : _password(password), _port(port)
 {}
 
 Server::~Server()

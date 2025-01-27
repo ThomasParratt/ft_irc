@@ -65,8 +65,7 @@ int		Server::commandSelector(Msg msg, Client &client)
 	}
 	else
 	{
-		// std::string response = "ircserv: Command not found: " + msg.command + "\r\n"; //Ignore commands that are not found??
-		// send(clientSocket, response.c_str(), response.size(), 0);
+		/*	Ignore Commands that are Unknown.	*/
 	}
 	return (0);
 }
@@ -86,7 +85,7 @@ int    Server::makeSelectAndRunCommand(std::string messages, Client &client)
 	{
 		if (this->commandSelector(msgs[i], client) == 1)
 		{
-			return (1);								//Password issue occurred.
+			return (1);								//Password issue occurred
 		}
 	}
 	return (0);
