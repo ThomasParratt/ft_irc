@@ -10,7 +10,8 @@ std::vector<std::string> split(std::string str, std::string token)
 		{
 			result.push_back(str.substr(0, index));
 			str = str.substr(index + token.size());
-			if (str.size() == 0) result.push_back(str);
+			if (str.size() == 0) 
+				result.push_back(str);
 		}
 		else
 		{

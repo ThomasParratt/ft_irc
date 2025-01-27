@@ -74,8 +74,8 @@ void	Server::processClientBuffer(size_t i, std::map<int, std::string> &clientBuf
 	{
 		std::string message = clientBuffer.substr(0, pos);				// Extract the complete message
 		clientBuffer.erase(0, pos + 1);									// Remove the processed message
-
-		std::cout << "Message received from socket " << _pollfds[i].fd << ": " << message << std::endl;
+		LOG_CLIENT(message);
+		// std::cout << "Message received from socket " << _pollfds[i].fd << ": " << message << std::endl;
 
 		for (auto &client : _clients)
 		{
