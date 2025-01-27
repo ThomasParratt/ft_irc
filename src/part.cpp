@@ -49,7 +49,7 @@ void		Server::partCommand(Msg msg, Client &client)
 					else
 						part = ":" + client.getPrefix() + " PART " + channel.getChannelName() + "\r\n";
 					broadcastToChannel(_channel_names[j], part, client, 1);
-					removeUser(client.getNickname(), channel.getChannelName(), part, 0);	//Removes user if it has no users
+					removeUser(client.getNickname(), channel.getChannelName(), part, 0);
 					client.leaveChannel(channel.getChannelName());
 					break;
 				} else {

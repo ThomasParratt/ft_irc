@@ -4,7 +4,6 @@
 #include <map>			//std::map()
 #include <poll.h>		// pollfd
 #include <csignal>		// signal(), SIGINT
-#include <fcntl.h>
 
 #include "Channel.hpp"
 #include "Msg.hpp"
@@ -64,7 +63,7 @@ class Server {
 		void	kickCommand(Msg msg, Client &client);
 		void	inviteCommand(Msg msg, Client &client);
 		void	partCommand(Msg msg, Client &client);
-		int     topicCommand(Msg msg, Client &client);
+		void	topicCommand(Msg msg, Client &client);
 		void	whoCommand(Msg msg, Client &client);
 
 		//Nick Command

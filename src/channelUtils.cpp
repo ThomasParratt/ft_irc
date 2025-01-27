@@ -97,7 +97,7 @@ void	Server::broadcastToChannel(Channel &channel, std::string message, Client &c
 				}
 				else
 					send(socket, message.c_str(), message.size(), 0);
-			LOG_SERVER(message);
+				LOG_SERVER(message);
 			}
 	}
 }

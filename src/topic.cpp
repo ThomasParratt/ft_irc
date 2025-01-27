@@ -33,7 +33,7 @@ void Server::topicPrint(std::string channelName, Client &client)
 	}
 }
 
-int	Server::topicCommand(Msg msg, Client &client)
+void	Server::topicCommand(Msg msg, Client &client)
 {
 	if (msg.trailing_msg.size() == 0) 
 	{
@@ -47,19 +47,19 @@ int	Server::topicCommand(Msg msg, Client &client)
 			std::string notice = ":ircserver 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
 			send(client.getSocket(), notice.c_str(), notice.size(), 0);
 			LOG_SERVER(notice);
-			return (1);
+			return ;
 		}
 		if (_channel_names[i].getTopicRequiresOperator() && clientStatus(msg, client) == 0)
 		{
 			std::string errMsg_482 = ":ircserver 482 " + client.getNickname() + " " + msg.parameters[0] + " :You're not a channel operator\r\n";
 			send(client.getSocket(), errMsg_482.c_str(), errMsg_482.size(), 0);
 			LOG_SERVER(errMsg_482);
-			return (1);
+			return ;
 		}
 		_channel_names[i].setChannelTopic(msg.trailing_msg, client);
 		std::string topicMsg = ":" + client.getPrefix() + " TOPIC " + _channel_names[i].getChannelName() + " :" + msg.trailing_msg + "\r\n";
 		broadcastToChannel(_channel_names[i], topicMsg, client, 0);
 	}
-	return 0;
+	return ;
 }
 

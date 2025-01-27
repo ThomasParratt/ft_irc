@@ -3,6 +3,10 @@
 
 int		Server::commandSelector(Msg msg, Client &client)
 {
+	if (msg.command == "CAP")
+	{
+		return (0);
+	}
 	if (msg.command == "PASS")
 	{
 		if (Server::passwordCommand(msg, client) != 0)
@@ -24,6 +28,10 @@ int		Server::commandSelector(Msg msg, Client &client)
 		std::string response = "PONG " + msg.parameters[0] + "\r\n";
         send(client.getSocket(), response.c_str(), response.size(), 0);
 		LOG_SERVER(response);
+	}
+	else if (client.getPasswordChecked() == false)
+	{	
+		return (1);
 	}
 	else if  (msg.command == "PRIVMSG")
 	{

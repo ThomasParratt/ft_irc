@@ -240,11 +240,14 @@ void	Server::modeCommand(Msg msg, Client &client)
 	{
 		userLimitMode(msg, client, tarChannel);
 	}
+	else if (msg.parameters[1] == "b")
+	{
+		/* ignore ban list request*/
+	}
 	else
 	{
-		/*
-			Unknown Mode Command
-				-> ignore
-		*/
+		std::string errMsg = ":ircserver " + client.getNickname() + " " + msg.parameters[0] + " :Our channel does not support " + msg.parameters[1] + " \r\n";
+		send(client.getSocket(), errMsg.c_str(), errMsg.size(), 0);
+		LOG_SERVER(errMsg);
 	}
 }

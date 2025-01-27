@@ -28,10 +28,10 @@ OBJ			=	$(SRC:.cpp=.o)
 
 CC			=	c++
 
-# CFLAGS		=	-Wextra -Wall -Werror
+CFLAGS		=	-Wextra -Wall -Werror
 
-# for mac 
-CFLAGS		=	-Wextra -Wall -Werror -std=c++11
+# for mac, it requires the -std=c++11 flag 
+# CFLAGS		=	-Wextra -Wall -Werror -std=c++11
 
 RM			=	rm -f
 

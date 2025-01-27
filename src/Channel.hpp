@@ -49,7 +49,7 @@ class Channel
 		User&				getChannelUserStruct(int index);
 		int					getNumberOfChannelUsers();		
 		int					getOpCount();
-		int					getTotalCount();	
+		int					getTotalCount();
 
 		//Setters
 		void				setChannelKey(std::string key);

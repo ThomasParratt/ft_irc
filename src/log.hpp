@@ -15,7 +15,9 @@
 #define WHITE "\033[37m"
 
 /*
-These functions are used to log the communication between clients and the server. so the evaluator can see the real time communication between the server and the clients. It will mimic the output style of the log file.
+    These functions are used to log the communication between clients and the server.
+    So the evaluator can see the real time communication between the server and the clients.
+    It will mimic the output style of the log file.
 */
 
 #define LOG_CLIENT(string) {std::cout << "<< " << string << std::endl;}
