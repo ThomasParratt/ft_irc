@@ -65,15 +65,12 @@ void	Server::processClientBuffer(size_t i, std::map<int, std::string> &clientBuf
 
 	size_t		pos;
 	bool		clientDisconnected = false;
-
-	//std::cout << "clientbuffer = " << clientBuffer << std::endl;
 	
 	while ((pos = clientBuffer.find('\n')) != std::string::npos)
 	{
 		std::string message = clientBuffer.substr(0, pos);				// Extract the complete message
 		clientBuffer.erase(0, pos + 1);									// Remove the processed message
 		LOG_CLIENT(message);
-		// std::cout << "Message received from socket " << _pollfds[i].fd << ": " << message << std::endl;
 
 		for (auto &client : _clients)
 		{
