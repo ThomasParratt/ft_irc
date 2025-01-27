@@ -8,13 +8,6 @@ void Server::acceptClient()
 		std::cerr << "Error accepting connection " << strerror(errno) << std::endl;
 		return;
 	}
-	int flags = fcntl(clientSocket, F_GETFL, 0);
-    if (flags == -1 || fcntl(clientSocket, F_SETFL, flags | O_NONBLOCK) == -1) 
-	{
-        std::cerr << "Error setting client socket to non-blocking mode: " << strerror(errno) << std::endl;
-        close(clientSocket);
-        return ;
-    }
 	pollfd clientPollfd = {};
 	clientPollfd.fd = clientSocket;
 	clientPollfd.events = POLLIN;
