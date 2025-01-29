@@ -95,4 +95,12 @@ void		Server::kickCommand(Msg msg, Client &client)
 		std::string message_403 = ":ircserver 403 " + client.getNickname() + " " + msg.parameters[0] + " :No such channel\r\n";
 		send(client.getSocket(), message_403.c_str(), message_403.size(), 0);
 	}
+	for (auto &channel : _channel_names)
+	{
+		if (channel.getChannelUsers().size() == 0)	//Removes channel if it has no users
+		{
+			int i = getChannelIndex(channel.getChannelName(), _channel_names);
+			_channel_names.erase(_channel_names.begin() + i);
+		}
+	}
 }
