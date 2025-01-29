@@ -11,7 +11,11 @@
 */
 int Server::serverInit() 
 {
-	_serverSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+	// linux
+	// _serverSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+	//MacOS
+	_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+	fcntl(_serverSocket, F_SETFL, O_NONBLOCK); // for mac user
 	if (_serverSocket == -1)
 	{
 		std::cerr << "Error creating socket" << std::endl;
